@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export default async function middleware(request) {
-  const routesPrivate = ["/profile", "/dashboard", "/dashboard/categories", "/dashboard/transictions", "/dashboard/wallet", "/dashboard/profile"]
+  const routesPrivate = ["/test"]
   const isPrivate = routesPrivate.includes(request.nextUrl.pathname)
   
   const cookieStore = await cookies()
