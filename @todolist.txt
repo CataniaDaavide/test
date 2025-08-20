@@ -1,0 +1,45 @@
+🔐 Auth & Session
+Azione	Metodo	Endpoint
+Check session (cookie valido)	GET	/auth/session
+Login	POST	/auth/login
+Register	POST	/auth/register
+Logout (opzionale)	POST	/auth/logout
+-------------------------------------------------------------------
+
+💰 Transactions
+Azione	Metodo	Endpoint
+Create transaction	POST	/transactions
+Edit transaction	PUT	/transactions/:id
+Delete transaction	DELETE	/transactions/:id
+Get all user transactions	GET	/transactions
+Get single transaction (opzionale)	GET	/transactions/:id
+-------------------------------------------------------------------
+
+🏦 Accounts
+Azione	Metodo	Endpoint
+Create account	POST	/accounts
+Edit account	PUT	/accounts/:id
+Delete account	DELETE	/accounts/:id
+Get all accounts	GET	/accounts
+-------------------------------------------------------------------
+
+🗂️ Categories (Spese / Entrate)
+Azione	Metodo	Endpoint
+Create category	POST	/categories
+Edit category	PUT	/categories/:id
+Delete category	DELETE	/categories/:id
+Get all categories	GET	/categories
+-------------------------------------------------------------------
+
+👤 User Profile
+Azione	Metodo	Endpoint
+Get user profile	GET	/profile
+Update user profile	PUT	/profile
+Change password	PUT	/profile/password
+
+-------------------------------------------------------------------
+✅ Altri Endpoint Utili (opzionali)
+Funzione	Metodo	Endpoint
+Statistiche mensili/spese	GET	/stats/monthly
+Filtra transazioni per data/categoria	GET	/transactions?filter=...
+Impostazioni utente (notifiche, tema ecc.)	PUT	/settings
