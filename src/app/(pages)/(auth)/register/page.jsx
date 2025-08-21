@@ -1,65 +1,36 @@
 "use client";
-import { useRef, useState } from "react";
-import { Input } from "@/app/components/ui/input/input";
 import { Button } from "@/app/components/ui/input/button";
-import {
-  base_checkEmail,
-  base_exceptionManager,
-  formValidate,
-} from "@/app/core/baseFunctions";
-import Link from "next/link";
+import { Input } from "@/app/components/ui/input/input";
+import { base_exceptionManager, formValidate } from "@/app/core/baseFunctions";
 import { Wallet } from "lucide-react";
+import Link from "next/link";
+import { useRef, useState } from "react";
 
-// async function fetchApi(
-//   url = "",
-//   method = "GET",
-//   requestData = {},
-//   callBackFn
-// ) {
-//   /*
-//   - url: url chiamata da effettuare
-//   - method: tipo di chiamata [GET, POST, DELETE, INSERT]
-//   - requestData: oggetto contenete i dati da mandare in una chimata POST
-//   */
-
-//   try {
-//     //chiamata GET
-//     if (method.toString().trim().toUpperCase() === "GET") {
-//       const res = await fetch(url);
-//       callBackFn(res);
-//     }
-
-//     //chiamata POST
-//     if (method.toString().trim().toUpperCase() === "POST") {
-//       const res = await fetch(url, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(requestData),
-//       });
-//       callBackFn(res);
-//     }
-//   } catch (error) {
-//     base_exceptionManager(error);
-//   }
-// }
-// -----------------------------------------------------------------------------------
-
-export default function LoginPage() {
+export default function RegisterPage() {
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
   const [formValidationError, setFormValidationError] = useState({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
+  // click sul pulsante "crea account"
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
 
       // Definizione campi e validator
       const fields = {
+        name: {
+          value: nameRef.current.value,
+          validators: {
+            notEmpty: { message: "Nome obbligatorio" },
+          },
+        },
         email: {
           value: emailRef.current.value,
           validators: {
@@ -82,24 +53,21 @@ export default function LoginPage() {
             notEmpty: { message: "Password obbligatoria" },
           },
         },
+        confirmPassword: {
+          value: confirmPasswordRef.current.value,
+          validators: {
+            notEmpty: { message: "Password obbligatoria" },
+            match: {
+              value: passwordRef.current.value,
+              message: "Le password non coincidono",
+            },
+          },
+        },
       };
 
       // Esegui validazione
       const hasError = formValidate(setFormValidationError, fields);
       if (hasError) return;
-
-      // Se arriva qui, il form è valido
-      console.log("Form valido!", {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-
-      /*
-      //chiamata endpont /api/auth/login
-      const requestData = { email: email, password: password };
-      const url = "/api/auth/login";
-      await fetchApi(url, "POST", requestData, () => {});
-      */
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -113,11 +81,19 @@ export default function LoginPage() {
       console.log(name);
 
       switch (name) {
+        case "name":
+          emailRef.current.focus();
+          break;
+
         case "email":
           passwordRef.current.focus();
           break;
 
         case "password":
+          confirmPasswordRef.current.focus();
+          break;
+
+        case "confirmPassword":
           handleSubmit(e);
           break;
 
@@ -130,14 +106,24 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col gap-3 items-center justify-center w-10/12 max-w-[450px] p-6 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-800">
       <div className="p-4 bg-zinc-950 dark:bg-zinc-100 rounded-full text-white dark:text-black">
-        <Wallet size={30} />
+        <Wallet size={30}/>      
       </div>
       <div className="flex flex-col gap-1 items-center justify-center mb-3">
-        <p className="text-2xl font-semibold">Benvenuto</p>
+        <p className="text-2xl font-semibold">Crea account</p>
         <p className="text-sm text-zinc-400">
-          Accedi al tuo account per gestire le tue finanze
+          Registrati per iniziare a gestire le tue finanze
         </p>
       </div>
+      <Input
+        title={"Nome"}
+        type="text"
+        name="name"
+        required={true}
+        placeholder={"Inserisci nome"}
+        ref={nameRef}
+        errorMessage={formValidationError.name}
+        onKeyUp={handleKeyUp}
+      />
       <Input
         title={"Email"}
         type="email"
@@ -158,11 +144,21 @@ export default function LoginPage() {
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <Button onClick={handleSubmit} title={"Accedi"} />
+      <Input
+        title={"Conferma Password"}
+        type="password"
+        name="confirmPassword"
+        required={true}
+        placeholder={"••••••"}
+        ref={confirmPasswordRef}
+        errorMessage={formValidationError.confirmPassword}
+        onKeyUp={handleKeyUp}
+      />
+      <Button onClick={handleSubmit} title={"Crea Account"} />
       <p className="text-sm text-zinc-400">
-        Non hai un account?
-        <Link href={"/register"} className="ml-1 underline font-semibold text-black dark:text-white">
-          Registrati
+        Hai gia un account?
+        <Link href={"/login"} className="ml-1 underline font-semibold text-black dark:text-white">
+          Accedi
         </Link>
       </p>
     </div>

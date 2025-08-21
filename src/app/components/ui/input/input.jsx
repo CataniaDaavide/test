@@ -1,54 +1,32 @@
-export function InputBase({
+import { annotateDynamicAccess } from "next/dist/server/app-render/dynamic-rendering";
+
+export function Input({
   title,
   name = "",
   type = "text",
-  placeholder = "",
+  required = false,
+  placeholder,
   ref,
+  errorMessage = "",
+  onKeyUp = ()=>{}
 }) {
   return (
-    <div className="w-full flex flex-col gap-1">
-      {title && <p>{title}</p>}
+    <div className="w-full flex flex-col gap-1 justify-center">
+      {title && (
+        <p className="text-xs font-medium">
+          {title}
+          {required && <span className="text-red-500"> *</span>}
+        </p>
+      )}
       <input
+        className={`px-4 py-2 h-10 rounded-md border bg-transparent ${errorMessage ? "border-red-500" : "border-zinc-700"} focus:border-2 focus:border-white focus:outline-0`}
         name={name}
         type={type}
         placeholder={placeholder}
+        onKeyUp={(e) => {onKeyUp(e)}}
         ref={ref}
-        className="bg-zinc-900 border-2 border-zinc-800 text-sm"
       />
-    </div>
-  );
-}
-
-export function InputPassword({
-  title,
-  name = "",
-  placeholder = "",
-  data,
-  setData,
-}) {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData(value);
-
-    //la versione sotto serve per data che hanno più proprietà
-    // setData(
-    //     {
-    //         ...data,
-    //         name: value,
-    //     }
-    // )
-  };
-
-  return (
-    <div className="w-full flex flex-col gap-1">
-      {title && <p>{title}</p>}
-      <input
-        name={name}
-        type={"password"}
-        placeholder={placeholder}
-        onChange={handleChange}
-        className="bg-zinc-900 border-2 border-zinc-800 text-sm"
-      />
+      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
     </div>
   );
 }
