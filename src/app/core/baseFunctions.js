@@ -17,8 +17,7 @@ export function base_exceptionManager(error) {
     */
 }
 
-
-export function formValidate(setError, fields) {
+export function formValidation(setError, fields) {
     /*
     - setError: funzione per settare gli errori che vengono trovati
     - filds: oggetto contenente le validazioni da effettuare su i vari campi
@@ -122,3 +121,41 @@ export function formValidate(setError, fields) {
     setError(newError);
     return hasError;
 }
+
+
+export async function fetchApi(
+  url = "",
+  method = "GET",
+  requestData = {},
+  callBackFn = () => {}
+) {
+  /*
+  - url: url chiamata da effettuare
+  - method: tipo di chiamata [GET, POST, DELETE, INSERT]
+  - requestData: oggetto contenete i dati da mandare in una chimata POST
+  */
+
+  try {
+    //chiamata GET
+    if (method.toString().trim().toUpperCase() === "GET") {
+      const res = await fetch(url);
+      callBackFn(res);
+    }
+
+    //chiamata POST
+    if (method.toString().trim().toUpperCase() === "POST") {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+      callBackFn(res);
+    }
+  } catch (error) {
+    base_exceptionManager(error);
+  }
+}
+
+

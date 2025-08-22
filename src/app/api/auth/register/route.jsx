@@ -12,9 +12,13 @@ export async function POST(req) {
   const dataResponse = {};
 
   try {
-    const { email, password } = await req.json();
+    const { name, email, password } = await req.json();
 
     //controllo payload
+    if (!name || name === "") {
+      rtn.error = "name is required";
+      return new NextResponse(JSON.stringify(rtn), { status: 500 });
+    }
     if (!email || email === "") {
       rtn.error = "email is required";
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
@@ -28,27 +32,33 @@ export async function POST(req) {
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }
 
+
     //connessione al database e recupero collezzione "users"
     await connectDB();
 
-    //ricerca dell'utente
-    const user = await usersModel.findOne({ email: email });
-    if (!user) {
-      rtn.error = "Utente non trovato";
+    //controllo che l'email non sia già stata utilizzata
+    let emailExists = await usersModel.findOne({ email: email });
+    if (emailExists) {
+      rtn.error = "Email gia usata";
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }
 
-    //controllo che la password sia corretta
-    const passwordIsCorrect = await bcrypt.compare(password, user.password);
-    if (!passwordIsCorrect) {
-      rtn.error = "Password errata";
-      return new NextResponse(JSON.stringify(rtn), { status: 500 });
-    }
+    //criptazione della password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //creazione e inserimento utente sul database
+    const user = await usersModel.create({
+      name: name,
+      email: email,
+      password: hashedPassword,
+      createAt: new Date().toISOString(),
+    });
 
     //Creazione session token e salvataggio nei cookies
     const sessionToken = jwt.sign(
       {
         _id: user._id,
+        name: name,
         email: email,
         createAt: new Date().toISOString(),
       },
@@ -69,9 +79,9 @@ export async function POST(req) {
     rtn.response = dataResponse;
     return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
-    rtn.error = error.message.toString() + " on endpoint:/api/auth/login";
+    rtn.error = error.message.toString() + " on endpoint:/api/auth/register";
     rtn.response = "";
-    console.log(rtn, error);
+    console.log(rtn);
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }
 }

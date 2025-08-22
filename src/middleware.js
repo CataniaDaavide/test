@@ -2,24 +2,17 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export default async function middleware(request) {
+  //lista di pagine private accessibili solo dopo aver fatto il login
   const routesPrivate = ["/test"]
-  const isPrivate = routesPrivate.includes(request.nextUrl.pathname)
-  
   const cookieStore = await cookies()
-  const token = cookieStore.get("token")?.value
-  
-  const url = `${request.nextUrl.origin}/api/auth/verify-token`;
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({token}),
-  };
 
+  //controllo per capire se la pagina è privata
+  const isPrivate = routesPrivate.includes(request.nextUrl.pathname)
   if (isPrivate) {
-    const response = await fetch(url, options);
-    if (!response.ok) {
+
+    //controllo per capire se l'utente è loggato (ha un token di sessione)
+    const hasSessionToken = cookieStore.has("sessionToken")
+    if(!hasSessionToken){
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

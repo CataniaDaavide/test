@@ -1,12 +1,31 @@
 "use client";
-import { Button } from "@/app/components/ui/input/button";
-import { Input } from "@/app/components/ui/input/input";
-import { base_exceptionManager, formValidate } from "@/app/core/baseFunctions";
-import { Wallet } from "lucide-react";
-import Link from "next/link";
+
+//hoocks - functions - lib
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  base_exceptionManager,
+  fetchApi,
+  formValidation,
+} from "@/app/core/baseFunctions";
+
+//icons
+import { AtSign, Lock, User, Wallet } from "lucide-react";
+
+//components
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardTitle,
+  CardDescription,
+  CardHeader,
+} from "@/app/components/ui/card";
+import { Input } from "@/app/components/ui/input";
+import { ToggleTheme } from "@/app/components/ui/toggle-theme";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -18,12 +37,9 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  // click sul pulsante "crea account"
-  const handleSubmit = async (e) => {
+  // inizializzazione delle regole di validazione
+  function formValidationInit() {
     try {
-      e.preventDefault();
-
-      // Definizione campi e validator
       const fields = {
         name: {
           value: nameRef.current.value,
@@ -66,8 +82,36 @@ export default function RegisterPage() {
       };
 
       // Esegui validazione
-      const hasError = formValidate(setFormValidationError, fields);
+      const hasError = formValidation(setFormValidationError, fields);
+      return hasError;
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  }
+
+  // click sul pulsante "crea account"
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+
+      const hasError = formValidationInit();
       if (hasError) return;
+
+      // chimata endpoint /api/auth/register
+      const requestData = {
+        name: nameRef.current.value,
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      };
+      await fetchApi("/api/auth/register", "POST", requestData, async (res) => {
+        const data = await res.json();
+
+        if (!res.ok && data.error != "") {
+          return base_exceptionManager(data.error);
+        }
+
+        router.push("/");
+      });
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -104,63 +148,73 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col gap-3 items-center justify-center w-10/12 max-w-[450px] p-6 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-800">
-      <div className="p-4 bg-zinc-950 dark:bg-zinc-100 rounded-full text-white dark:text-black">
-        <Wallet size={30}/>      
-      </div>
-      <div className="flex flex-col gap-1 items-center justify-center mb-3">
-        <p className="text-2xl font-semibold">Crea account</p>
-        <p className="text-sm text-zinc-400">
-          Registrati per iniziare a gestire le tue finanze
+    <div className="w-full max-w-md p-3">
+      <ToggleTheme className={"absolute top-3 right-3"} />
+      <Card>
+        <CardHeader>
+          <div className="mb-1 p-4 bg-background-inverse rounded-full text-white dark:text-black">
+            <Wallet size={30} />
+          </div>
+          <CardTitle>Crea account</CardTitle>
+          <CardDescription>
+            Registrati per iniziare a gestire le tue finanz
+          </CardDescription>
+        </CardHeader>
+          <Input
+            title={"Nome"}
+            type="text"
+            name="name"
+            icon={<User />}
+            required={true}
+            placeholder={"Inserisci nome"}
+            ref={nameRef}
+            errorMessage={formValidationError.name}
+            onKeyUp={handleKeyUp}
+          />
+          <Input
+            title={"Email"}
+            type="email"
+            name="email"
+            icon={<AtSign />}
+            required={true}
+            placeholder={"Inserisci email"}
+            ref={emailRef}
+            errorMessage={formValidationError.email}
+            onKeyUp={handleKeyUp}
+          />
+          <Input
+            title={"Password"}
+            type="password"
+            name="password"
+            icon={<Lock />}
+            required={true}
+            placeholder={"••••••"}
+            ref={passwordRef}
+            errorMessage={formValidationError.password}
+            onKeyUp={handleKeyUp}
+          />
+          <Input
+            title={"Conferma Password"}
+            type="password"
+            name="confirmPassword"
+            icon={<Lock />}
+            required={true}
+            placeholder={"••••••"}
+            ref={confirmPasswordRef}
+            errorMessage={formValidationError.confirmPassword}
+            onKeyUp={handleKeyUp}
+          />
+        <Button onClick={handleSubmit} title={"Crea account"} color={"primary"} />
+        <p className="text-sm text-muted-foreground">
+          Hai gia un account?
+          <Link
+            href={"/login"}
+            className="ml-1 underline font-semibold text-black dark:text-white"
+          >
+            Accedi
+          </Link>
         </p>
-      </div>
-      <Input
-        title={"Nome"}
-        type="text"
-        name="name"
-        required={true}
-        placeholder={"Inserisci nome"}
-        ref={nameRef}
-        errorMessage={formValidationError.name}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
-        title={"Email"}
-        type="email"
-        name="email"
-        required={true}
-        placeholder={"Inserisci email"}
-        ref={emailRef}
-        errorMessage={formValidationError.email}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
-        title={"Password"}
-        type="password"
-        name="password"
-        required={true}
-        placeholder={"••••••"}
-        ref={passwordRef}
-        errorMessage={formValidationError.password}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
-        title={"Conferma Password"}
-        type="password"
-        name="confirmPassword"
-        required={true}
-        placeholder={"••••••"}
-        ref={confirmPasswordRef}
-        errorMessage={formValidationError.confirmPassword}
-        onKeyUp={handleKeyUp}
-      />
-      <Button onClick={handleSubmit} title={"Crea Account"} />
-      <p className="text-sm text-zinc-400">
-        Hai gia un account?
-        <Link href={"/login"} className="ml-1 underline font-semibold text-black dark:text-white">
-          Accedi
-        </Link>
-      </p>
+      </Card>
     </div>
   );
 }

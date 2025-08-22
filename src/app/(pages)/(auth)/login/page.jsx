@@ -1,64 +1,43 @@
 "use client";
+
+//hoocks - functions - lib
 import { useRef, useState } from "react";
-import { Input } from "@/app/components/ui/input/input";
-import { Button } from "@/app/components/ui/input/button";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   base_checkEmail,
   base_exceptionManager,
-  formValidate,
+  fetchApi,
+  formValidation,
 } from "@/app/core/baseFunctions";
-import Link from "next/link";
-import { Wallet } from "lucide-react";
 
-// async function fetchApi(
-//   url = "",
-//   method = "GET",
-//   requestData = {},
-//   callBackFn
-// ) {
-//   /*
-//   - url: url chiamata da effettuare
-//   - method: tipo di chiamata [GET, POST, DELETE, INSERT]
-//   - requestData: oggetto contenete i dati da mandare in una chimata POST
-//   */
+//icons
+import { Wallet, AtSign, Lock } from "lucide-react";
 
-//   try {
-//     //chiamata GET
-//     if (method.toString().trim().toUpperCase() === "GET") {
-//       const res = await fetch(url);
-//       callBackFn(res);
-//     }
-
-//     //chiamata POST
-//     if (method.toString().trim().toUpperCase() === "POST") {
-//       const res = await fetch(url, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(requestData),
-//       });
-//       callBackFn(res);
-//     }
-//   } catch (error) {
-//     base_exceptionManager(error);
-//   }
-// }
-// -----------------------------------------------------------------------------------
+//components
+import { Input, InputPassword } from "@/app/components/ui/input";
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
+import { ToggleTheme } from "@/app/components/ui/toggle-theme";
 
 export default function LoginPage() {
+  const router = useRouter();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const [error, setError] = useState("");
   const [formValidationError, setFormValidationError] = useState({
     email: "",
     password: "",
   });
 
-  const handleSubmit = async (e) => {
+  // inizializzazione delle regole di validazione
+  function formValidationInit() {
     try {
-      e.preventDefault();
-
-      // Definizione campi e validator
       const fields = {
         email: {
           value: emailRef.current.value,
@@ -85,21 +64,35 @@ export default function LoginPage() {
       };
 
       // Esegui validazione
-      const hasError = formValidate(setFormValidationError, fields);
+      const hasError = formValidation(setFormValidationError, fields);
+      return hasError;
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  }
+
+  // click sul pulsante "accedi"
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+
+      const hasError = formValidationInit();
       if (hasError) return;
 
-      // Se arriva qui, il form è valido
-      console.log("Form valido!", {
+      // chimata endpoint /api/auth/login
+      const requestData = {
         email: emailRef.current.value,
         password: passwordRef.current.value,
-      });
+      };
+      await fetchApi("/api/auth/login", "POST", requestData, async (res) => {
+        const data = await res.json();
 
-      /*
-      //chiamata endpont /api/auth/login
-      const requestData = { email: email, password: password };
-      const url = "/api/auth/login";
-      await fetchApi(url, "POST", requestData, () => {});
-      */
+        if (!res.ok && data.error != "") {
+          return setError(data.error);
+        }
+
+        router.push("/");
+      });
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -127,44 +120,65 @@ export default function LoginPage() {
     }
   };
 
+  //click del pulsante "credenziali demo"
+  const handleDemoCredetial = (e) => {
+    try {
+      e.preventDefault();
+      emailRef.current.value = "test@gmail.com";
+      passwordRef.current.value = "123";
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-3 items-center justify-center w-10/12 max-w-[450px] p-6 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-800">
-      <div className="p-4 bg-zinc-950 dark:bg-zinc-100 rounded-full text-white dark:text-black">
-        <Wallet size={30} />
-      </div>
-      <div className="flex flex-col gap-1 items-center justify-center mb-3">
-        <p className="text-2xl font-semibold">Benvenuto</p>
-        <p className="text-sm text-zinc-400">
-          Accedi al tuo account per gestire le tue finanze
+    <div className="w-full max-w-md p-3">
+      <ToggleTheme className={"absolute top-3 right-3"}/>
+      <Card>
+        <CardHeader>
+        <div className="mb-1 p-4 bg-background-inverse rounded-full text-white dark:text-black">
+          <Wallet size={30} />
+        </div>
+          <CardTitle>Benvenuto</CardTitle>
+          <CardDescription>
+            Accedi al tuo account per gestire le tue finanze
+          </CardDescription>
+        </CardHeader>
+        <Input
+          title={"Email"}
+          type="email"
+          name="email"
+          icon={<AtSign />}
+          required={true}
+          placeholder={"Inserisci email"}
+          ref={emailRef}
+          errorMessage={formValidationError.email}
+          onKeyUp={handleKeyUp}
+        />
+        <InputPassword
+          title={"Password"}
+          type="password"
+          name="password"
+          icon={<Lock />}
+          required={true}
+          placeholder={"••••••"}
+          ref={passwordRef}
+          errorMessage={formValidationError.password}
+          onKeyUp={handleKeyUp}
+        />
+        <Button onClick={handleSubmit} title={"Accedi"} color={"primary"}/>
+        <Button onClick={handleDemoCredetial} title={"Credenziali demo"} color={"secondary"} />
+        {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
+        <p className="text-sm text-muted-foreground">
+          Non hai un account?
+          <Link
+            href={"/register"}
+            className="ml-1 underline font-semibold text-black dark:text-white"
+          >
+            Registrati
+          </Link>
         </p>
-      </div>
-      <Input
-        title={"Email"}
-        type="email"
-        name="email"
-        required={true}
-        placeholder={"Inserisci email"}
-        ref={emailRef}
-        errorMessage={formValidationError.email}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
-        title={"Password"}
-        type="password"
-        name="password"
-        required={true}
-        placeholder={"••••••"}
-        ref={passwordRef}
-        errorMessage={formValidationError.password}
-        onKeyUp={handleKeyUp}
-      />
-      <Button onClick={handleSubmit} title={"Accedi"} />
-      <p className="text-sm text-zinc-400">
-        Non hai un account?
-        <Link href={"/register"} className="ml-1 underline font-semibold text-black dark:text-white">
-          Registrati
-        </Link>
-      </p>
+      </Card>
     </div>
   );
 }
