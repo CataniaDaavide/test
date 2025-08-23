@@ -1,6 +1,7 @@
-// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
+import ButtonBack from "./components/ui/button/buttonBack";
+import { ToggleTheme } from "./components/ui/toggle-theme";
 
 export const metadata = {
   title: "Template APP",
@@ -12,9 +13,18 @@ export default function RootLayout({ children }) {
     <html lang="en" className="dark">
       {/* <html lang="en"> */}
       <body
-        className={`antialiased overscroll-none w-screen h-screen flex flex-col items-center justify-center bg-background text-black dark:text-white`}
+        className={`
+          antialiased overscroll-none 
+          w-screen h-[100dvh]
+          flex flex-col items-center justify-center 
+          bg-background text-background-inverse
+        `}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ButtonBack className={"absolute top-3 left-3"} />
+          <ToggleTheme className={"absolute top-3 right-3"} />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

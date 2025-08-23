@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/app/core/mongodbFunctions";
 import { usersModel } from "@/app/models/usersModel";
 import { base_checkEmail } from "@/app/core/baseFunctions";
+import { AwardIcon } from "lucide-react";
 
 export async function POST(req) {
   //inzizializzazioni valori di ritorno della chiamta
@@ -12,21 +13,30 @@ export async function POST(req) {
   const dataResponse = {};
 
   try {
-    const { email, password } = await req.json();
+    const { password, newPassword } = await req.json();
 
     //controllo payload
-    if (!email || email === "") {
-      rtn.error = "email is required";
-      return new NextResponse(JSON.stringify(rtn), { status: 500 });
-    }
-    if (!base_checkEmail(email)) {
-      rtn.error = "invalid email format";
-      return new NextResponse(JSON.stringify(rtn), { status: 500 });
-    }
     if (!password || password === "") {
       rtn.error = "password is required";
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }
+    if (!newPassword || newPassword === "") {
+      rtn.error = "newPassword is required";
+      return new NextResponse(JSON.stringify(rtn), { status: 500 });
+    }
+
+    //controllo esistenza della sessione
+    const cookieStore = await cookies()
+    const hasSessionToken = cookieStore.has("sessionToken")
+    if(!hasSessionToken){
+      rtn.error = "Sessione non trovata";
+      return new NextResponse(JSON.stringify(rtn), { status: 500 });
+    }
+
+    //recupero l'email dal token di sessione attuale e lo rimuovo
+    var sessionToken = cookieStore.get("sessionToken")?.value
+    const { email } = jwt.decode(sessionToken, process.env.SECRET_TOKEN)
+    cookieStore.delete("sessionToken")
 
     //connessione al database e recupero collezzione "users"
     await connectDB();
@@ -45,31 +55,17 @@ export async function POST(req) {
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }
 
-    //Creazione session token e salvataggio nei cookies
-    const sessionToken = jwt.sign(
-      {
-        _id: user._id,
-        email: email,
-        createAt: new Date().toISOString(),
-      },
-      process.env.SECRET_TOKEN
-    );
+   //criptazione della NUOVA password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    //salvataggio dei cookie di sessione
-    const cookieStore = await cookies();
-    cookieStore.set("sessionToken", sessionToken, {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      sameSite: "strict",
-      maxAge: 60 * 60, // durata 1 ora
-    });
+    //update dell'utente sul database
+    await usersModel.findOneAndUpdate({ email: email }, {password: hashedNewPassword})
 
     dataResponse.result = true;
     rtn.response = dataResponse;
     return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
-    rtn.error = error.message.toString() + " on endpoint:/api/auth/login";
+    rtn.error = error.message.toString() + " on endpoint:/api/auth/reset-password";
     rtn.response = "";
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }

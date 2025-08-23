@@ -3,7 +3,6 @@
 //hoocks - functions - lib
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   base_exceptionManager,
   fetchApi,
@@ -11,52 +10,30 @@ import {
 } from "@/app/core/baseFunctions";
 
 //icons
-import { AtSign, Lock, User } from "lucide-react";
+import { Lock } from "lucide-react";
 
 //components
+import InputPassword from "@/app/components/ui/input/input-password";
 import { Button } from "@/app/components/ui/button/button";
-import Input from "@/app/components/ui/input/input";
+import { ToggleTheme } from "@/app/components/ui/toggle-theme";
 import AuthLayout from "../authLayout";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
-  const nameRef = useRef();
-  const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const newPasswordRef = useRef();
+  const [error, setError] = useState("");
   const [formValidationError, setFormValidationError] = useState({
-    name: "",
-    email: "",
     password: "",
     confirmPassword: "",
+    newPassword: "",
   });
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {
     try {
       const fields = {
-        name: {
-          value: nameRef.current.value,
-          validators: {
-            notEmpty: { message: "Nome obbligatorio" },
-          },
-        },
-        email: {
-          value: emailRef.current.value,
-          validators: {
-            notEmpty: { message: "Email obbligatoria" },
-            callback: {
-              message: "Email non valida",
-              callback: (value) => {
-                const ris = base_checkEmail(value);
-                return {
-                  valid: ris,
-                  message: "Email non valida",
-                };
-              },
-            },
-          },
-        },
         password: {
           value: passwordRef.current.value,
           validators: {
@@ -73,6 +50,23 @@ export default function RegisterPage() {
             },
           },
         },
+        newPassword: {
+          value: newPasswordRef.current.value,
+          validators: {
+            notEmpty: { message: "Password obbligatoria" },
+            callback: {
+              callback: () => {
+                const valid =
+                  passwordRef.current.value !== newPasswordRef.current.value;
+                return {
+                  valid,
+                  message:
+                    "La nuova password deve essere diversa dalla precedente",
+                };
+              },
+            },
+          },
+        },
       };
 
       // Esegui validazione
@@ -83,7 +77,7 @@ export default function RegisterPage() {
     }
   }
 
-  // click sul pulsante "crea account"
+  // click sul pulsante "accedi"
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -91,21 +85,26 @@ export default function RegisterPage() {
       const hasError = formValidationInit();
       if (hasError) return;
 
-      // chimata endpoint /api/auth/register
+      // chimata endpoint /api/auth/login
       const requestData = {
-        name: nameRef.current.value,
-        email: emailRef.current.value,
         password: passwordRef.current.value,
+        confirmPassword: confirmPasswordRef.current.value,
+        newPassword: newPasswordRef.current.value,
       };
-      await fetchApi("/api/auth/register", "POST", requestData, async (res) => {
-        const data = await res.json();
+      await fetchApi(
+        "/api/auth/reset-password",
+        "POST",
+        requestData,
+        async (res) => {
+          const data = await res.json();
 
-        if (!res.ok && data.error != "") {
-          return base_exceptionManager(data.error);
+          if (!res.ok && data.error != "") {
+            return setError(data.error);
+          }
+
+          router.push("/login");
         }
-
-        router.push("/dashboard");
-      });
+      );
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -117,19 +116,15 @@ export default function RegisterPage() {
     const { name } = target;
     if (key.toString().trim().toUpperCase() === "ENTER") {
       switch (name) {
-        case "name":
-          emailRef.current.focus();
-          break;
-
-        case "email":
-          passwordRef.current.focus();
-          break;
-
         case "password":
           confirmPasswordRef.current.focus();
           break;
 
         case "confirmPassword":
+          newPasswordRef.current.focus();
+          break;
+
+        case "newPassword":
           handleSubmit(e);
           break;
 
@@ -141,34 +136,11 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout
-      title={"Crea account"}
-      desciption={"Registrati per iniziare a gestire le tue finanze"}
+      title={"Reset password"}
+      desciption={"Reimposta la tua password in modo sicuro per continuare"}
     >
-      <Input
-        title={"Nome"}
-        type="text"
-        name="name"
-        icon={<User />}
-        required={true}
-        placeholder={"Inserisci nome"}
-        ref={nameRef}
-        errorMessage={formValidationError.name}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
-        title={"Email"}
-        type="email"
-        name="email"
-        icon={<AtSign />}
-        required={true}
-        placeholder={"Inserisci email"}
-        ref={emailRef}
-        errorMessage={formValidationError.email}
-        onKeyUp={handleKeyUp}
-      />
-      <Input
+      <InputPassword
         title={"Password"}
-        type="password"
         name="password"
         icon={<Lock />}
         required={true}
@@ -177,9 +149,8 @@ export default function RegisterPage() {
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <Input
-        title={"Conferma Password"}
-        type="password"
+      <InputPassword
+        title={"Conferma password"}
         name="confirmPassword"
         icon={<Lock />}
         required={true}
@@ -188,16 +159,22 @@ export default function RegisterPage() {
         errorMessage={formValidationError.confirmPassword}
         onKeyUp={handleKeyUp}
       />
-      <Button onClick={handleSubmit} title={"Crea account"} color={"primary"} />
-      <p className="text-sm text-muted-foreground">
-        Hai gia un account?
-        <Link
-          href={"/login"}
-          className="ml-1 underline font-semibold text-black dark:text-white"
-        >
-          Accedi
-        </Link>
-      </p>
+      <InputPassword
+        title={"Nuova password"}
+        name="newPassword"
+        icon={<Lock />}
+        required={true}
+        placeholder={"••••••"}
+        ref={newPasswordRef}
+        errorMessage={formValidationError.newPassword}
+        onKeyUp={handleKeyUp}
+      />
+      <Button
+        onClick={handleSubmit}
+        title={"Reset password"}
+        color={"primary"}
+      />
+      {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
     </AuthLayout>
   );
 }

@@ -122,40 +122,79 @@ export function formValidation(setError, fields) {
     return hasError;
 }
 
-
 export async function fetchApi(
-  url = "",
-  method = "GET",
-  requestData = {},
-  callBackFn = () => {}
+    url = "",
+    method = "GET",
+    requestData = {},
+    callBackFn = () => { }
 ) {
-  /*
-  - url: url chiamata da effettuare
-  - method: tipo di chiamata [GET, POST, DELETE, INSERT]
-  - requestData: oggetto contenete i dati da mandare in una chimata POST
-  */
+    /*
+    - url: url chiamata da effettuare
+    - method: tipo di chiamata [GET, POST, DELETE, INSERT]
+    - requestData: oggetto contenete i dati da mandare in una chimata POST
+    */
 
-  try {
-    //chiamata GET
-    if (method.toString().trim().toUpperCase() === "GET") {
-      const res = await fetch(url);
-      callBackFn(res);
-    }
+    try {
+        //chiamata GET
+        if (method.toString().trim().toUpperCase() === "GET") {
+            const res = await fetch(url);
+            callBackFn(res);
+        }
 
-    //chiamata POST
-    if (method.toString().trim().toUpperCase() === "POST") {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-      callBackFn(res);
+        //chiamata POST
+        if (method.toString().trim().toUpperCase() === "POST") {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestData),
+            });
+            callBackFn(res);
+        }
+    } catch (error) {
+        base_exceptionManager(error);
     }
-  } catch (error) {
-    base_exceptionManager(error);
-  }
 }
 
+//**********************************************************************
+//                            CONVERT FUNCTIONS
+//**********************************************************************
+export function convertDate(dateIsoString, format = "dd/MM/yyyy HH:mm:ss") {
+    /*
+    - dateIsoString: esempio 2025-08-23T09:17:45.845Z 
+    - format: formato della data convertita
+    */
 
+    /*
+    //example use
+    const format = "dd/MM/yyyy HH:mm:ss"; const date = new Date().toISOString()
+    console.log(convertDate(date, format)) // 23/08/2025 14:45:07
+    */
+
+    const dateObj = new Date(dateIsoString);
+    
+    const map = {
+        dd: String(dateObj.getDate()).padStart(2, "0"),
+        d: dateObj.getDate(),
+        MM: String(dateObj.getMonth() + 1).padStart(2, "0"),
+        M: dateObj.getMonth() + 1,
+        yyyy: dateObj.getFullYear(),
+        yy: String(dateObj.getFullYear()).slice(-2),
+        HH: String(dateObj.getHours()).padStart(2, "0"),
+        H: dateObj.getHours(),
+        hh: String(dateObj.getHours() % 12 || 12).padStart(2, "0"),
+        h: dateObj.getHours() % 12 || 12,
+        mm: String(dateObj.getMinutes()).padStart(2, "0"),
+        m: dateObj.getMinutes(),
+        ss: String(dateObj.getSeconds()).padStart(2, "0"),
+        s: dateObj.getSeconds(),
+        SSS: String(dateObj.getMilliseconds()).padStart(3, "0"),
+        tt: dateObj.getHours() < 12 ? "AM" : "PM"
+    };
+
+    return format.replace(
+        /(dd|d|MM|M|yyyy|yy|HH|H|hh|h|mm|m|ss|s|SSS|tt)/g,
+        match => map[match]
+    );
+}

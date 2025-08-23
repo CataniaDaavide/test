@@ -29,18 +29,18 @@ html.dark {
   */
 
 :root {
-  --background: oklch(98.5% 0 0);
-  --background-inverse: oklch(21% 0.006 285.885);
-  --card: oklch(98.5% 0 0);
-  --border-card: oklch(92% 0.004 286.32);
+  --background: oklch(98.5% 0 0); /*zinc-50*/
+  --background-inverse: oklch(14.1% 0.005 285.823); /*zinc-950*/
+  --card: oklch(96.7% 0.001 286.375); /*zinc-100*/
+  --border-card: oklch(92% 0.004 286.32); /*zinc-200*/
   --muted-foreground: oklch(44.2% 0.017 285.786);
 }
 
 html.dark {
-  --background: oklch(21% 0.006 285.885);
-  --background-inverse: oklch(98.5% 0 0);
-  --card: oklch(27.4% 0.006 286.033);
-  --border-card: oklch(37% 0.013 285.805);
+  --background: oklch(14.1% 0.005 285.823); /*zinc-950*/
+  --background-inverse: oklch(98.5% 0 0); /*zinc-50*/
+  --card: oklch(21% 0.006 285.885); /*zinc-900*/
+  --border-card: oklch(27.4% 0.006 286.033); /*zinc-800*/
   --muted-foreground: oklch(70.5% 0.015 286.067);
 }
 
@@ -67,3 +67,18 @@ bg-select: bg-white / dark:bg-zinc-800
 text-select: text-zinc-900 / dark:text-zinc-100
 hover-select: hover:bg-zinc-200 / dark:hover:bg-zinc-700
 */
+
+
+/* ------------------------------------------------------------ */
+/* Nasconde l’icona "occhio" (reveal) e la X di Edge/IE */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Facoltativo: rimuove eventuali decorazioni UI su alcuni UA */
+input[type="password"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* ------------------------------------------------------------ */

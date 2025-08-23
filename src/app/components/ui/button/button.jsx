@@ -18,7 +18,7 @@ export function Button({
   return (
     <button
       disabled={disabled}
-      className={`px-3 py-2 h-10 font-medium text-sm rounded-md w-full cursor-pointer disabled:cursor-auto disabled:opacity-50 ${
+      className={`px-3 py-2 h-10 font-medium text-sm rounded-lg w-full cursor-pointer disabled:cursor-auto disabled:opacity-50 ${
         colorVariants[color] || colorVariants["default"]
       }`}
       onClick={onClick}

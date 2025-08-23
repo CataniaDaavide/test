@@ -16,13 +16,12 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
   // };
 
   const colorVariants = {
+    trasparent:"bg-trasparent",
     outline:
       "border-zinc-300 bg-white hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700",
-    secondary:
-      "bg-zinc-200 dark:bg-zinc-800",
+    secondary: "bg-zinc-200 dark:bg-zinc-800",
     primary: "bg-background-inverse text-white dark:text-black",
-    default:
-      "bg-card border border-border-card shadow-md",
+    default: "bg-card hover:bg-border-card border border-border-card shadow-md",
   };
 
   // Cloniamo le icone per forzare il size
@@ -32,9 +31,11 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
     <button
       disabled={disabled}
       onClick={fn}
-      className={`flex rounded-lg p-3 w-10 h-10 active:scale-[0.99] cursor-pointer disabled:cursor-auto disabled:opacity-50 ${
-        colorVariants[color] || colorVariants["default"]
-      } ${className}`}
+      className={`
+        transition-colors duration-300 flex items-center justify-center 
+        rounded-lg w-10 h-10 active:scale-[0.99] 
+        cursor-pointer disabled:cursor-auto disabled:opacity-50 
+        ${colorVariants[color] || colorVariants["default"]} ${className}`}
     >
       {iconLeft}
     </button>

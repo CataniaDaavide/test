@@ -2,7 +2,7 @@
 
 //hoocks - functions - lib
 import { useRouter } from "next/navigation";
-import { base_exceptionManager, fetchApi } from "../core/baseFunctions";
+import { base_exceptionManager, fetchApi } from "../../../core/baseFunctions";
 
 export function ButtonLogout() {
   const router = useRouter();

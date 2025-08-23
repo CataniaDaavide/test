@@ -1,6 +1,6 @@
-export function Card({ children }) {
+export function Card({ children, className }) {
   return (
-    <div className="w-full flex flex-col gap-3 items-center justify-center p-6 rounded-lg border border-border-card bg-card shadow-md">
+    <div className={`w-full flex flex-col gap-3 items-center justify-center p-6 rounded-xl border border-border-card bg-card shadow-md ${className}`}>
       {children}
     </div>
   );

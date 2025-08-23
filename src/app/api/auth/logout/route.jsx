@@ -25,7 +25,6 @@ export async function POST(req) {
   } catch (error) {
     rtn.error = error.message.toString() + " on endpoint:/api/auth/logout";
     rtn.response = "";
-    console.log(rtn, error);
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }
 }

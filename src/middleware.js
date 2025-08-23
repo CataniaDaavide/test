@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export default async function middleware(request) {
   //lista di pagine private accessibili solo dopo aver fatto il login
-  const routesPrivate = ["/test"]
+  const routesPrivate = ["/dashboard", "/dashboard/categories", "/dashboard/movements", "/dashboard/accounts", "/dashboard/profile", "/reset-password"]
   const cookieStore = await cookies()
 
   //controllo per capire se la pagina è privata

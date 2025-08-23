@@ -46,7 +46,7 @@ export async function POST(req) {
     //criptazione della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //creazione e inserimento utente sul database
+    //creazione dell'utente sul database
     const user = await usersModel.create({
       name: name,
       email: email,
@@ -81,7 +81,6 @@ export async function POST(req) {
   } catch (error) {
     rtn.error = error.message.toString() + " on endpoint:/api/auth/register";
     rtn.response = "";
-    console.log(rtn);
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }
 }
