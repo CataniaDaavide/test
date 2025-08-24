@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import ButtonBack from "./components/ui/button/buttonBack";
-import { ToggleTheme } from "./components/ui/toggle-theme";
+import ButtonToggleTheme from "./components/ui/toggle-theme";
 
 export const metadata = {
   title: "Template APP",
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       >
         <ThemeProvider>
           <ButtonBack className={"absolute top-3 left-3"} />
-          <ToggleTheme className={"absolute top-3 right-3"} />
+          <ButtonToggleTheme className={"absolute top-3 right-3"} />
           {children}
         </ThemeProvider>
       </body>

@@ -1,10 +1,16 @@
 "use client";
+
+//hoocks - functions - lib
 import { useContext } from "react";
 import { ThemeContext } from "@/app/context/ThemeContext";
-import { ButtonIcon } from "./button/buttonIcon";
+
+//icons
 import { Moon, Sun } from "lucide-react";
 
-export function ToggleTheme({ className }) {
+//components
+import { ButtonIcon } from "./button/buttonIcon";
+
+export default function ButtonToggleTheme({ className }) {
   const { theme, setTheme } = useContext(ThemeContext);
 
   return (

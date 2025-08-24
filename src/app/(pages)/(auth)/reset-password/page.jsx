@@ -13,9 +13,7 @@ import {
 import { Lock } from "lucide-react";
 
 //components
-import InputPassword from "@/app/components/ui/input/input-password";
 import { Button } from "@/app/components/ui/button/button";
-import { ToggleTheme } from "@/app/components/ui/toggle-theme";
 import AuthLayout from "../authLayout";
 
 export default function LoginPage() {
@@ -139,9 +137,10 @@ export default function LoginPage() {
       title={"Reset password"}
       desciption={"Reimposta la tua password in modo sicuro per continuare"}
     >
-      <InputPassword
+      <Input
         title={"Password"}
         name="password"
+        type={"password"}
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}
@@ -149,9 +148,10 @@ export default function LoginPage() {
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <InputPassword
+      <Input
         title={"Conferma password"}
         name="confirmPassword"
+        type={"password"}
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}
@@ -159,9 +159,10 @@ export default function LoginPage() {
         errorMessage={formValidationError.confirmPassword}
         onKeyUp={handleKeyUp}
       />
-      <InputPassword
+      <Input
         title={"Nuova password"}
         name="newPassword"
+        type={"password"}
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}

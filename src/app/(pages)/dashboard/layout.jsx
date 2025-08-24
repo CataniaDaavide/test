@@ -12,7 +12,10 @@ export default function DashboardLayout({ children }) {
 
 function LinkTemp() {
   return (
-    <div className="flex gap-3">
+    <div className="w-full max-w-md flex gap-3  flex-wrap items-center justify-center">
+      <Link href={"/"} className="underline">
+        test
+      </Link>
       <Link href={"/dashboard"} className="underline">
         main
       </Link>

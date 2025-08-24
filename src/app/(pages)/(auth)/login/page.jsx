@@ -17,7 +17,6 @@ import { AtSign, Lock } from "lucide-react";
 //components
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input/input";
-import InputPassword from "@/app/components/ui/input/input-password";
 import { Button } from "@/app/components/ui/button/button";
 
 export default function LoginPage() {
@@ -25,6 +24,7 @@ export default function LoginPage() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [formValidationError, setFormValidationError] = useState({
     email: "",
     password: "",
@@ -70,9 +70,10 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setIsLoading(true);
 
       const hasError = formValidationInit();
-      if (hasError) return;
+      if (hasError) return exit();
 
       // chimata endpoint /api/auth/login
       const requestData = {
@@ -83,14 +84,21 @@ export default function LoginPage() {
         const data = await res.json();
 
         if (!res.ok && data.error != "") {
-          return setError(data.error);
+          setError(data.error);
+          return exit(); 
         }
 
+        exit();
         router.push("/dashboard");
       });
     } catch (error) {
       base_exceptionManager(error);
     }
+  };
+
+  // funzione che rimuove il loader in caso di errori o uscita
+  const exit = () => {
+    setIsLoading(false);
   };
 
   // click del pulsante "invio" ("Enter") passa al campo / azione successiva
@@ -140,7 +148,7 @@ export default function LoginPage() {
         errorMessage={formValidationError.email}
         onKeyUp={handleKeyUp}
       />
-      <InputPassword
+      <Input
         title={"Password"}
         type="password"
         name="password"
@@ -151,7 +159,7 @@ export default function LoginPage() {
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <Button onClick={handleSubmit} title={"Accedi"} color={"primary"} />
+      <Button onClick={handleSubmit} title={"Accedi"} color={"primary"} isLoading={isLoading}/>
       <Button
         onClick={handleDemoCredetial}
         title={"Credenziali demo"}

@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Calendar, Clock } from "lucide-react";
 import Input from "../components/ui/input/input";
-import Textarea from "../components/ui/input/text-area";
 import { Button } from "../components/ui/button/button";
 import { Card } from "../components/ui/card";
+import { ExampleSelectComponent } from "../components/ui/select";
+import { convertDate } from "../core/baseFunctions";
 
 export default function App() {
   const dateRef = useRef();
@@ -28,11 +29,12 @@ export default function App() {
   };
 
   const handleReset = () => {
-    dateRef.current.value = ""
-    timeRef.current.value = ""
-    messageRef.current.value = ""
-    setVal("")
-  }
+    dateRef.current.value = "";
+    timeRef.current.value = "";
+    messageRef.current.value = "";
+    setVal("");
+  };
+
 
   return (
     <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
@@ -55,16 +57,20 @@ export default function App() {
           name={"time"}
           ref={timeRef}
         />
-        <Textarea rows={2} title={"Textarea"} name={"text"} ref={messageRef} />
+        <Input
+          title={"Textarea"}
+          type={"textarea"}
+          name={"textarea"}
+          rows={3}
+          ref={messageRef}
+        />
+        <ExampleSelectComponent />
         <Button
           onClick={handleClick}
           title={"Stampa value"}
           color={"primary"}
         />
-        <Button
-          onClick={handleReset}
-          title={"Reset value"}
-        />
+        <Button onClick={handleReset} title={"Reset value"} />
         {val && (
           <Card>
             <p className="whitespace-pre-line text-center">{val}</p>
