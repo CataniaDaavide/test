@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import TitleComponents from "./title-components";
 
@@ -12,7 +12,6 @@ const colorVariants = {
 
 export function ExampleSelectComponent() {
   const options = [
-    {}, // serve per avere l'opzione vuota da selezionare
     { value: "opzione1", data1: "aaa", data2: "bbb", data3: "ccc" },
     { value: "opzione2", data1: "ddd", data2: "eee", data3: "fff" },
     { value: "opzione3", data1: "ggg", data2: "hhh", data3: "iii" },
@@ -113,7 +112,7 @@ function SelectButton({
         onClick={(e) => setIsOpen(!isOpen)}
         className={`
           flex items-center
-          w-full rounded-lg px-4 py-2 h-10
+          w-full rounded-lg px-3 py-2 h-10
           border focus:border-2 focus:outline-0
           disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
@@ -177,10 +176,10 @@ function SelectOptions({
     <ul
       className={`
         absolute left-0 overflow-hidden overflow-y-auto 
-        w-full rounded-lg
+        w-full rounded-lg p-1
         transition-all duration-200
         ${title ? "top-16" : "top-11"}
-        ${isOpen ? "max-h-36 border" : "max-h-0 border-0"}
+        ${isOpen ? "max-h-36 border" : "hidden border-0"}
         ${colorVariants[color] || colorVariants["default"]} 
         ${className}
       `}
@@ -191,11 +190,13 @@ function SelectOptions({
           <li
             key={index}
             onClick={() => handleSelect(index)}
-            className={`h-10 px-4 py-2 cursor-pointer hover:bg-zinc-300 hover:dark:bg-zinc-700 ${
-              value === optionValue ? "bg-zinc-200 dark:bg-zinc-800" : ""
-            }`}
+            className={`
+              flex items-center justify-between
+              h-10 px-3 py-2 cursor-pointer rounded-lg hover:bg-zinc-300 hover:dark:bg-zinc-800 
+              ${ value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}`}
           >
             {optionValue}
+            {value === optionValue && value && <Check size={16} />}
           </li>
         );
       })}

@@ -43,6 +43,7 @@ export default function App() {
         Uso questa pagina come test per i componenti
       </p>
       <Card>
+        <div className="w-full flex gap-3 grid-cols-3">
         <Input
           icon={<Calendar />}
           title={"Data"}
@@ -57,6 +58,7 @@ export default function App() {
           name={"time"}
           ref={timeRef}
         />
+        </div>
         <Input
           title={"Textarea"}
           type={"textarea"}
