@@ -22,6 +22,7 @@ export default function Input({
   icon,
   ref,
   errorMessage = "",
+  onChange = () => {},
   onKeyUp = () => {},
   disabled = false,
   rows,
@@ -49,6 +50,7 @@ export default function Input({
           placeholder={placeholder}
           ref={ref}
           onKeyUp={onKeyUp}
+          onChange={onChange}
           className={className}
         />
       );
@@ -65,6 +67,8 @@ export default function Input({
           placeholder={placeholder}
           ref={ref}
           onKeyUp={onKeyUp}
+          onChange={onChange}
+          className={className}
         />
       );
       break;
@@ -81,6 +85,8 @@ export default function Input({
           placeholder={placeholder}
           ref={ref}
           onKeyUp={onKeyUp}
+          onChange={onChange}
+          className={className}
         />
       );
       break;
@@ -108,6 +114,7 @@ function InputBase({
   placeholder,
   ref,
   onKeyUp = () => {},
+  onChange = () => {},
   className,
 }) {
   return (
@@ -133,6 +140,9 @@ function InputBase({
         onKeyUp={(e) => {
           onKeyUp(e);
         }}
+        onChange={(e) => {
+          onChange(e);
+        }}
         ref={ref}
       />
     </div>
@@ -148,6 +158,7 @@ function InputPassword({
   placeholder = "••••••",
   ref,
   onKeyUp = () => {},
+  onChange = () => {},
   className,
 }) {
   const [showText, setShowText] = useState(false);
@@ -174,6 +185,9 @@ function InputPassword({
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
+        }}
+        onChange={(e) => {
+          onChange(e);
         }}
         ref={ref}
       />
@@ -202,6 +216,7 @@ function InputTextarea({
   placeholder,
   ref,
   onKeyUp = () => {},
+  onChange = () => {},
   className,
 }) {
   return (
@@ -220,6 +235,9 @@ function InputTextarea({
       autoComplete="off"
       onKeyUp={(e) => {
         onKeyUp(e);
+      }}
+      onChange={(e) => {
+        onChange(e);
       }}
       ref={ref}
     />

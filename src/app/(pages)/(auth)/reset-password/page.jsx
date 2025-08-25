@@ -15,6 +15,7 @@ import { Lock } from "lucide-react";
 //components
 import { Button } from "@/app/components/ui/button/button";
 import AuthLayout from "../authLayout";
+import Input from "@/app/components/ui/input";
 
 export default function LoginPage() {
   const router = useRouter();

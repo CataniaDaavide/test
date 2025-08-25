@@ -78,14 +78,25 @@ input[type="password"]::-webkit-password-reveal-button {
 
 /* ------------------------------------------------------------ */
 /* NASCONDE L'ICONA DEL CALENDARIO NELL'INPUT TYPE DATE */
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(100%) brightness(200%);
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* NASCONDE L'ICONA DELL'OROLOGIO NELL'INPUT TYPE TIME */
-.dark input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(100%) brightness(200%);
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
+
+/* PER FIREFOX */
+input[type="date"],
+input[type="time"] {
+  -moz-appearance: textfield;
+}
+
 /* ------------------------------------------------------------ */
 
 

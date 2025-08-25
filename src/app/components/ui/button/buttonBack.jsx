@@ -4,21 +4,20 @@ import { useRouter } from "next/navigation";
 
 //icons
 import { ChevronLeft } from "lucide-react";
-import { ButtonIcon } from "./buttonIcon";
+// import { ButtonIcon } from "./buttonIcon";
 
 export default function ButtonBack({ className }) {
   const router = useRouter();
+  
+  // click sul pulsante per tornare alla pagina precedente
+  const handleReturnBack = (e) => {
+    e.preventDefault();
+    router.back();
+  };
 
   return (
-    <div className={className}>
-      <ButtonIcon
-        fn={() => {
-          router.back();
-        }}
-        icon={<ChevronLeft />}
-        // color={"trasparent"}
-        className={"!rounded-full"}
-      />
-    </div>
+    <button onClick={handleReturnBack} className={`p-2 cursor-pointer ${className}`}>
+      <ChevronLeft />
+    </button>
   );
 }

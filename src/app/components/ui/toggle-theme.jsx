@@ -10,18 +10,17 @@ import { Moon, Sun } from "lucide-react";
 //components
 import { ButtonIcon } from "./button/buttonIcon";
 
-export default function ButtonToggleTheme({ className }) {
+export default function ButtonToggleTheme({ className, color }) {
   const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <div className={className}>
       <ButtonIcon
         icon={theme === "ligth" ? <Sun /> : <Moon />}
         fn={() => {
           setTheme(theme === "ligth" ? "dark" : "ligth");
         }}
-        className={"!rounded-full"}
+        className={className}
+        color={color}
       />
-    </div>
   );
 }

@@ -1,15 +1,14 @@
-// "use client";
-// import { useState, useEffect, createContext } from "react";
-// import { tabsData } from "../(pages)/dashboard/layout";
+"use client";
+import { useState, createContext } from "react";
 
-// export const SidebarContext = createContext();
+export const SidebarContext = createContext();
 
-// export function SidebarProvider({ children }) {
-//   const [activeTab, setActiveTab] = useState(tabsData[0]);
+export function SidebarProvider({ children }) {
+  const [activeTab, setActiveTab] = useState(null);
 
-//   return (
-//     <SidebarContext.Provider value={{ activeTab, setActiveTab }}>
-//       {children}
-//     </SidebarContext.Provider>
-//   );
-// }
+  return (
+    <SidebarContext.Provider value={{ activeTab, setActiveTab }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+}

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Tag } from "lucide-react";
 import Input from "../components/ui/input";
 import { Button } from "../components/ui/button/button";
 import { Card } from "../components/ui/card";
 import { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
+import Tabs, { ExampleTabsComponents } from "../components/ui/tabs";
 
 export default function App() {
   const dateRef = useRef();
@@ -14,10 +15,15 @@ export default function App() {
   const messageRef = useRef();
   const [val, setVal] = useState("");
 
+  useEffect(() => {
+    dateRef.current.value = convertDate(new Date(), "yyyy-MM-dd");
+    timeRef.current.value = convertDate(new Date(), "HH:mm");
+  }, []);
+
   const handleClick = () => {
     let str = "";
     if (dateRef.current.value) {
-      str += dateRef.current.value + "\n";
+      str += convertDate(new Date(dateRef.current.value), "dd/MM/yyyy") + "\n";
     }
     if (timeRef.current.value) {
       str += timeRef.current.value + "\n";
@@ -35,29 +41,29 @@ export default function App() {
     setVal("");
   };
 
-
   return (
     <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
       <p>App page</p>
       <p className="text-muted-foreground">
         Uso questa pagina come test per i componenti
       </p>
+      <ExampleTabsComponents />
       <Card>
-        <div className="w-full flex gap-3 grid-cols-3">
-        <Input
-          icon={<Calendar />}
-          title={"Data"}
-          type={"date"}
-          name={"data"}
-          ref={dateRef}
-        />
-        <Input
-          icon={<Clock />}
-          title={"Time"}
-          type={"time"}
-          name={"time"}
-          ref={timeRef}
-        />
+        <div className="w-full flex gap-3">
+          <Input
+            icon={<Calendar />}
+            title={"Data"}
+            type={"date"}
+            name={"data"}
+            ref={dateRef}
+          />
+          <Input
+            icon={<Clock />}
+            title={"Time"}
+            type={"time"}
+            name={"time"}
+            ref={timeRef}
+          />
         </div>
         <Input
           title={"Textarea"}

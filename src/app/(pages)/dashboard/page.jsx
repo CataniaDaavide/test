@@ -1,21 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
 
 //hoocks - functions - lib
-import Link from "next/link";
-// import { cookies } from "next/headers";
+
+//icons
 
 //components
-import { ButtonLogout } from "@/app/components/ui/button/ButtonLogout";
-import { House, PanelLeft, Wallet } from "lucide-react";
-import { ButtonIcon } from "@/app/components/ui/button/buttonIcon";
-import { base_exceptionManager } from "@/app/core/baseFunctions";
-import { useRouter } from "next/navigation";
 
 export default function MainPage() {
   return (
-    <div>Main page</div>
+    <main className="flex-1 h-full overflow-y-scroll scrollbar-hide p-0 flex flex-col gap-1">
+      <div className="w-full h-[100px] flex-none bg-green-200" />
+      <div className="w-full h-[200px] flex-none bg-red-200" />
+      <div className="w-full h-[300px] flex-none bg-yellow-200" />
+      <div className="w-full h-[400px] flex-none bg-yellow-200" />
+      <div className="w-full h-10 flex-none bg-blue-200" />
+    </main>
   );
 }
-
-

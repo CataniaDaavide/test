@@ -16,7 +16,7 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
   // };
 
   const colorVariants = {
-    trasparent: "bg-trasparent",
+    trasparent: "bg-trasparent hover:bg-border-card !border-0",
     outline:
       "border-zinc-300 bg-white hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700",
     secondary: "bg-zinc-200 dark:bg-zinc-800",

@@ -3,6 +3,7 @@
 import { ChevronDown, X, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import TitleComponents from "./title-components";
+import Input from "./input";
 
 const colorVariants = {
   trasparent:
@@ -27,6 +28,7 @@ export function ExampleSelectComponent() {
         value={value}
         setValue={setValue}
         options={options}
+        search={true}
       />
       <div className="w-full flex flex-col gap-1 text-center border p-3">
         <p className="text-green-500">Valore selezionato</p>
@@ -43,6 +45,7 @@ export default function Select({
   value,
   setValue,
   options = [],
+  search = false,
   color,
   disabled = false,
   className,
@@ -61,11 +64,11 @@ export default function Select({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (index) => {
-    if (index === -1) {
+  const handleSelect = (option) => {
+    if (option === -1) {
       setValue({});
     } else {
-      setValue(options[index]);
+      setValue(option);
     }
 
     setIsOpen(false); // chiudi dopo la selezione
@@ -89,6 +92,9 @@ export default function Select({
         value={value?.value}
         options={options}
         handleSelect={handleSelect}
+        search={search}
+        color={color}
+        className={className}
       />
     </div>
   );
@@ -169,9 +175,25 @@ function SelectOptions({
   value,
   options,
   handleSelect,
+  search,
   color,
   className,
 }) {
+  const [inputSearch, setInputSearch] = useState("");
+  const [filterOptions, setFilterOptions] = useState(options);
+
+  useEffect(() => {
+    if (inputSearch !== "") {
+      setFilterOptions(
+        options.filter((option) =>
+          option.value.toLowerCase().includes(inputSearch.toLowerCase())
+        )
+      );
+    } else {
+      setFilterOptions(options);
+    }
+  }, [inputSearch, options]);
+
   return (
     <ul
       className={`
@@ -184,16 +206,24 @@ function SelectOptions({
         ${className}
       `}
     >
-      {options.map((option, index) => {
+      {search && (
+        <Input
+          placeholder="Inserisci valore da cercare..."
+          className="mb-1"
+          onChange={(e) => setInputSearch(e.target.value)}
+        />
+      )}
+      {filterOptions.map((option, index) => {
         const { value: optionValue } = option;
         return (
           <li
             key={index}
-            onClick={() => handleSelect(index)}
+            onClick={() => handleSelect(option)}
             className={`
               flex items-center justify-between
               h-10 px-3 py-2 cursor-pointer rounded-lg hover:bg-zinc-300 hover:dark:bg-zinc-800 
-              ${ value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}`}
+              ${value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}
+            `}
           >
             {optionValue}
             {value === optionValue && value && <Check size={16} />}
@@ -203,3 +233,4 @@ function SelectOptions({
     </ul>
   );
 }
+

@@ -1,63 +1,62 @@
-import { ButtonLogout } from "@/app/components/ui/button/ButtonLogout";
+import HeaderPageTest from "@/app/components/ui/header-page-test";
+import Sidebar from "@/app/components/ui/sidebar";
+import { SidebarProvider } from "@/app/context/SidebarContext";
+import { House } from "lucide-react";
+
+export const SidebarData = [
+  {
+    title: "Home",
+    icon: <House />,
+    link: "/dashboard",
+  },
+  {
+    title: "Categorie",
+    icon: <House />,
+    link: "/dashboard/categories",
+  },
+  {
+    title: "Movimenti",
+    icon: <House />,
+    link: "/dashboard/movements",
+  },
+  {
+    title: "Conti",
+    icon: <House />,
+    link: "/dashboard/accounts",
+  },
+  {
+    title: "Profilo",
+    icon: <House />,
+    link: "/dashboard/profile",
+  },
+];
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="w-full h-full flex flex-col gap-3 items-center justify-center">
-      <LinkTemp />
-      <UserInfoTemp />
-      {children}
+    <div className="w-full h-full flex flex-col">
+      {/* HEADER: visibile sempre su mobile e desktop */}
+      <div className="flex w-full md:hidden h-16 border-b">
+        <HeaderPageTest actions={["toggle-theme", "profile"]} />
+      </div>
+
+      {/* CONTENUTO PRINCIPALE */}
+      <div className="flex-1 flex w-full h-full overflow-hidden">
+        {/* Desktop: sidebar a sinistra */}
+        <div className="hidden md:flex w-[350px] h-full bg-blue-200">
+          Sidebar
+        </div>
+
+        {/* Body */}
+        <main className="w-full h-full">
+          {children}
+        </main>
+      </div>
+
+      {/* MENU MOBILE: fisso sotto */}
+      <div className="flex md:hidden w-full h-20 border-t">
+        MenuMobile
+      </div>
     </div>
   );
 }
 
-function LinkTemp() {
-  return (
-    <div className="w-full max-w-md flex gap-3  flex-wrap items-center justify-center">
-      <Link href={"/"} className="underline">
-        test
-      </Link>
-      <Link href={"/dashboard"} className="underline">
-        main
-      </Link>
-      <Link href={"/dashboard/categories"} className="underline">
-        categories
-      </Link>
-      <Link href={"/dashboard/movements"} className="underline">
-        movements
-      </Link>
-      <Link href={"/dashboard/accounts"} className="underline">
-        accounts
-      </Link>
-      <Link href={"/dashboard/profile"} className="underline">
-        profile
-      </Link>
-      <Link href={"/reset-password"} className="underline">
-        reset-password
-      </Link>
-      <ButtonLogout />
-    </div>
-  );
-}
-
-import { cookies } from "next/headers";
-import Link from "next/link";
-import jwt from "jsonwebtoken";
-
-async function UserInfoTemp() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("sessionToken")?.value;
-
-  const { createAt, email, _id } = await jwt.decode(
-    sessionToken,
-    process.env.SECRET_TOKEN
-  );
-
-  return (
-    <div className="max-w-md flex flex-col gap-3 items-center justify-center text-center break-all bg-card rounded-md border border-border-card p-5">
-      <p className="text-blue-500">_id: <span className="text-blue-300">{_id}</span></p>
-      <p className="text-blue-500">email:  <span className="text-blue-300">{email}</span></p>
-      <p className="text-blue-500">createAt: <span className="text-blue-300">{createAt}</span></p>
-      <p className="text-blue-500">sessionToken: <span className="text-blue-300">{sessionToken}</span></p>
-    </div>
-  );
-}

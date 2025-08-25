@@ -1,7 +1,11 @@
 import "./globals.css";
+
+//hoocks - functions - lib
 import { ThemeProvider } from "./context/ThemeContext";
-import ButtonBack from "./components/ui/button/buttonBack";
-import ButtonToggleTheme from "./components/ui/toggle-theme";
+
+//components
+import HeaderPageTest from "./components/ui/header-page-test";
+import { SidebarProvider } from "./context/SidebarContext";
 
 export const metadata = {
   title: "Template APP",
@@ -29,9 +33,7 @@ export default function RootLayout({ children }) {
         `}
       >
         <ThemeProvider>
-          <ButtonBack className={"absolute top-3 left-3"} />
-          <ButtonToggleTheme className={"absolute top-3 right-3"} />
-          {children}
+          <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,45 +1,15 @@
 // "use client";
 // import { useRouter } from "next/navigation";
 // import { useContext, useState } from "react";
-// import { Wallet, PanelLeft } from "lucide-react";
-// import { ButtonLogout } from "../ButtonLogout";
+// import { Wallet } from "lucide-react";
 // import { SidebarContext } from "@/app/context/SidebarContext";
-// import { tabsData } from "@/app/(pages)/dashboard/layout";
-
-
-// export const tabsData = [
-//   {
-//     title: "Home",
-//     icon: <House />,
-//     link: "/dashboard",
-//   },
-//   {
-//     title: "Categorie",
-//     icon: <House />,
-//     link: "/dashboard/categories",
-//   },
-//   {
-//     title: "Movimenti",
-//     icon: <House />,
-//     link: "/dashboard/movements",
-//   },
-//   {
-//     title: "Conti",
-//     icon: <House />,
-//     link: "/dashboard/accounts",
-//   },
-//   {
-//     title: "Profilo",
-//     icon: <House />,
-//     link: "/dashboard/profile",
-//   },
-// ];
-
-
-// export function Sidebar({ children }) {
+"use client"
+import { SidebarContext } from "@/app/context/SidebarContext"
+import { useContext, useEffect } from "react"
+// export default function Sidebar({ data }) {
 //   const router = useRouter();
 
-//   const [activeTab, setActiveTab] = useContext(SidebarContext);
+//   const [ activeTab, setActiveTab ] = useContext(SidebarContext);
 //   const [expand, setExpand] = useState(true);
 
 //   const toggleSidebar = () => {
@@ -64,7 +34,7 @@
 //           </span>
 //         </div>
 //         <ul className="w-full flex flex-col gap-1 items-center">
-//           {tabsData.map((t, index) => {
+//           {data.map((t, index) => {
 //             const { title, icon, link } = t;
 //             return (
 //               <li
@@ -72,7 +42,7 @@
 //                 title={title}
 //                 // onClick={() => setActiveTab(tabs[index])}
 //                 onClick={() => {
-//                   setActiveTab(tabsData[index])
+//                   setActiveTab(data[index])
 //                   router.push(link);
 //                 }}
 //                 className={`rounded-md flex items-center cursor-pointer
@@ -97,27 +67,40 @@
 //           })}
 //         </ul>
 //       </div>
-//       <NavbarSidebar toggleSidebar={toggleSidebar} children={children} />
+//       {/* <NavbarSidebar toggleSidebar={toggleSidebar} children={children} /> */}
 //     </div>
 //   );
 // }
 
-// function NavbarSidebar({ toggleSidebar, children }) {
-//   return (
-//     <div className="w-full h-full">
-//       <div className="w-full h-full flex flex-col">
-//         <div className="h-14 w-full bg-card border border-x-0 border-border-card flex gap-3 items-center px-4">
-//           <button
-//             onClick={toggleSidebar}
-//             className="w-6 h-6 flex items-center justify-center"
-//           >
-//             <PanelLeft size={20} />
-//           </button>
-//           <span className="text-lg font-medium">Dashboard</span>
-//         </div>
-//         <ButtonLogout />
-//       </div>
-//       {children}
-//     </div>
-//   );
-// }
+// // function NavbarSidebar({ toggleSidebar, children }) {
+// //   return (
+// //     <div className="w-full h-full">
+// //       <div className="w-full h-full flex flex-col">
+// //         <div className="h-14 w-full bg-card border border-x-0 border-border-card flex gap-3 items-center px-4">
+// //           <button
+// //             onClick={toggleSidebar}
+// //             className="w-6 h-6 flex items-center justify-center"
+// //           >
+// //             <PanelLeft size={20} />
+// //           </button>
+// //           <span className="text-lg font-medium">Dashboard</span>
+// //         </div>
+// //         <ButtonLogout />
+// //       </div>
+// //       {children}
+// //     </div>
+// //   );
+// // }
+
+
+export default function Sidebar({ data }) {
+  const { activeTab, setActiveTab } = useContext(SidebarContext)
+  
+  useEffect(()=>{
+    setActiveTab(data[0])
+  },[])
+
+  return(
+    <div className="bg-red-500 w-32 h-full border"></div>
+  )
+}
