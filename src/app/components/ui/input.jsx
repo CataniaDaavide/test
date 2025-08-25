@@ -2,7 +2,7 @@
 
 //hoocks - functions - lib
 import { cloneElement, isValidElement, useState } from "react";
-import TitleComponents from "../title-components";
+import TitleComponents from "./title-components";
 
 //icons
 import { Eye, EyeOff } from "lucide-react";
