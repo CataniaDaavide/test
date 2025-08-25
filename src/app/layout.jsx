@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       <body
         className={`
           antialiased overscroll-none 
-          w-screen h-full max-h-[100dvh]
+          w-screen h-[100dvh]
           flex flex-col items-center justify-center 
           bg-background text-background-inverse
         `}

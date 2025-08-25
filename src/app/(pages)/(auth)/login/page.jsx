@@ -85,7 +85,7 @@ export default function LoginPage() {
 
         if (!res.ok && data.error != "") {
           setError(data.error);
-          return exit(); 
+          return exit();
         }
 
         exit();
@@ -159,7 +159,12 @@ export default function LoginPage() {
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <Button onClick={handleSubmit} title={"Accedi"} color={"primary"} isLoading={isLoading}/>
+      <Button
+        onClick={handleSubmit}
+        title={"Accedi"}
+        color={"primary"}
+        isLoading={isLoading}
+      />
       <Button
         onClick={handleDemoCredetial}
         title={"Credenziali demo"}

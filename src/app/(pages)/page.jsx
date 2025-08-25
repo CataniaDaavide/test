@@ -45,16 +45,16 @@ export default function App() {
       <Card>
         <div className="w-full flex gap-3 grid-cols-3">
         <Input
-          icon={<Calendar />}
+          // icon={<Calendar />}
           title={"Data"}
-          type="date"
+          type={"date"}
           name={"data"}
           ref={dateRef}
         />
         <Input
-          icon={<Clock />}
+          // icon={<Clock />}
           title={"Time"}
-          type="time"
+          type={"time"}
           name={"time"}
           ref={timeRef}
         />

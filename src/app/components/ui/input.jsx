@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 //hoocks - functions - lib
 import { cloneElement, isValidElement, useState } from "react";
@@ -115,7 +115,10 @@ function InputBase({
       <div className="absolute left-3 text-muted-foreground">{icon}</div>
       <input
         disabled={disabled}
+        // la classe apparence-none evita la perdita dello stile dopo la valorizzazione
+        // senza di quello perde il padding sinistro e si sovrappone l'icona
         className={`
+          appearance-none
           w-full rounded-lg px-4 py-2 h-10
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
@@ -154,8 +157,11 @@ function InputPassword({
       <div className="absolute left-3 text-muted-foreground">{icon}</div>
       <input
         disabled={disabled}
+        // la classe apparence-none evita la perdita dello stile dopo la valorizzazione
+        // senza di quello perde il padding sinistro e si sovrappone l'icona
         className={`
-          w-full rounded-lg px-4 py-2 h-10
+          appearance-none
+          w-full rounded-lg px-4 py-2 h-10  
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
