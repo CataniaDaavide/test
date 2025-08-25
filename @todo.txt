@@ -1,5 +1,34 @@
+- chimare oggetto che passo alla sidebar "menuItems" così da riusarlo anche per il menu da mobile che si chiamrà MobileMenu
+const menuItems = [
+  { title: "Home", link: "/home" },
+  { title: "Profile", link: "/profile" },
+  { title: "Settings", link: "/settings" },
+];
 
-- DIVIDERE COMPONENTE INPUT IN PIù COMPONENTI IN BASE AL TYPE , METRE LE CLASSI LASCIARLE UGUALI USANDO UNA STRINGA O DA VEDERE
+// sidebar (desktop/tablet)
+<Sidebar items={menuItems} />
+
+// menu mobile
+<MobileMenu items={menuItems} />
 
 
+- per gestire il nome nell header da mobile 
+'use client';
+import { usePathname } from 'next/navigation';
+import { menuItems } from '../data/menuItems'; // il tuo array condiviso
 
+export default function MobileHeader() {
+  const pathname = usePathname();
+
+  // cerca il titolo corrispondente alla route
+  const currentItem = menuItems.find(item => item.link === pathname);
+  const title = currentItem?.title || 'Dashboard';
+
+  return (
+    <header className="mobile-header flex items-center justify-between p-4 bg-white shadow-md md:hidden">
+      <button className="back-button">← Torna indietro</button>
+      <h1 className="text-lg font-semibold">{title}</h1>
+      <button className="profile-button">Profilo</button>
+    </header>
+  );
+}

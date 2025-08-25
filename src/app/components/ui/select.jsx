@@ -213,6 +213,7 @@ function SelectOptions({
           onChange={(e) => setInputSearch(e.target.value)}
         />
       )}
+      {filterOptions.length === 0 && <p className="h-10 px-3 py-2 text-muted-foreground">Nessun risultatato per "{inputSearch}"</p>}
       {filterOptions.map((option, index) => {
         const { value: optionValue } = option;
         return (
