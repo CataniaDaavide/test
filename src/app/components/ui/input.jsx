@@ -1,3 +1,5 @@
+"use client"
+
 //hoocks - functions - lib
 import { cloneElement, isValidElement, useState } from "react";
 import TitleComponents from "../title-components";
@@ -114,11 +116,11 @@ function InputBase({
       <input
         disabled={disabled}
         className={`
-          w-full rounded-lg pr-4 py-2 h-10
+          w-full rounded-lg px-4 py-2 h-10
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
-          ${icon ? "pl-9" : "pl-4"} 
+          ${icon && "pl-9"} 
           ${errorMessage && "border-red-500"} 
           ${className}`}
         name={name}
@@ -153,11 +155,11 @@ function InputPassword({
       <input
         disabled={disabled}
         className={`
-          w-full rounded-lg pr-4 py-2 h-10
+          w-full rounded-lg px-4 py-2 h-10
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
-          ${icon ? "pl-9" : "pl-4"} 
+          ${icon && "pl-9"} 
           ${errorMessage && "border-red-500"} 
           ${className}`}
         name={name}

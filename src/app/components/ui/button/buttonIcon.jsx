@@ -16,7 +16,7 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
   // };
 
   const colorVariants = {
-    trasparent:"bg-trasparent",
+    trasparent: "bg-trasparent",
     outline:
       "border-zinc-300 bg-white hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700",
     secondary: "bg-zinc-200 dark:bg-zinc-800",
@@ -32,10 +32,11 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
       disabled={disabled}
       onClick={fn}
       className={`
-        transition-colors duration-300 flex items-center justify-center 
-        rounded-lg w-10 h-10 active:scale-[0.99] 
-        cursor-pointer disabled:cursor-auto disabled:opacity-50 
-        ${colorVariants[color] || colorVariants["default"]} ${className}`}
+        flex items-center justify-center w-10 h-10 
+        active:scale-[0.99] transition-all duration-300 
+        rounded-lg cursor-pointer disabled:cursor-auto disabled:opacity-50 
+        ${colorVariants[color] || colorVariants["default"]} ${className}
+      `}
     >
       {iconLeft}
     </button>

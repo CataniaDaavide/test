@@ -16,7 +16,7 @@ import { AtSign, Lock } from "lucide-react";
 
 //components
 import AuthLayout from "../authLayout";
-import Input from "@/app/components/ui/input/input";
+import Input from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button/button";
 
 export default function LoginPage() {

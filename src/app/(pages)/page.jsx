@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Calendar, Clock } from "lucide-react";
-import Input from "../components/ui/input/input";
+import Input from "../components/ui/input";
 import { Button } from "../components/ui/button/button";
 import { Card } from "../components/ui/card";
 import { ExampleSelectComponent } from "../components/ui/select";

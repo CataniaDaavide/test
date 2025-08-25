@@ -2,31 +2,41 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
-:root {
-  --background: oklch(98.5% 0 0);
-  --background-inverse: oklch(21% 0.006 285.885);
-  --card: oklch(98.5% 0 0);
-  --border-card: oklch(92% 0.004 286.32);
-  --muted-foreground: oklch(70.5% 0.015 286.067);
-}
 
-html.dark {
-  --background: oklch(21% 0.006 285.885);
-  --background-inverse: oklch(98.5% 0 0);
-  --card: oklch(27.4% 0.006 286.033);
-  --border-card: oklch(37% 0.013 285.805);
-  --muted-foreground: oklch(70.5% 0.015 286.067);
-}
+/* OLD STILE (NON RICORDO)
+background-page: bg-zinc-100 / dark:bg-zinc-900
+bg-card: bg-zinc-50 / dark:bg-zinc-800
+text-card-foreground: text-zinc-900 / dark:text-zinc-100
+border-default: border-zinc-200 / dark:border-zinc-700
+muted-foreground: text-zinc-500 / dark:text-zinc-400
+accent: bg-zinc-200 / dark:bg-zinc-700
+bg-input: bg-white / dark:bg-zinc-800
+text-input: text-zinc-900 / dark:text-zinc-100
+bg-button: bg-zinc-200 / dark:bg-zinc-700
+bg-button-primary: bg-zinc-900 (light) / bg-zinc-100 (dark)
+bg-select: bg-white / dark:bg-zinc-800
+text-select: text-zinc-900 / dark:text-zinc-100
+hover-select: hover:bg-zinc-200 / dark:hover:bg-zinc-700
+*/
 
-@theme inline {
-  --color-background: var(--background);
-  --color-background-inverse: var(--background-inverse);
-  --color-card: var(--card);
-  --color-border-card: var(--border-card);
-  --color-muted-foreground: var(--muted-foreground);
+/* COLOR ZINC:
+- zinc-50: oklch(98.5% 0 0)
+- zinc-100: oklch(96.7% 0.001 286.375)
+- zinc-200: oklch(92% 0.004 286.32)
+- zinc-300: oklch(87.1% 0.006 286.286)
+- zinc-400: oklch(70.5% 0.015 286.067)
+- zinc-500: oklch(55.2% 0.016 285.938)
+- zinc-600: oklch(44.2% 0.017 285.786)
+- zinc-700: oklch(37% 0.013 285.805)
+- zinc-800: oklch(27.4% 0.006 286.033)
+- zinc-900: oklch(21% 0.006 285.885)
+- zinc-950 oklch(14.1% 0.005 285.823)
+*/
+
+
+body {
+  font-family: "Poppins", sans-serif;
 }
-  */
 
 :root {
   --background: oklch(98.5% 0 0); /*zinc-50*/
@@ -52,33 +62,69 @@ html.dark {
   --color-muted-foreground: var(--muted-foreground);
 }
 
-/*
-background-page: bg-zinc-100 / dark:bg-zinc-900
-bg-card: bg-zinc-50 / dark:bg-zinc-800
-text-card-foreground: text-zinc-900 / dark:text-zinc-100
-border-default: border-zinc-200 / dark:border-zinc-700
-muted-foreground: text-zinc-500 / dark:text-zinc-400
-accent: bg-zinc-200 / dark:bg-zinc-700
-bg-input: bg-white / dark:bg-zinc-800
-text-input: text-zinc-900 / dark:text-zinc-100
-bg-button: bg-zinc-200 / dark:bg-zinc-700
-bg-button-primary: bg-zinc-900 (light) / bg-zinc-100 (dark)
-bg-select: bg-white / dark:bg-zinc-800
-text-select: text-zinc-900 / dark:text-zinc-100
-hover-select: hover:bg-zinc-200 / dark:hover:bg-zinc-700
-*/
 
 
 /* ------------------------------------------------------------ */
-/* Nasconde l’icona "occhio" (reveal) e la X di Edge/IE */
+/* NASCONDE L'ICONA DEL OCCHIO NELL'INPUT TYPE PASSWORD */
 input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-password-reveal-button {
+  display: none !important;
+}
+/* ------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------ */
+/* NASCONDE L'ICONA DEL CALENDARIO NELL'INPUT TYPE DATE */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%) brightness(200%);
+}
+
+/* NASCONDE L'ICONA DELL'OROLOGIO NELL'INPUT TYPE TIME */
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%) brightness(200%);
+}
+/* ------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------ */
+/* Scrollbar generale */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* colore scrollbar in modalità ligth */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  cursor: pointer;
+  border-radius: 9999px;
+}
+
+/* colore scrollbar in modalità dark */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #38383d;
+}
+
+/* colore scrollbar quando ha la classe purple */
+.purple::-webkit-scrollbar-thumb {
+  background-color: #ad46ff;
+}
+
+/* classe "scrollbar-hide" nasconde la scollbar */
+.scrollbar-hide::-webkit-scrollbar{
   display: none;
 }
 
-/* Facoltativo: rimuove eventuali decorazioni UI su alcuni UA */
-input[type="password"] {
-  -webkit-appearance: none;
-  appearance: none;
+/* classe "scrollbar-show" mostra la scollbar */
+.scrollbar-show::-webkit-scrollbar{
+  display: flex;
 }
 /* ------------------------------------------------------------ */

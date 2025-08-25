@@ -18,9 +18,13 @@ export function Button({
   return (
     <button
       disabled={disabled || isLoading}
-      className={`transition-colors flex items-center justify-center px-3 py-2 h-10 font-medium text-sm rounded-lg w-full cursor-pointer disabled:cursor-auto disabled:opacity-90 ${
-        colorVariants[color] || colorVariants["default"]
-      }`}
+      className={`
+        flex items-center justify-center px-3 py-2 w-full h-10 
+        transition-all duration-300 
+        font-medium text-sm rounded-lg 
+        cursor-pointer disabled:cursor-auto disabled:opacity-90 
+        ${colorVariants[color] || colorVariants["default"]}
+      `}
       onClick={onClick}
     >
       {isLoading ? <Loader size={20} className="animate-spin" /> : title}

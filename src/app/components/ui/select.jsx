@@ -176,7 +176,7 @@ function SelectOptions({
     <ul
       className={`
         absolute left-0 overflow-hidden overflow-y-auto 
-        w-full rounded-lg p-1
+        w-full rounded-xl p-1
         transition-all duration-200
         ${title ? "top-16" : "top-11"}
         ${isOpen ? "max-h-36 border" : "hidden border-0"}
