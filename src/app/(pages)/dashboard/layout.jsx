@@ -11,6 +11,7 @@ import {
   UserRound,
   Plus,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 export const menuItems = [
@@ -63,13 +64,18 @@ export default function DashboardLayout({ children }) {
 }
 
 export function DashboardInner({ children }) {
+  const pathname = usePathname();
   const [expand, setExpand] = useState(true);
   const { activeTab, setActiveTab } = useContext(SidebarContext);
 
   useEffect(() => {
+    const tab = menuItems.find((item) => item?.link === pathname);
+    const { title } = tab
+
     // Aggiorna dinamicamente il titolo della pagina
-    document.title = `${activeTab.title}`;
-  }, []);
+    document.title = title;
+    setActiveTab(tab)
+  }, [pathname]);
 
   const toggleSidebar = (e) => {
     e.preventDefault();

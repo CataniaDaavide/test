@@ -12,27 +12,40 @@ export default function Tabs({
   className = "",
 }) {
   return (
-    <ul className="max-w-max flex p-1 border border-border-card rounded-xl bg-card">
+    <ul className="flex p-1 border border-border-card rounded-lg bg-card">
       {tabs.map((tab, index) => {
-        const { value: tabValue } = tab;
         return (
-          <li key={index}>
-            <button
-              disabled={disabled}
-              onClick={() => setValue(tab)}
-              className={`
-                px-3 py-1 rounded-lg text-sm
-                transition-all duration-300
-                cursor-pointer disabled:cursor-auto disabled:opacity-90 
-                ${value === tabValue && "bg-zinc-300 dark:bg-zinc-700"}
-                `}
-            >
-              {tabValue}
-            </button>
-          </li>
+          <ItemListTabs
+            key={index}
+            disabled={disabled}
+            tab={tab}
+            value={value.value}
+            setValue={setValue}
+          />
         );
       })}
     </ul>
+  );
+}
+
+function ItemListTabs({ disabled, tab, value, setValue }) {
+  const { value: tabValue } = tab;
+
+  return (
+    <li>
+      <button
+        disabled={disabled}
+        onClick={() => setValue(tab)}
+        className={`
+          px-3 py-1 rounded-md text-sm
+          transition-all duration-300
+          cursor-pointer disabled:cursor-auto disabled:opacity-90 
+          ${value === tabValue && "bg-zinc-300 dark:bg-zinc-800"}
+          `}
+      >
+        {tabValue}
+      </button>
+    </li>
   );
 }
 
@@ -54,7 +67,7 @@ export function ExampleTabsComponents({}) {
     <div className="flex flex-col gap-3 items-center justify-center w-full border p-3">
       <Tabs
         tabs={tabs}
-        value={value.value}
+        value={value}
         setValue={setValue}
         disabled={false}
       />

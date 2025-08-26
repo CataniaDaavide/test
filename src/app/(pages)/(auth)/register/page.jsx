@@ -14,7 +14,7 @@ import {
 import { AtSign, Lock, User } from "lucide-react";
 
 //components
-import { Button } from "@/app/components/ui/button/button";
+import { Button } from "@/app/components/ui/button";
 import Input from "@/app/components/ui/input";
 import AuthLayout from "../authLayout";
 
@@ -35,7 +35,6 @@ export default function RegisterPage() {
     // Aggiorna dinamicamente il titolo della pagina
     document.title = `Register`;
   }, []);
-
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {
@@ -194,7 +193,9 @@ export default function RegisterPage() {
         errorMessage={formValidationError.confirmPassword}
         onKeyUp={handleKeyUp}
       />
-      <Button onClick={handleSubmit} title={"Crea account"} color={"primary"} />
+      <Button onClick={handleSubmit} color={"primary"}>
+        Crea account
+      </Button>
       <p className="text-sm text-muted-foreground">
         Hai gia un account?
         <Link

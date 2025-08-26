@@ -8,7 +8,7 @@ import { ThemeContext } from "@/app/context/ThemeContext";
 import { Moon, Sun } from "lucide-react";
 
 //components
-import { ButtonIcon } from "./button/buttonIcon";
+import { ButtonIcon } from "@/app/components/ui/button";
 
 export default function ButtonToggleTheme({ className, color }) {
   const { theme, setTheme } = useContext(ThemeContext);
@@ -16,7 +16,7 @@ export default function ButtonToggleTheme({ className, color }) {
   return (
       <ButtonIcon
         icon={theme === "ligth" ? <Sun /> : <Moon />}
-        fn={() => {
+        onClick={() => {
           setTheme(theme === "ligth" ? "dark" : "ligth");
         }}
         className={className}

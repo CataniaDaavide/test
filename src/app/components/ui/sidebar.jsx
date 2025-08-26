@@ -14,8 +14,7 @@ export default function Sidebar({ items, expand = true }) {
   return (
     <div
       className={`
-        bg-card border-border-card border p-3
-        h-full flex flex-col items-center
+        bg-card h-full flex flex-col items-center p-3
         ${expand ? "w-[200px]" : "w-[60px]"}
         transition-all duration-300
       `}
@@ -122,8 +121,7 @@ export function Navbar({ toggleSidebar }) {
   return (
     <div
       className={`
-        bg-card border-border-card border border-x-0
-        w-full flex items-center justify-between h-16
+        bg-card w-full flex items-center justify-between h-16
         p-3 font-bold text-sm   
       `}
     >

@@ -13,7 +13,7 @@ import {
 import { Lock } from "lucide-react";
 
 //components
-import { Button } from "@/app/components/ui/button/button";
+import { Button } from "@/app/components/ui/button";
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input";
 
@@ -176,11 +176,9 @@ export default function LoginPage() {
         errorMessage={formValidationError.newPassword}
         onKeyUp={handleKeyUp}
       />
-      <Button
-        onClick={handleSubmit}
-        title={"Reset password"}
-        color={"primary"}
-      />
+      <Button onClick={handleSubmit} color={"primary"}>
+        Reset password
+      </Button>
       {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
     </AuthLayout>
   );

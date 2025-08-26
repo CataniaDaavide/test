@@ -8,9 +8,9 @@ import { Tag, User } from "lucide-react";
 
 //components
 import ButtonToggleTheme from "./toggle-theme";
-import ButtonBack from "./button/buttonBack";
-import { ButtonIcon } from "./button/buttonIcon";
-import { ButtonLogout } from "./button/ButtonLogout";
+import { ButtonBack } from "@/app/components/ui/button";
+import { ButtonIcon } from "@/app/components/ui/button";
+import { ButtonLogout } from "@/app/components/ui/button";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
 
 export default function HeaderMovbile({ actions = [] }) {
@@ -53,7 +53,7 @@ function ActionsButton({ actions = [] }) {
               <ButtonIcon
                 key={index}
                 icon={<User />}
-                fn={() => router.push("/dashboard/profile")}
+                onClick={() => router.push("/dashboard/profile")}
                 className={"!rounded-full"}
                 color={"trasparent"}
               />

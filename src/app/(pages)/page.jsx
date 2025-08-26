@@ -1,15 +1,45 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calendar, Clock, Tag } from "lucide-react";
+import { Calendar, Clock, Plus, Tag } from "lucide-react";
 import Input from "../components/ui/input";
-import { Button } from "../components/ui/button/button";
+import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
-import { ExampleTabsComponents } from "../components/ui/tabs";
- 
+import Tabs from "../components/ui/tabs";
+import ButtonToggleTheme from "../components/ui/toggle-theme";
+
 export default function App() {
+  const tabs = [
+    {
+      value: "card test",
+      tab: <CardTest />,
+    },
+    {
+      value: "button",
+      tab: <AllButtons />,
+    },
+  ];
+  const [value, setValue] = useState(tabs[0]);
+
+  return (
+    <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
+      <ButtonToggleTheme
+        className={"absolute top-3 right-3 !rounded-full"}
+        color={"trasparent"}
+      />
+      <p>App page</p>
+      <p className="text-muted-foreground">
+        Uso questa pagina come test per i componenti
+      </p>
+      <Tabs tabs={tabs} value={value} setValue={setValue} />
+      {value.tab}
+    </div>
+  );
+}
+
+function CardTest() {
   const dateRef = useRef();
   const timeRef = useRef();
   const messageRef = useRef();
@@ -42,49 +72,68 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
-      <p>App page</p>
-      <p className="text-muted-foreground">
-        Uso questa pagina come test per i componenti
-      </p>
-      <ExampleTabsComponents />
-      <Card>
-        <div className="w-full flex gap-3">
-          <Input
-            icon={<Calendar />}
-            title={"Data"}
-            type={"date"}
-            name={"data"}
-            ref={dateRef}
-          />
-          <Input
-            icon={<Clock />}
-            title={"Time"}
-            type={"time"}
-            name={"time"}
-            ref={timeRef}
-          />
-        </div>
+    <Card>
+      <div className="w-full flex gap-3">
         <Input
-          title={"Textarea"}
-          type={"textarea"}
-          name={"textarea"}
-          rows={3}
-          ref={messageRef}
+          icon={<Calendar />}
+          title={"Data"}
+          type={"date"}
+          name={"data"}
+          ref={dateRef}
         />
-        <ExampleSelectComponent />
-        <Button
-          onClick={handleClick}
-          title={"Stampa value"}
-          color={"primary"}
+        <Input
+          icon={<Clock />}
+          title={"Time"}
+          type={"time"}
+          name={"time"}
+          ref={timeRef}
         />
-        <Button onClick={handleReset} title={"Reset value"} />
-        {val && (
-          <Card>
-            <p className="whitespace-pre-line text-center">{val}</p>
-          </Card>
-        )}
-      </Card>
-    </div>
+      </div>
+      <Input
+        title={"Textarea"}
+        type={"textarea"}
+        name={"textarea"}
+        rows={3}
+        ref={messageRef}
+      />
+      <ExampleSelectComponent />
+      <Button onClick={handleClick} color={"primary"}>
+        Stampa value
+      </Button>
+      <Button onClick={handleReset}>Reset value</Button>
+      {val && (
+        <Card>
+          <p className="whitespace-pre-line text-center">{val}</p>
+        </Card>
+      )}
+    </Card>
+  );
+}
+
+function AllButtons() {
+  return (
+    <Card>
+      <p>all buttons</p>
+      <Button>
+        <Plus />
+        <p>ciao</p>
+      </Button>
+      <Button color={"primary"}>
+        <Plus />
+        <p>ciao</p>
+      </Button>
+      <Button color={"success"}>
+        <Plus />
+        <p>ciao</p>
+      </Button>
+      <Button color={"danger"}>
+        <Plus />
+        <p>ciao</p>
+      </Button>
+      <Button color={"outline"}>
+        <Plus />
+        <p>ciao</p>
+      </Button>
+    </Card>
   );
 }

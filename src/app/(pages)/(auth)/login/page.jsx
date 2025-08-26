@@ -17,7 +17,7 @@ import { AtSign, Lock } from "lucide-react";
 //components
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input";
-import { Button } from "@/app/components/ui/button/button";
+import { Button } from "@/app/components/ui/button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -167,15 +167,13 @@ export default function LoginPage() {
       />
       <Button
         onClick={handleSubmit}
-        title={"Accedi"}
         color={"primary"}
         isLoading={isLoading}
-      />
+      >Accedi</Button>
       <Button
         onClick={handleDemoCredetial}
-        title={"Credenziali demo"}
         color={"secondary"}
-      />
+      >Credenziali demo</Button>
       {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       <p className="text-sm text-muted-foreground">
         Non hai un account?
