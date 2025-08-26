@@ -3,10 +3,6 @@ import "./globals.css";
 //hoocks - functions - lib
 import { ThemeProvider } from "./context/ThemeContext";
 
-//components
-import HeaderPageTest from "./components/ui/header-page-test";
-import { SidebarProvider } from "./context/SidebarContext";
-
 export const metadata = {
   title: "Template APP",
   description: "Template applicazione web nextjs + tailwindcss",
@@ -33,7 +29,7 @@ export default function RootLayout({ children }) {
         `}
       >
         <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

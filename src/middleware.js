@@ -3,7 +3,14 @@ import { NextResponse } from "next/server";
 
 export default async function middleware(request) {
   //lista di pagine private accessibili solo dopo aver fatto il login
-  const routesPrivate = ["/dashboard", "/dashboard/categories", "/dashboard/movements", "/dashboard/accounts", "/dashboard/profile", "/reset-password"]
+  const routesPrivate = [
+    "/dashboard",
+    "/dashboard/categories",
+    "/dashboard/movements",
+    "/dashboard/accounts",
+    "/dashboard/profile",
+    "/reset-password"
+  ]
   const cookieStore = await cookies()
 
   //controllo per capire se la pagina è privata
@@ -12,7 +19,7 @@ export default async function middleware(request) {
 
     //controllo per capire se l'utente è loggato (ha un token di sessione)
     const hasSessionToken = cookieStore.has("sessionToken")
-    if(!hasSessionToken){
+    if (!hasSessionToken) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

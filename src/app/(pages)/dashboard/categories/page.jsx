@@ -1,5 +1,5 @@
 export default function CategoriesPage(){
     return(
-        <div>Categories page</div>
+        <div className="w-full h-full flex items-center justify-center">Categories page</div>
     )
 }

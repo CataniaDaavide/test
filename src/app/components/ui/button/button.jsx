@@ -22,7 +22,7 @@ export function Button({
         flex items-center justify-center px-3 py-2 w-full h-10 
         transition-all duration-300 
         font-medium text-sm rounded-lg 
-        cursor-pointer disabled:cursor-auto disabled:opacity-90 
+        cursor-pointer disabled:cursor-auto disabled:opacity-90 active:scale-95 
         ${colorVariants[color] || colorVariants["default"]}
       `}
       onClick={onClick}

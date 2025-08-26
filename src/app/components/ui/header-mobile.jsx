@@ -1,7 +1,7 @@
 "use client";
 
 //hoocks - functions - lib
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 //icons
 import { Tag, User } from "lucide-react";
@@ -11,20 +11,19 @@ import ButtonToggleTheme from "./toggle-theme";
 import ButtonBack from "./button/buttonBack";
 import { ButtonIcon } from "./button/buttonIcon";
 import { ButtonLogout } from "./button/ButtonLogout";
-import { useContext } from "react";
-import { SidebarContext } from "@/app/context/SidebarContext";
+import { menuItems } from "@/app/(pages)/dashboard/layout";
 
-export default function HeaderPageTest({
-  actions = [],
-}) {
+export default function HeaderMovbile({ actions = [] }) {
+  const pathname = usePathname();
 
-  const { activeTab, setActiveTab } = useContext(SidebarContext)
-  const titlePage = activeTab?.title || "undefined"
+  const currentItem = menuItems.find((item) => item.link === pathname);
+  const title = currentItem?.title || "undefined";
+
   return (
-    <div className="p-3 w-full flex items-center justify-between">
+    <div className="p-3 w-full flex items-center justify-between border-b-1 border-border-card">
       <div className="flex items-center justify-center">
         <ButtonBack />
-        <p>{titlePage}</p>
+        <p>{title}</p>
       </div>
 
       <ActionsButton actions={actions} />
@@ -54,16 +53,14 @@ function ActionsButton({ actions = [] }) {
               <ButtonIcon
                 key={index}
                 icon={<User />}
-                fn={() => router.push("/profile")}
+                fn={() => router.push("/dashboard/profile")}
                 className={"!rounded-full"}
                 color={"trasparent"}
               />
             );
 
           case "logout":
-            return (
-              <ButtonLogout key={index}/>
-            );
+            return <ButtonLogout key={index} />;
 
           default:
             return <></>;

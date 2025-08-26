@@ -33,7 +33,7 @@ export function ButtonIcon({ icon, fn, color, className, disabled = false }) {
       onClick={fn}
       className={`
         flex items-center justify-center w-10 h-10 
-        active:scale-[0.99] transition-all duration-300 
+        active:scale-95 transition-all duration-300 
         rounded-lg cursor-pointer disabled:cursor-auto disabled:opacity-50 
         ${colorVariants[color] || colorVariants["default"]} ${className}
       `}

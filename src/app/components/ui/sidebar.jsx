@@ -1,106 +1,163 @@
-// "use client";
-// import { useRouter } from "next/navigation";
-// import { useContext, useState } from "react";
-// import { Wallet } from "lucide-react";
-// import { SidebarContext } from "@/app/context/SidebarContext";
-"use client"
-import { SidebarContext } from "@/app/context/SidebarContext"
-import { useContext, useEffect } from "react"
-// export default function Sidebar({ data }) {
-//   const router = useRouter();
+"use client";
+import { SidebarContext } from "@/app/context/SidebarContext";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { PanelLeft, Wallet } from "lucide-react";
+import { base_exceptionManager } from "@/app/core/baseFunctions";
+import { menuItems } from "@/app/(pages)/dashboard/layout";
+import ButtonToggleTheme from "./toggle-theme";
 
-//   const [ activeTab, setActiveTab ] = useContext(SidebarContext);
-//   const [expand, setExpand] = useState(true);
+export default function Sidebar({ items, expand = true }) {
+  const router = useRouter();
+  const { activeTab, setActiveTab } = useContext(SidebarContext);
 
-//   const toggleSidebar = () => {
-//     try {
-//       setExpand(!expand);
-//     } catch (error) {
-//       base_exceptionManager(error);
-//     }
-//   };
+  return (
+    <div
+      className={`
+        bg-card border-border-card border p-3
+        h-full flex flex-col items-center
+        ${expand ? "w-[300px]" : "w-[60px]"}
+        transition-all duration-300
+      `}
+    >
+      <LogoSidebar expand={expand} />
+      <ul
+        className={`
+    flex flex-col gap-1 w-full
+    ${expand ? "items-start" : "items-center"}
+  `}
+      >
+        {items
+          .filter((item) => item.menu.includes("desktop"))
+          .map((item, index) => {
+            return (
+              <ItemListSidebar
+                item={item}
+                key={index}
+                expand={expand}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                router={router}
+              />
+            );
+          })}
+      </ul>
+    </div>
+  );
+}
 
-//   return (
-//     <div className="w-full h-full flex">
-//       <div
-//         className={`${
-//           expand ? "w-[300px]" : "w-[60px]"
-//         } transition-all px-3 border h-full bg-card border-border-card flex gap-3 flex-col items-center`}
-//       >
-//         <div className="flex items-center justify-center h-14 w-full font-bold">
-//           <Wallet size={28} />
-//           <span className={expand ? "ml-2 w-auto" : "w-0 overflow-hidden"}>
-//             Expense Tracker
-//           </span>
-//         </div>
-//         <ul className="w-full flex flex-col gap-1 items-center">
-//           {data.map((t, index) => {
-//             const { title, icon, link } = t;
-//             return (
-//               <li
-//                 key={index}
-//                 title={title}
-//                 // onClick={() => setActiveTab(tabs[index])}
-//                 onClick={() => {
-//                   setActiveTab(data[index])
-//                   router.push(link);
-//                 }}
-//                 className={`rounded-md flex items-center cursor-pointer
-//                   ${
-//                     expand
-//                       ? "w-full h-10 text-sm font-bold px-4 py-2"
-//                       : "h-10 w-10 justify-center"
-//                   } ${
-//                   activeTab.title === title
-//                     ? "bg-background-inverse text-white dark:text-black"
-//                     : "dark:text-white text-black hover:bg-background-inverse/10"
-//                 }`}
-//               >
-//                 {icon}
-//                 <span
-//                   className={expand ? "ml-1 w-full" : "w-0 overflow-hidden"}
-//                 >
-//                   {title}
-//                 </span>
-//               </li>
-//             );
-//           })}
-//         </ul>
-//       </div>
-//       {/* <NavbarSidebar toggleSidebar={toggleSidebar} children={children} /> */}
-//     </div>
-//   );
-// }
+function ItemListSidebar({ expand, item, activeTab, setActiveTab, router }) {
+  const [hoverText, setHoverText] = useState(false);
+  const { title, icon, link, action } = item;
 
-// // function NavbarSidebar({ toggleSidebar, children }) {
-// //   return (
-// //     <div className="w-full h-full">
-// //       <div className="w-full h-full flex flex-col">
-// //         <div className="h-14 w-full bg-card border border-x-0 border-border-card flex gap-3 items-center px-4">
-// //           <button
-// //             onClick={toggleSidebar}
-// //             className="w-6 h-6 flex items-center justify-center"
-// //           >
-// //             <PanelLeft size={20} />
-// //           </button>
-// //           <span className="text-lg font-medium">Dashboard</span>
-// //         </div>
-// //         <ButtonLogout />
-// //       </div>
-// //       {children}
-// //     </div>
-// //   );
-// // }
+  const handleClick = (e) => {
+    try {
+      setActiveTab(item);
+      if (link) {
+        router.push(link);
+      }
+      if (action) {
+        action();
+      }
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
 
+  return (
+    <li
+      className="relative w-full flex justify-center"
+      onMouseEnter={() => {
+        setHoverText(true);
+      }}
+      onMouseLeave={() => {
+        setHoverText(false);
+      }}
+    >
+      {!expand && hoverText && <HoverComponent title={title} />}
+      <button
+        onClick={handleClick}
+        className={`
+            flex items-center gap-3 rounded-lg cursor-pointer text-sm font-bold 
+            ${
+              expand ? "w-full h-10 px-4 py-2" : "!h-10 min-w-10 justify-center"
+            }
+            ${
+              activeTab.title === title
+                ? "bg-background-inverse text-white dark:text-black"
+                : "dark:text-white text-black hover:bg-background-inverse/10"
+            }
+          `}
+      >
+        {icon}
+        <p className={expand ? "ml-1" : "hidden"}>{title}</p>
+      </button>
+    </li>
+  );
+}
 
-export default function Sidebar({ data }) {
-  const { activeTab, setActiveTab } = useContext(SidebarContext)
-  
-  useEffect(()=>{
-    setActiveTab(data[0])
-  },[])
+function LogoSidebar({ expand }) {
+  return (
+    <div
+      className={`
+        w-full flex items-center font-bold pb-10
+        transition-all duration-300
+        ${expand ? "justify-center text-2xl" : "justify-center"}
+      `}
+    >
+      <Wallet size={30} />
+      <p className={expand ? "ml-2 w-auto" : "w-0 overflow-hidden m-0"}>
+        Expense Tracker
+      </p>
+    </div>
+  );
+}
 
-  return(
-    <div className="bg-red-500 w-32 h-full border"></div>
-  )
+export function Navbar({ toggleSidebar }) {
+  const pathname = usePathname();
+
+  const currentItem = menuItems.find((item) => item.link === pathname);
+  const title = currentItem?.title || "undefined";
+
+  return (
+    <div
+      className={`
+        bg-card border-border-card border border-x-0
+        w-full flex items-center justify-between 
+        p-3 font-bold   
+      `}
+    >
+      {/* LEFT */}
+      <div className="flex items-center justify-center gap-3">
+        <button
+          onClick={toggleSidebar}
+          className="w-6 h-6 flex items-center justify-center"
+        >
+          <PanelLeft size={20} />
+        </button>
+        <p>{title}</p>
+      </div>
+
+      {/* RIGHT */}
+      <div className="flex items-center justify-center">
+        <ButtonToggleTheme className={"!rounded-full"} color={"trasparent"}/>
+      </div>
+    </div>
+  );
+}
+
+function HoverComponent({ title = "undefined" }) {
+  return (
+    <div
+      className={`
+        absolute top-1/2 right-[-100px] -translate-y-1/2
+        flex items-center justify-center
+        bg-card border-border-card border
+        min-w-20 px-3 py-1 
+        rounded-xl text-xs
+      `}
+    >
+      <p>{title}</p>
+    </div>
+  );
 }
