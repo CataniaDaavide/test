@@ -1,7 +1,7 @@
 "use client";
 
 //hoocks - functions - lib
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   base_exceptionManager,
@@ -28,6 +28,11 @@ export default function LoginPage() {
     confirmPassword: "",
     newPassword: "",
   });
+
+  useEffect(() => {
+    // Aggiorna dinamicamente il titolo della pagina
+    document.title = `Reset password`;
+  }, []);
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {

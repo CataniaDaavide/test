@@ -1,7 +1,7 @@
 "use client";
 
 //hoocks - functions - lib
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -29,6 +29,12 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    // Aggiorna dinamicamente il titolo della pagina
+    document.title = `Login`;
+  }, []);
+
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {

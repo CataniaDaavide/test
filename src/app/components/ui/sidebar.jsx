@@ -16,7 +16,7 @@ export default function Sidebar({ items, expand = true }) {
       className={`
         bg-card border-border-card border p-3
         h-full flex flex-col items-center
-        ${expand ? "w-[300px]" : "w-[60px]"}
+        ${expand ? "w-[200px]" : "w-[60px]"}
         transition-all duration-300
       `}
     >
@@ -84,8 +84,8 @@ function ItemListSidebar({ expand, item, activeTab, setActiveTab, router }) {
             }
             ${
               activeTab.title === title
-                ? "bg-background-inverse text-white dark:text-black"
-                : "dark:text-white text-black hover:bg-background-inverse/10"
+                ? "bg-background-inverse text-background"
+                : "dark:text-background-inverse hover:bg-background-inverse/10"
             }
           `}
       >
@@ -100,12 +100,12 @@ function LogoSidebar({ expand }) {
   return (
     <div
       className={`
-        w-full flex items-center font-bold pb-10
-        transition-all duration-300
-        ${expand ? "justify-center text-2xl" : "justify-center"}
+        w-full flex items-center font-bold mb-10
+        transition-all duration-300 h-10
+        ${expand ? "justify-center" : "justify-center"}
       `}
     >
-      <Wallet size={30} />
+      <Wallet size={24} />
       <p className={expand ? "ml-2 w-auto" : "w-0 overflow-hidden m-0"}>
         Expense Tracker
       </p>
@@ -123,8 +123,8 @@ export function Navbar({ toggleSidebar }) {
     <div
       className={`
         bg-card border-border-card border border-x-0
-        w-full flex items-center justify-between 
-        p-3 font-bold   
+        w-full flex items-center justify-between h-16
+        p-3 font-bold text-sm   
       `}
     >
       {/* LEFT */}

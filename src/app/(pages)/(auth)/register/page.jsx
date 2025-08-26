@@ -1,7 +1,7 @@
 "use client";
 
 //hoocks - functions - lib
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -30,6 +30,12 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+    // Aggiorna dinamicamente il titolo della pagina
+    document.title = `Register`;
+  }, []);
+
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {

@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
 
 export const metadata = {
-  title: "Template APP",
+//   title: "Template APP",
   description: "Template applicazione web nextjs + tailwindcss",
 };
 

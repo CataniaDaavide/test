@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button/button";
 import { Card } from "../components/ui/card";
 import { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
-import Tabs, { ExampleTabsComponents } from "../components/ui/tabs";
+import { ExampleTabsComponents } from "../components/ui/tabs";
 
 export default function App() {
   const dateRef = useRef();
