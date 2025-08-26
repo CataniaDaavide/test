@@ -12,7 +12,7 @@ export default function Tabs({
   className = "",
 }) {
   return (
-    <ul className="flex p-1 border border-border-card rounded-xl bg-card">
+    <ul className="max-w-max flex p-1 border border-border-card rounded-xl bg-card">
       {tabs.map((tab, index) => {
         const { value: tabValue } = tab;
         return (
@@ -35,6 +35,7 @@ export default function Tabs({
     </ul>
   );
 }
+
 export function ExampleTabsComponents({}) {
   const tabs = [
     {

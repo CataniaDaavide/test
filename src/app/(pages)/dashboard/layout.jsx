@@ -83,14 +83,13 @@ export function DashboardInner({ children }) {
         <HeaderMovbile actions={["toggle-theme", "profile"]} />
       </div>
 
-      {/* CONTENUTO PRINCIPALE */}
-      <div className="flex-1 flex w-full h-full overflow-hidden">
+      <div className="flex w-full h-full overflow-hidden">
         {/* Desktop: sidebar a sinistra */}
-        <div className="hidden md:flex h-full bg-blue-200">
+        <div className="hidden md:flex h-full">
           <Sidebar items={menuItems} expand={expand} />
         </div>
 
-        <main className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col overflow-auto">
           {/* NAVBAR: visibile solo da desktop*/}
           <div className="hidden md:flex">
             <Navbar toggleSidebar={toggleSidebar} />
@@ -98,7 +97,7 @@ export function DashboardInner({ children }) {
 
           {/* body della pagina */}
           <div className="w-full h-full overflow-auto">{children}</div>
-        </main>
+        </div>
       </div>
 
       {/* MENU MOBILE: fisso sotto, visibile solo da mobile */}

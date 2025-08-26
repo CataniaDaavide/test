@@ -19,7 +19,7 @@ export function Button({
     <button
       disabled={disabled || isLoading}
       className={`
-        flex items-center justify-center px-3 py-2 w-full h-10 
+        flex items-center justify-center px-3 py-2 w-full h-10 max-w-max 
         transition-all duration-300 
         font-medium text-sm rounded-lg 
         cursor-pointer disabled:cursor-auto disabled:opacity-90 active:scale-95 
