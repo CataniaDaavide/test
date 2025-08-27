@@ -6,16 +6,16 @@ import TitleComponents from "./title-components";
 import Input from "./input";
 
 const colorVariants = {
-  trasparent:
-    "bg-trasparent border-border-card focus:border-background-inverse",
   default: "bg-card border-border-card focus:border-background-inverse",
+  // default: "bg-border-card border-0"
 };
+
 
 export function ExampleSelectComponent() {
   const options = [
-    { value: "opzione1", data1: "aaa", data2: "bbb", data3: "ccc" },
-    { value: "opzione2", data1: "ddd", data2: "eee", data3: "fff" },
-    { value: "opzione3", data1: "ggg", data2: "hhh", data3: "iii" },
+    { value: "opzione1", data: { data1: "aaa", data2: "bbb", data3: "ccc" } },
+    { value: "opzione2", data: { data1: "ddd", data2: "eee", data3: "fff" } },
+    { value: "opzione3", data: { data1: "ggg", data2: "hhh", data3: "iii" } },
   ];
 
   const [value, setValue] = useState();
@@ -213,25 +213,39 @@ function SelectOptions({
           onChange={(e) => setInputSearch(e.target.value)}
         />
       )}
-      {filterOptions.length === 0 && <p className="h-10 px-3 py-2 text-muted-foreground">Nessun risultatato per "{inputSearch}"</p>}
+      {search && filterOptions.length === 0 && (
+        <p className="h-10 px-3 py-2 text-muted-foreground">
+          Nessun risultatato per "{inputSearch}"
+        </p>
+      )}
       {filterOptions.map((option, index) => {
-        const { value: optionValue } = option;
         return (
-          <li
+          <ItemListSelectOptions
             key={index}
-            onClick={() => handleSelect(option)}
-            className={`
-              flex items-center justify-between
-              h-10 px-3 py-2 cursor-pointer rounded-lg hover:bg-zinc-300 hover:dark:bg-zinc-800 
-              ${value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}
-            `}
-          >
-            {optionValue}
-            {value === optionValue && value && <Check size={16} />}
-          </li>
+            option={option}
+            value={value}
+            handleSelect={handleSelect}
+          />
         );
       })}
     </ul>
   );
 }
 
+function ItemListSelectOptions({ option, value, handleSelect }) {
+  const { value: optionValue } = option;
+
+  return (
+    <li
+      onClick={() => handleSelect(option)}
+      className={`
+              flex items-center justify-between
+              h-10 px-3 py-2 cursor-pointer rounded-lg hover:bg-zinc-300 hover:dark:bg-zinc-800 
+              ${value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}
+            `}
+    >
+      {optionValue}
+      {value === optionValue && value && <Check size={16} />}
+    </li>
+  );
+}

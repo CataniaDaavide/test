@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calendar, Clock, Plus, Tag } from "lucide-react";
+import { Calendar, Clock, Plus, Tag, Wallet } from "lucide-react";
 import Input from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { ExampleSelectComponent } from "../components/ui/select";
+import Select, { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
 import Tabs from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
@@ -17,7 +17,11 @@ export default function App() {
       tab: <CardTest />,
     },
     {
-      value: "button",
+      value: "inputs/select",
+      tab: <AllInput />,
+    },
+    {
+      value: "buttons",
       tab: <AllButtons />,
     },
   ];
@@ -112,7 +116,7 @@ function CardTest() {
 
 function AllButtons() {
   return (
-    <Card>
+    <>
       <p>all buttons</p>
       <Button>
         <Plus />
@@ -134,6 +138,46 @@ function AllButtons() {
         <Plus />
         <p>ciao</p>
       </Button>
-    </Card>
+    </>
+  );
+}
+
+function AllInput() {
+  const inputRef = useRef();
+  const options = [
+    { value: "ciao1", data: {} },
+    { value: "ciao2", data: {} },
+    { value: "ciao3", data: {} },
+    { value: "ciao4", data: {} },
+    { value: "ciao5", data: {} },
+  ];
+  const [value, setValue] = useState({});
+
+  return (
+    <>
+      <p>all inputs</p>
+      <Card>
+        <Input
+          title={"Default color"}
+          type="password"
+          icon={<Wallet />}
+          ref={inputRef}
+        />
+      </Card>
+      <Input
+        title={"Primary color"}
+        icon={<Wallet />}
+        ref={inputRef}
+        color={"primary"}
+      />
+      <Input
+        title={"outline color"}
+        icon={<Wallet />}
+        ref={inputRef}
+        color={"outline"}
+      />
+      <p>Select</p>
+      <Select value={value} setValue={setValue} options={options} />
+    </>
   );
 }
