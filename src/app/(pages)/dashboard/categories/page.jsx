@@ -28,7 +28,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 p-6">
+    <div className="w-full h-full flex flex-col gap-3 p-3">
       <div className="w-full flex items-center justify-between flex-wrap gap-3">
         <Tabs tabs={tabs} value={value} setValue={setValue} />
         <div className="flex gap-3 w-full md:w-fit">

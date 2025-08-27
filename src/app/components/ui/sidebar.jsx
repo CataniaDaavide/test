@@ -2,11 +2,10 @@
 import { SidebarContext } from "@/app/context/SidebarContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { ChevronsRight, PanelLeft, Wallet } from "lucide-react";
-import { base_exceptionManager } from "@/app/core/baseFunctions";
+import { ChevronsRight, LogOut, PanelLeft, Wallet } from "lucide-react";
+import { base_exceptionManager, fetchApi } from "@/app/core/baseFunctions";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
 import ButtonToggleTheme from "./toggle-theme";
-import { ButtonIcon, ButtonLogout } from "./button";
 
 export default function Sidebar({ items }) {
   const router = useRouter();
@@ -61,8 +60,45 @@ export default function Sidebar({ items }) {
             })}
         </ul>
       </div>
-      <ButtonLogout color={"trasparent"} className="mb-10" />
+      <ButtonLogoutSidebar expand={expand} router={router} />
     </div>
+  );
+}
+
+function ButtonLogoutSidebar({ expand, router }) {
+  const handleLogout = async (e) => {
+    try {
+      e.preventDefault();
+
+      // chimata endpoint /api/auth/login
+      await fetchApi("/api/auth/logout", "POST", {}, async (res) => {
+        const data = await res.json();
+
+        if (!res.ok && data.error != "") {
+          return;
+          //setError(data.error);
+        }
+
+        router.push("/login");
+      });
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleLogout}
+      className={`
+        flex items-center justify-center gap-3
+        rounded-lg cursor-pointer text-sm font-bold text-red-500 
+        hover:bg-border-card mb-10
+        ${expand ? "w-full h-10 px-4 py-2" : "!h-10 min-w-10"}
+      `}
+    >
+      {expand ? <LogOut size={16} /> : <LogOut />}
+      <p className={expand ? "ml-1" : "hidden"}>Logout</p>
+    </button>
   );
 }
 
@@ -121,7 +157,7 @@ function LogoSidebar({ expand }) {
     <div
       className={`
         w-full flex items-center font-bold
-        transition-all duration-300 h-10
+        transition-all duration-300 h-10 text-nowrap
         ${expand ? "justify-center" : "justify-center"}
       `}
     >
@@ -138,16 +174,20 @@ export function Navbar({}) {
 
   const currentItem = menuItems.find((item) => item.link === pathname);
   const title = currentItem?.title || "undefined";
+  const description = currentItem?.description || "undefined";
 
   return (
     <div
       className={`
-        w-full flex items-center justify-between h-16
-        p-3 px-10 font-bold text-sm   
+        w-full flex items-center justify-between
+        p-3 px-10  
       `}
     >
       {/* LEFT */}
-      <p>{title}</p>
+      <div className="flex flex-col">
+        <p className="font-bold text-2xl">{title}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>  
+      </div>
 
       {/* RIGHT */}
       <div className="flex items-center justify-center">

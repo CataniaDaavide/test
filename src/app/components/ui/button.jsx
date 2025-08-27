@@ -90,7 +90,7 @@ export function ButtonBack({ className }) {
   );
 }
 
-export function ButtonLogout({ color, className = "" }) {
+export function ButtonLogout({ color, className = "", showText = true  }) {
   const router = useRouter();
   const handleLogout = async (e) => {
     try {
@@ -114,7 +114,7 @@ export function ButtonLogout({ color, className = "" }) {
   return (
     <Button onClick={handleLogout} color={color} className={`text-red-500 ${className}`}>
       <LogOut size={16} />
-      <p>Logout</p>
+      {showText && <p>Logout</p>}
     </Button>
   );
 }

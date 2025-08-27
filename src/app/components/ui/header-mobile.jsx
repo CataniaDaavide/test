@@ -18,12 +18,16 @@ export default function HeaderMovbile({ actions = [] }) {
 
   const currentItem = menuItems.find((item) => item.link === pathname);
   const title = currentItem?.title || "undefined";
+  const description = currentItem?.description || "undefined";
 
   return (
     <div className="p-3 w-full flex items-center justify-between border-b-1 border-border-card">
       <div className="flex items-center justify-center">
         <ButtonBack />
-        <p>{title}</p>
+        <div className="flex flex-col">
+          <p>{title}</p>
+          <p className="text-xs text-muted-foreground">{description}</p>
+        </div>
       </div>
 
       <ActionsButton actions={actions} />

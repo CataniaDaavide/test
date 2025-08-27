@@ -9,9 +9,18 @@ import Select, { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
 import Tabs from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
+import { CardSliderTest } from "../components/ui/slider";
 
 export default function App() {
   const tabs = [
+    {
+      value: "aaa",
+      tab: <Test />,
+    },
+    {
+      value: "CardSlider",
+      tab: <CardSliderTest />,
+    },
     {
       value: "card test",
       tab: <CardTest />,
@@ -40,6 +49,26 @@ export default function App() {
       <Tabs tabs={tabs} value={value} setValue={setValue} />
       {value.tab}
     </div>
+  );
+}
+
+function Test() {
+  const inputRef = useRef();
+
+  const handleChange = (e) => {
+    console.log("current:", e.current?.value);
+    console.log("target:", e.target?.value);
+  };
+
+  return (
+    <>
+      <p>Test</p>
+      <input
+        className="rounded-lg w-full px-4 py-2 h-10 bg-zinc-300 dark:bg-zinc-800"
+        ref={inputRef}
+        onChange={handleChange}
+      />
+    </>
   );
 }
 
@@ -181,3 +210,4 @@ function AllInput() {
     </>
   );
 }
+

@@ -92,6 +92,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setError("")
 
       const hasError = formValidationInit();
       if (hasError) return;

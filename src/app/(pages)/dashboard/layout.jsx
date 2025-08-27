@@ -17,12 +17,14 @@ import { useContext, useEffect, useState } from "react";
 export const menuItems = [
   {
     title: "Dashboard",
+    description:"Panoramica delle tue finanze personali",
     icon: <House />,
     link: "/dashboard",
     menu: ["mobile", "desktop"],
   },
   {
     title: "Categorie",
+    description:"Gestisci le categorie per entrate e uscite",
     icon: <Folder />,
     link: "/dashboard/categories",
     menu: ["mobile", "desktop"],
@@ -37,18 +39,21 @@ export const menuItems = [
   },
   {
     title: "Movimenti",
+    description:"Gestisci tutte le tue entrate e uscite",
     icon: <ArrowUpDown />,
     link: "/dashboard/movements",
     menu: ["mobile", "desktop"],
   },
   {
     title: "Conti",
+    description:"Gestisci le tue fonti di denaro",
     icon: <CreditCard />,
     link: "/dashboard/accounts",
     menu: ["mobile", "desktop"],
   },
   {
     title: "Profilo",
+    description:"Gestisci i tuoi obiettivi di risparmio",
     icon: <UserRound />,
     link: "/dashboard/profile",
     menu: ["desktop"],

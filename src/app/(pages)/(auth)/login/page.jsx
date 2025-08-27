@@ -38,6 +38,7 @@ export default function LoginPage() {
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {
+    console.log("formValidationInit");
     try {
       const fields = {
         email: {
@@ -77,6 +78,7 @@ export default function LoginPage() {
     try {
       e.preventDefault();
       setIsLoading(true);
+      setError("")
 
       const hasError = formValidationInit();
       if (hasError) return exit();
