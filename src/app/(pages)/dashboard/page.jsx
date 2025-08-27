@@ -9,19 +9,20 @@ import { CardSliderTest } from "@/app/components/ui/slider";
 
 //components
 
-export default function MainPage() {
+export default function DashboardPage() {
   return (
     <div className="w-full h-full flex flex-col gap-3 p-3">
+    
       <div className="w-full flex md:hidden">
         <CardSliderTest />
       </div>
       <div className="w-full hidden md:flex">
         <StatsContainer />
       </div>
-      <div className="w-full h-0 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-3">
+      {/* <div className="w-full h-0 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-3">
         <RecentMovementsContainer />
         <OtherStastsContainer />
-      </div>
+      </div> */}
     </div>
   );
 }

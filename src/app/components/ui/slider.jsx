@@ -116,18 +116,28 @@ export default function Slider({ cards }) {
         </div>
       </div>
 
+      <DotsSlider length={cards.length} currentIndex={currentIndex} />
+    </div>
+  );
+}
+
+function DotsSlider({ length, currentIndex }) {
+  return (
+    <>
       {/* Indicatori (pallini) */}
-      <div className="flex mt-4 gap-2">
-        {cards.map((_, index) => (
+      <div className="flex mt-1 gap-2">
+        {Array.from({ length }).map((_, index) => (
           <div
             key={index}
-            className={`w-3 h-3 rounded-full transition ${
-              index === currentIndex ? "bg-background-inverse" : "bg-border-card"
+            className={`w-2 h-2 rounded-full transition ${
+              index === currentIndex
+                ? "bg-background-inverse"
+                : "bg-border-card"
             }`}
           />
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -138,14 +148,9 @@ export default function Slider({ cards }) {
  */
 function CardTest({ card, cardWidth }) {
   return (
-    <div
-      className="flex-shrink-0  h-[180px] p-2"
-      style={{ width: cardWidth }}
-    >
+    <div className="flex-shrink-0  h-[180px] p-2" style={{ width: cardWidth }}>
       {/* contenuto della card */}
-      <Card className={"h-full"}>
-        {card.text}
-      </Card>
+      <Card className={"h-full"}>{card.text}</Card>
     </div>
   );
 }

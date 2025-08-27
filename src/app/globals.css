@@ -39,18 +39,26 @@ body {
 }
 
 :root {
-  --background: oklch(98.5% 0 0); /*zinc-50*/
-  --background-inverse: oklch(14.1% 0.005 285.823); /*zinc-950*/
-  --card: oklch(96.7% 0.001 286.375); /*zinc-100*/
-  --border-card: oklch(87.1% 0.006 286.286); /*zinc-300*/
+  --background: oklch(98.5% 0 0);
+  /*zinc-50*/
+  --background-inverse: oklch(14.1% 0.005 285.823);
+  /*zinc-950*/
+  --card: oklch(96.7% 0.001 286.375);
+  /*zinc-100*/
+  --border-card: oklch(87.1% 0.006 286.286);
+  /*zinc-300*/
   --muted-foreground: oklch(44.2% 0.017 285.786);
 }
 
 html.dark {
-  --background: oklch(14.1% 0.005 285.823); /*zinc-950*/
-  --background-inverse: oklch(98.5% 0 0); /*zinc-50*/
-  --card: oklch(21% 0.006 285.885); /*zinc-900*/
-  --border-card: oklch(27.4% 0.006 286.033); /*zinc-800*/
+  --background: oklch(14.1% 0.005 285.823);
+  /*zinc-950*/
+  --background-inverse: oklch(98.5% 0 0);
+  /*zinc-50*/
+  --card: oklch(21% 0.006 285.885);
+  /*zinc-900*/
+  --border-card: oklch(27.4% 0.006 286.033);
+  /*zinc-800*/
   --muted-foreground: oklch(70.5% 0.015 286.067);
 }
 
@@ -72,31 +80,40 @@ input[type="password"]::-webkit-credentials-auto-fill-button,
 input[type="password"]::-webkit-password-reveal-button {
   display: none !important;
 }
-/* ------------------------------------------------------------ */
-
-
 
 /* ------------------------------------------------------------ */
-/* NASCONDE L'ICONA DEL CALENDARIO NELL'INPUT TYPE DATE */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
 
-/* NASCONDE L'ICONA DELL'OROLOGIO NELL'INPUT TYPE TIME */
+
+
+/* ------------------------------------------------------------ */
+/* colora le icone di nere in modalità LIGHT */
+input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
-  appearance: none;
+  color-scheme: light;
 }
 
-/* PER FIREFOX */
-input[type="date"],
-input[type="time"] {
-  -moz-appearance: textfield;
+/* colora le icone di nere in modalità DARK */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  color-scheme: dark;
 }
 
+@media (max-width: 720px) {
+  /* NASCONDE L'ICONA DEL CALENDARIO NELL'INPUT TYPE DATE */
+  /* NASCONDE L'ICONA DELL'OROLOGIO NELL'INPUT TYPE TIME */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* PER FIREFOX */
+  input[type="date"],
+  input[type="time"] {
+    -moz-appearance: textfield;
+  }
+}
 /* ------------------------------------------------------------ */
 
 
@@ -130,12 +147,13 @@ input[type="time"] {
 }
 
 /* classe "scrollbar-hide" nasconde la scollbar */
-.scrollbar-hide::-webkit-scrollbar{
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
 /* classe "scrollbar-show" mostra la scollbar */
-.scrollbar-show::-webkit-scrollbar{
+.scrollbar-show::-webkit-scrollbar {
   display: flex;
 }
+
 /* ------------------------------------------------------------ */
