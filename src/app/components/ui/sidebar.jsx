@@ -169,34 +169,6 @@ function LogoSidebar({ expand }) {
   );
 }
 
-export function Navbar({}) {
-  const pathname = usePathname();
-
-  const currentItem = menuItems.find((item) => item.link === pathname);
-  const title = currentItem?.title || "undefined";
-  const description = currentItem?.description || "undefined";
-
-  return (
-    <div
-      className={`
-        w-full flex items-center justify-between
-        p-3 px-10  
-      `}
-    >
-      {/* LEFT */}
-      <div className="flex flex-col">
-        <p className="font-bold text-2xl">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>  
-      </div>
-
-      {/* RIGHT */}
-      <div className="flex items-center justify-center">
-        <ButtonToggleTheme className={"!rounded-full"} color={"trasparent"} />
-      </div>
-    </div>
-  );
-}
-
 function HoverComponent({ title = "undefined" }) {
   return (
     <div

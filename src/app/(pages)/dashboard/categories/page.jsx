@@ -47,7 +47,7 @@ export default function CategoriesPage() {
 
 function IncomeContainer({ items }){
     return(
-        <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-auto scrollbar-hide gap-3">
+        <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
             <FakeCard type={"entrate"}/>
             <FakeCard type={"entrate"}/>
             <FakeCard type={"entrate"}/>

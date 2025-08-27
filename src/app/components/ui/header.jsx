@@ -13,13 +13,39 @@ import { ButtonIcon } from "@/app/components/ui/button";
 import { ButtonLogout } from "@/app/components/ui/button";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
 
-export default function HeaderMovbile({ actions = [] }) {
+export default function Header({}) {
   const pathname = usePathname();
 
   const currentItem = menuItems.find((item) => item.link === pathname);
   const title = currentItem?.title || "undefined";
   const description = currentItem?.description || "undefined";
 
+  return (
+    <>
+      <div className="w-full flex md:hidden">
+        <HeaderMobile
+          title={title}
+          description={description}
+          actions={["toggle-theme", "profile"]}
+        />
+      </div>
+
+      <div className="w-full hidden md:flex">
+        <HeaderDesktop
+          title={title}
+          description={description}
+          actions={["toggle-theme"]}
+        />
+      </div>
+    </>
+  );
+}
+
+function HeaderMobile({
+  title = "undefined",
+  description = "undefined",
+  actions = [],
+}) {
   return (
     <div className="p-3 w-full flex items-center justify-between border-b-1 border-border-card">
       <div className="flex items-center justify-center">
@@ -30,13 +56,35 @@ export default function HeaderMovbile({ actions = [] }) {
         </div>
       </div>
 
-      <ActionsButton actions={actions} />
+      <ActionButtons actions={actions} />
+    </div>
+  );
+}
+
+function HeaderDesktop({
+  title = "undefined",
+  description = "undefined",
+  actions = [],
+}) {
+  return (
+    <div
+      className={`
+        w-full flex items-center justify-between
+        p-3 px-10
+      `}
+    >
+      <div className="flex flex-col">
+        <p className="font-bold text-2xl">{title}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+
+      <ActionButtons actions={actions} />
     </div>
   );
 }
 
 // componente per le azioni in alto a sinistra
-function ActionsButton({ actions = [] }) {
+function ActionButtons({ actions = [] }) {
   const router = useRouter();
 
   return (

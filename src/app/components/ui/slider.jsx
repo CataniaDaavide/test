@@ -1,5 +1,6 @@
-"use client"
+"use client";
 import { useState, useRef, useEffect } from "react";
+import { Card } from "./card";
 
 export function CardSliderTest() {
   const cards = [
@@ -11,30 +12,32 @@ export function CardSliderTest() {
 
   return (
     <div className="w-full p-3">
-      <CardSlider cards={cards} />
+      <Slider cards={cards} />
     </div>
   );
 }
 
-export default function CardSlider({ cards }) {
+export default function Slider({ cards }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
 
   const containerRef = useRef(null);
   const sliderRef = useRef(null);
+
+  // refs per gestione drag
   const startX = useRef(0);
   const currentTranslate = useRef(0);
   const prevTranslate = useRef(0);
   const isDragging = useRef(false);
 
-  const GAP = 16; // spazio tra le card (px)
-
-  // Calcola la larghezza dinamica delle card tenendo conto del gap
+  /**
+   * Calcola la larghezza della card = larghezza contenitore
+   */
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
-        setCardWidth(width - GAP); // card = container - gap
+        setCardWidth(width);
         prevTranslate.current = -currentIndex * width;
         if (sliderRef.current) {
           sliderRef.current.style.transform = `translateX(${prevTranslate.current}px)`;
@@ -47,13 +50,15 @@ export default function CardSlider({ cards }) {
     return () => window.removeEventListener("resize", handleResize);
   }, [currentIndex]);
 
-  const touchStart = (e) => {
+  /** drag start */
+  const handleStart = (e) => {
     isDragging.current = true;
     startX.current = e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
     sliderRef.current.style.transition = "none";
   };
 
-  const touchMove = (e) => {
+  /** drag move */
+  const handleMove = (e) => {
     if (!isDragging.current) return;
     const currentPosition = e.type.includes("mouse")
       ? e.pageX
@@ -63,10 +68,12 @@ export default function CardSlider({ cards }) {
     sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
   };
 
-  const touchEnd = () => {
+  /** drag end */
+  const handleEnd = () => {
     isDragging.current = false;
     const movedBy = currentTranslate.current - prevTranslate.current;
 
+    // swipe a destra / sinistra
     if (movedBy < -cardWidth / 4 && currentIndex < cards.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     }
@@ -74,7 +81,7 @@ export default function CardSlider({ cards }) {
       setCurrentIndex((prev) => prev - 1);
     }
 
-    const newTranslate = -currentIndex * (cardWidth + GAP);
+    const newTranslate = -currentIndex * cardWidth;
     sliderRef.current.style.transition = "transform 0.3s ease";
     sliderRef.current.style.transform = `translateX(${newTranslate}px)`;
     prevTranslate.current = newTranslate;
@@ -82,50 +89,63 @@ export default function CardSlider({ cards }) {
 
   return (
     <div className="flex flex-col items-center w-full">
+      {/* Contenitore visibile */}
       <div
         ref={containerRef}
         className="overflow-hidden w-full"
-        onMouseDown={touchStart}
-        onMouseMove={touchMove}
-        onMouseUp={touchEnd}
-        onMouseLeave={touchEnd}
-        onTouchStart={touchStart}
-        onTouchMove={touchMove}
-        onTouchEnd={touchEnd}
+        onMouseDown={handleStart}
+        onMouseMove={handleMove}
+        onMouseUp={handleEnd}
+        onMouseLeave={handleEnd}
+        onTouchStart={handleStart}
+        onTouchMove={handleMove}
+        onTouchEnd={handleEnd}
       >
+        {/* Slider */}
         <div
           ref={sliderRef}
-          className="flex gap-4" // <-- aggiunto gap tra le card
+          className="flex"
           style={{
-            transform: `translateX(${-currentIndex * (cardWidth + GAP)}px)`,
+            transform: `translateX(${-currentIndex * cardWidth}px)`,
             transition: "transform 0.3s ease",
           }}
         >
           {cards.map((card) => (
-            <div
-              key={card.id}
-              className="flex-shrink-0 h-[180px] flex items-center justify-center bg-gray-200 rounded-2xl shadow-lg text-xl font-bold"
-              style={{ minWidth: cardWidth }}
-            >
-              {card.text}
-            </div>
+            <CardTest key={card.id} card={card} cardWidth={cardWidth} />
           ))}
         </div>
       </div>
 
-      {/* Pallini */}
+      {/* Indicatori (pallini) */}
       <div className="flex mt-4 gap-2">
         {cards.map((_, index) => (
           <div
             key={index}
             className={`w-3 h-3 rounded-full transition ${
-              index === currentIndex
-                ? "bg-background-inverse"
-                : "bg-border-card"
+              index === currentIndex ? "bg-background-inverse" : "bg-border-card"
             }`}
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Card singola
+ * - larghezza = cardWidth (per restare centrata nello slider)
+ * - padding applicato all'interno (non fuori)
+ */
+function CardTest({ card, cardWidth }) {
+  return (
+    <div
+      className="flex-shrink-0  h-[180px] p-2"
+      style={{ width: cardWidth }}
+    >
+      {/* contenuto della card */}
+      <Card className={"h-full"}>
+        {card.text}
+      </Card>
     </div>
   );
 }
