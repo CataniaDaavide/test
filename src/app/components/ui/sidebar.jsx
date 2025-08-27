@@ -2,45 +2,66 @@
 import { SidebarContext } from "@/app/context/SidebarContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { PanelLeft, Wallet } from "lucide-react";
+import { ChevronsRight, PanelLeft, Wallet } from "lucide-react";
 import { base_exceptionManager } from "@/app/core/baseFunctions";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
 import ButtonToggleTheme from "./toggle-theme";
+import { ButtonIcon, ButtonLogout } from "./button";
 
-export default function Sidebar({ items, expand = true }) {
+export default function Sidebar({ items }) {
   const router = useRouter();
   const { activeTab, setActiveTab } = useContext(SidebarContext);
 
+  const [expand, setExpand] = useState(true);
+  const toggleSidebar = (e) => {
+    e.preventDefault();
+    setExpand((prev) => !prev);
+  };
   return (
     <div
       className={`
-        bg-card h-full flex flex-col items-center p-3
-        ${expand ? "w-[200px]" : "w-[60px]"}
+        h-full flex flex-col items-center justify-between p-3
+        ${expand ? "w-[250px]" : "w-[60px]"}
         transition-all duration-300
       `}
     >
-      <LogoSidebar expand={expand} />
-      <ul
-        className={`
-    flex flex-col gap-1 w-full
-    ${expand ? "items-start" : "items-center"}
-  `}
-      >
-        {items
-          .filter((item) => item.menu.includes("desktop"))
-          .map((item, index) => {
-            return (
-              <ItemListSidebar
-                item={item}
-                key={index}
-                expand={expand}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                router={router}
-              />
-            );
-          })}
-      </ul>
+      <div className="w-full flex flex-col">
+        <div className="relative w-full flex items-center justify-between mb-10">
+          <LogoSidebar expand={expand} />
+          <button
+            onClick={toggleSidebar}
+            className={`
+              ${expand ? "rotate-180" : "absolute -right-10"}
+              p-1 text-muted-foreground hover:text-background-inverse transition-all duration-300
+            `}
+          >
+            <ChevronsRight size={24} />
+          </button>
+        </div>
+
+        <ul
+          className={`
+            flex flex-col gap-1 w-full
+            ${expand ? "items-start" : "items-center"}
+          `}
+        >
+          {items
+            .filter((item) => item.menu.includes("desktop"))
+            .map((item, index) => {
+              return (
+                <ItemListSidebar
+                  item={item}
+                  key={index}
+                  expand={expand}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  router={router}
+                />
+              );
+            })}
+        </ul>
+      </div>
+      <ButtonLogout color={"trasparent"} className="mb-10" />
     </div>
   );
 }
@@ -99,7 +120,7 @@ function LogoSidebar({ expand }) {
   return (
     <div
       className={`
-        w-full flex items-center font-bold mb-10
+        w-full flex items-center font-bold
         transition-all duration-300 h-10
         ${expand ? "justify-center" : "justify-center"}
       `}
@@ -112,7 +133,7 @@ function LogoSidebar({ expand }) {
   );
 }
 
-export function Navbar({ toggleSidebar }) {
+export function Navbar({}) {
   const pathname = usePathname();
 
   const currentItem = menuItems.find((item) => item.link === pathname);
@@ -121,24 +142,16 @@ export function Navbar({ toggleSidebar }) {
   return (
     <div
       className={`
-        bg-card w-full flex items-center justify-between h-16
-        p-3 font-bold text-sm   
+        w-full flex items-center justify-between h-16
+        p-3 px-10 font-bold text-sm   
       `}
     >
       {/* LEFT */}
-      <div className="flex items-center justify-center gap-3">
-        <button
-          onClick={toggleSidebar}
-          className="w-6 h-6 flex items-center justify-center"
-        >
-          <PanelLeft size={20} />
-        </button>
-        <p>{title}</p>
-      </div>
+      <p>{title}</p>
 
       {/* RIGHT */}
       <div className="flex items-center justify-center">
-        <ButtonToggleTheme className={"!rounded-full"} color={"trasparent"}/>
+        <ButtonToggleTheme className={"!rounded-full"} color={"trasparent"} />
       </div>
     </div>
   );

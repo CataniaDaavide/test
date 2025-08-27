@@ -6,10 +6,10 @@ import { cloneElement, isValidElement } from "react";
 import { base_exceptionManager, fetchApi } from "../../core/baseFunctions.js";
 
 //icons
-import { Loader, ChevronLeft } from "lucide-react";
+import { Loader, ChevronLeft, LogOut } from "lucide-react";
 
 const colorVariants = {
-  trasparent:"bg-trasparent hover:bg-border-card",
+  trasparent: "bg-trasparent hover:bg-border-card",
   outline: "border border-background-inverse bg-trasparent",
   danger: "bg-red-700 hover:bg-red-600/90 text-white",
   success: "bg-green-700 hover:bg-green-600/90 text-white",
@@ -31,7 +31,7 @@ export function Button({
     <button
       disabled={disabled || isLoading}
       className={`
-        flex gap-1 items-center justify-center px-4 py-2 w-full h-10 
+        flex gap-3 items-center justify-center px-4 py-2 w-full h-10 
         transition-all duration-300 
          text-sm font-semibold text-nowrap rounded-lg 
         cursor-pointer disabled:cursor-not-allowed disabled:opacity-90 active:scale-95 disabled:active:scale-100
@@ -45,7 +45,13 @@ export function Button({
   );
 }
 
-export function ButtonIcon({ icon, onClick, color, className, disabled = false }) {
+export function ButtonIcon({
+  icon,
+  onClick,
+  color,
+  className,
+  disabled = false,
+}) {
   // Cloniamo le icone per forzare il size
   const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
 
@@ -84,7 +90,7 @@ export function ButtonBack({ className }) {
   );
 }
 
-export function ButtonLogout() {
+export function ButtonLogout({ color, className = "" }) {
   const router = useRouter();
   const handleLogout = async (e) => {
     try {
@@ -106,12 +112,10 @@ export function ButtonLogout() {
     }
   };
   return (
-    <button
-      onClick={handleLogout}
-      className="text-red-500 underline cursor-pointer"
-    >
-      Logout
-    </button>
+    <Button onClick={handleLogout} color={color} className={`text-red-500 ${className}`}>
+      <LogOut size={16} />
+      <p>Logout</p>
+    </Button>
   );
 }
 

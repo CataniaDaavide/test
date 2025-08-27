@@ -8,10 +8,9 @@ import TitleComponents from "./title-components";
 import { Eye, EyeOff } from "lucide-react";
 
 const colorVariants = {
-  outline:
-    "bg-trasparent border-border-card focus:border-background-inverse",
-  primary: "bg-card border-border-card focus:border-background-inverse",
-  default: "bg-border-card border-0",
+  outline: "bg-trasparent border-border-card focus:border-background-inverse",
+  primary: "bg-border-card border-0",
+  default: "bg-card border-border-card focus:border-background-inverse",
 };
 
 export default function Input({

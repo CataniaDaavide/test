@@ -77,10 +77,6 @@ export function DashboardInner({ children }) {
     setActiveTab(tab)
   }, [pathname]);
 
-  const toggleSidebar = (e) => {
-    e.preventDefault();
-    setExpand((prev) => !prev);
-  };
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -92,13 +88,13 @@ export function DashboardInner({ children }) {
       <div className="flex w-full h-full overflow-hidden">
         {/* Desktop: sidebar a sinistra */}
         <div className="hidden md:flex h-full">
-          <Sidebar items={menuItems} expand={expand} />
+          <Sidebar items={menuItems} />
         </div>
 
         <div className="w-full h-full flex flex-col overflow-auto">
           {/* NAVBAR: visibile solo da desktop*/}
           <div className="hidden md:flex">
-            <Navbar toggleSidebar={toggleSidebar} />
+            <Navbar/>
           </div>
 
           {/* body della pagina */}

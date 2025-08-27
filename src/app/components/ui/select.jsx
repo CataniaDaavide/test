@@ -7,7 +7,6 @@ import Input from "./input";
 
 const colorVariants = {
   default: "bg-card border-border-card focus:border-background-inverse",
-  // default: "bg-border-card border-0"
 };
 
 
