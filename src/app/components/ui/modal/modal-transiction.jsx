@@ -19,7 +19,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const { title, description } = data;
   const dateRef = useRef();
   const timeRef = useRef();
-  const amountRef = useRef();
+  const amountOneRef = useRef();
   const amountTwoRef = useRef();
   const descriptionRef = useRef();
   const [categorieValue, setCategorieValue] = useState();
@@ -37,22 +37,29 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       value: "categorie4",
     },
   ];
-
-  const [accountValue, setAccountValue] = useState();
-  let accountOptions = [
+  
+  const [accountOneValue, setAccountOneValue] = useState();
+  const [accountTwoValue, setAccountTwoValue] = useState();
+  let accountOneOptions = [
     {
       value: "account1",
+      type: "BANK",
     },
     {
       value: "account2",
+      type: "VOUCHER",
     },
     {
       value: "account3",
+      type: "VOUCHER",
     },
     {
       value: "account4",
+      type: "BANK",
     },
   ];
+  const [accountTwoOptions, setAccountTwoOptions] = useState([]);
+  const [isVoucher, setIsVoucher] = useState(false);
 
   const setDateAndTime = (
     date = new Date().toISOString(),
@@ -85,6 +92,21 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       base_exceptionManager(error);
     }
   };
+
+  useEffect(() => {
+    if (accountOneValue && accountOneValue != {}) {
+      const { type } = accountOneValue;
+      if (type && type.toString().trim().toUpperCase() === "VOUCHER") {
+        setIsVoucher(true);
+        const arr = accountOneOptions.filter(
+          (x) => x?.type.toString().trim().toUpperCase() != "VOUCHER"
+        );
+        setAccountTwoOptions(arr);
+      }else{
+        setIsVoucher(false)
+      }
+    }
+  }, [accountOneValue]);
 
   return (
     <>
@@ -129,13 +151,29 @@ export default function ModalTransiction({ data, handleCloseModal }) {
           setValue={setCategorieValue}
         />
         <Select
-          title={"Conto"}
+          title={isVoucher ? "Conto1" : "Conto"}
           required={true}
-          options={accountOptions}
-          value={accountValue}
-          setValue={setAccountValue}
+          options={accountOneOptions}
+          value={accountOneValue}
+          setValue={setAccountOneValue}
         />
-        <Input title={"Importo (€)"} type="tel" ref={descriptionRef} />
+        <Input
+          title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"}
+          type="tel"
+          ref={amountOneRef}
+        />
+        {isVoucher && (
+          <>
+            <Select
+              title={"Conto2"}
+              required={true}
+              options={accountTwoOptions}
+              value={accountTwoValue}
+              setValue={setAccountTwoValue}
+            />
+            <Input title={"Importo conto2 (€)"} type="tel" ref={amountTwoRef} />
+          </>
+        )}
         <Input
           title={"Descrizione"}
           type="textarea"

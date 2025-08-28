@@ -9,7 +9,6 @@ const colorVariants = {
   default: "bg-card border-border-card focus:border-background-inverse",
 };
 
-
 export function ExampleSelectComponent() {
   const options = [
     { value: "opzione1", data: { data1: "aaa", data2: "bbb", data3: "ccc" } },
@@ -64,12 +63,7 @@ export default function Select({
   }, []);
 
   const handleSelect = (option) => {
-    if (option === -1) {
-      setValue({});
-    } else {
-      setValue(option);
-    }
-
+    setValue(option);
     setIsOpen(false); // chiudi dopo la selezione
   };
 
@@ -147,7 +141,7 @@ function SelectOptionsDelete({ value, handleSelect, isOpen }) {
           onClick={(e) => {
             e.preventDefault(); // blocca il comportamento del button
             e.stopPropagation(); // blocca la propagazione al parent
-            handleSelect(-1); // resetta il valore
+            handleSelect({}); // resetta il valore
           }}
           className="flex items-center justify-center p-2"
         >

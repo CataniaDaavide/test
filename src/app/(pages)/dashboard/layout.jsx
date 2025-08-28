@@ -37,7 +37,7 @@ export const menuItems = [
         show: true,
         type: "transiction",
         data: {
-          title: "ModalTransiction",
+          title: "Creazione transazione",
           description: "Registra una nuova entrata o uscita",
         },
       });
