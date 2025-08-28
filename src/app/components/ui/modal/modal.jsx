@@ -54,7 +54,7 @@ export default function Modal() {
       className="absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center md:p-3 bg-black/50"
       onClick={handleOverlayClick} 
     >
-      <Card className="h-full md:h-auto !rounded-none md:!rounded-xl md:max-w-md !justify-start">
+      <Card className="relative h-full md:h-auto !rounded-none md:!rounded-xl md:max-w-md !justify-start">
         {ModalComponent}
       </Card>
     </div>
