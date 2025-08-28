@@ -126,7 +126,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         </CardHeaderActions>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="overflow-scroll scrollbar-hide">
         <div className="grid grid-cols-2 gap-3">
           <Input
             title={"Data"}
@@ -182,7 +182,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         />
       </CardContent>
 
-      <CardFooter className={"md:mt-3"}>
+      <CardFooter className={"mt-3"}>
         <Button onClick={handleSubmit}>
           <span>Modifica</span>
         </Button>
