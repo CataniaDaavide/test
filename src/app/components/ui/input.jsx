@@ -168,47 +168,66 @@ function InputBase({
 
 function InputTel({
   disabled,
-  icon,
   errorMessage,
   color,
   name,
   value = 0,
   ref,
-  onKeyUp = () => {},
   onChange = () => {},
   className = "",
+  placeholder = "0,00",
 }) {
+  const handleChange = (e) => {
+    let val = e.target.value;
+
+    // 1. Rimuovi caratteri non validi (solo numeri, punto, virgola)
+    val = val.replace(/[^0-9.,]/g, "");
+
+    // 2. Normalizza sempre la virgola in punto (più semplice da gestire)
+    val = val.replace(",", ".");
+
+    // 3. Permetti solo un separatore decimale
+    const parts = val.split(".");
+    if (parts.length > 2) {
+      val = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // 4. Limita a massimo 2 cifre dopo la virgola/punto
+    if (parts[1]) {
+      parts[1] = parts[1].slice(0, 2);
+      val = parts.join(".");
+    }
+
+    // 5. Aggiorna il valore
+    e.target.value = val;
+    onChange(e);
+  };
 
   return (
     <div className="w-full flex items-center justify-center">
       <input
         disabled={disabled}
-        // la classe apparence-none evita la perdita dello stile dopo la valorizzazione
-        // senza di quello perde il padding sinistro e si sovrappone l'icona
+        inputMode="decimal"  
         className={`
           appearance-none
           w-full rounded-lg px-4 py-2 h-10 text-sm   
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
-          ${icon && "pl-9"} 
           ${errorMessage && "border-red-500"} 
           ${className}`}
         name={name}
-        type={"tel"}
-        value={value}
+        type="tel"          
+        defaultValue={value}
         autoComplete="off"
-        onKeyUp={(e) => {
-          onKeyUp(e);
-        }}
-        onChange={(e) => {
-          onChange(e);
-        }}
+        placeholder={placeholder}
+        onChange={handleChange}
         ref={ref}
       />
     </div>
   );
 }
+
 
 function InputPassword({
   disabled,
