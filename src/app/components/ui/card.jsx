@@ -2,11 +2,11 @@ import { Plus, Wallet } from "lucide-react";
 import { Button, ButtonIcon } from "./button";
 
 // Card principale
-export function Card({ children, className }) {
+export function Card({ children, className = "" }) {
   return (
     <div
       className={`
-        w-full flex flex-col gap-3 justify-center p-3 
+        w-full flex flex-col gap-3 justify-center p-5 
         rounded-xl border shadow-md 
         bg-card border-border-card
         ${className}
@@ -18,7 +18,7 @@ export function Card({ children, className }) {
 }
 
 // Header della card
-export function CardHeader({ children, className }) {
+export function CardHeader({ children, className = "" }) {
   return (
     <div className={`w-full flex items-start justify-between ${className}`}>
       {children}
@@ -27,40 +27,40 @@ export function CardHeader({ children, className }) {
 }
 
 // Contenitore per titolo + descrizione
-export function CardHeaderContent({ children, className }) {
-  return <div className={`flex flex-col gap-1 ${className}`}>{children}</div>;
+export function CardHeaderContent({ children, className = "" }) {
+  return <div className={`h-full flex flex-col gap-1 justify-center ${className}`}>{children}</div>;
 }
 
 // Azioni nella header
-export function CardHeaderActions({ children, className }) {
+export function CardHeaderActions({ children, className = "" }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>{children}</div>
   );
 }
 
 // Titolo
-export function CardTitle({ children, className }) {
+export function CardTitle({ children, className = ""}) {
   return (
-    <p className={`text-xl font-semibold flex gap-2 items-center ${className}`}>
+    <p className={`text-lg font-semibold flex gap-2 items-center ${className}`}>
       {children}
     </p>
   );
 }
 
 // Descrizione
-export function CardDescription({ children, className }) {
+export function CardDescription({ children, className = "" }) {
   return (
     <p className={`text-sm text-muted-foreground ${className}`}>{children}</p>
   );
 }
 
 // Contenuto principale
-export function CardContent({ children, className }) {
-  return <div className={`w-full h-full ${className}`}>{children}</div>;
+export function CardContent({ children, className = "" }) {
+  return <div className={`w-full h-full flex flex-col gap-3 ${className}`}>{children}</div>;
 }
 
 // Footer della card
-export function CardFooter({ children, className }) {
+export function CardFooter({ children, className = "" }) {
   return (
     <div className={`w-full flex gap-3 justify-end ${className}`}>
       {children}

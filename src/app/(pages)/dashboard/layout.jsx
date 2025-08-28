@@ -32,8 +32,15 @@ export const menuItems = [
   {
     title: "add transiction",
     icon: <Plus />,
-    action: () => {
-      console.log("ciao");
+    action: (setModal) => {
+      setModal({
+        show: true,
+        type: "transiction",
+        data: {
+          title: "ModalTransiction",
+          description: "Registra una nuova entrata o uscita",
+        },
+      });
     },
     menu: ["mobile"],
   },

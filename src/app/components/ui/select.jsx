@@ -47,7 +47,7 @@ export default function Select({
   search = false,
   color,
   disabled = false,
-  className,
+  className = "",
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
@@ -107,7 +107,7 @@ function SelectButton({
   setIsOpen,
   handleSelect,
   color,
-  className,
+  className = "",
 }) {
   return (
     <div className="relative w-full">
@@ -116,7 +116,7 @@ function SelectButton({
         type="button"
         onClick={(e) => setIsOpen(!isOpen)}
         className={`
-          flex items-center
+          flex items-center text-sm
           w-full rounded-lg px-3 py-2 h-10
           border focus:border-2 focus:outline-0
           disabled:opacity-50 
@@ -176,7 +176,7 @@ function SelectOptions({
   handleSelect,
   search,
   color,
-  className,
+  className = "",
 }) {
   const [inputSearch, setInputSearch] = useState("");
   const [filterOptions, setFilterOptions] = useState(options);
@@ -196,10 +196,10 @@ function SelectOptions({
   return (
     <ul
       className={`
-        absolute left-0 overflow-hidden overflow-y-auto 
+        absolute left-0 overflow-hidden z-[998] overflow-y-auto shadow-sm 
         w-full rounded-xl p-1
         transition-all duration-200
-        ${title ? "top-16" : "top-11"}
+        ${title ? "top-17" : "top-11"}
         ${isOpen ? "max-h-36 border" : "hidden border-0"}
         ${colorVariants[color] || colorVariants["default"]} 
         ${className}
@@ -238,7 +238,7 @@ function ItemListSelectOptions({ option, value, handleSelect }) {
     <li
       onClick={() => handleSelect(option)}
       className={`
-              flex items-center justify-between
+              flex items-center justify-between text-sm
               h-10 px-3 py-2 cursor-pointer rounded-lg hover:bg-zinc-300 hover:dark:bg-zinc-800 
               ${value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}
             `}

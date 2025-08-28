@@ -1,5 +1,6 @@
 "use client";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
+import { ModalContext } from "@/app/context/ModalContext";
 import { SidebarContext } from "@/app/context/SidebarContext";
 import { base_exceptionManager } from "@/app/core/baseFunctions";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ export default function MenuMobile() {
 function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
   const router = useRouter();
   const { title, icon, link, action } = item;
+  const { setModal } = useContext(ModalContext);
 
   const handleClick = (e) => {
     try {
@@ -43,7 +45,7 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
         router.push(link);
       }
       if (action) {
-        action();
+        action(setModal);
       }
     } catch (error) {
       base_exceptionManager(error);
@@ -62,7 +64,9 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
           </div>
         )}
         {link && (
-          <div className={`${activeTab.title != title && "text-muted-foreground"}`}>
+          <div
+            className={`${activeTab.title != title && "text-muted-foreground"}`}
+          >
             {icon}
           </div>
         )}

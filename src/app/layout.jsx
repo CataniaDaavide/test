@@ -2,9 +2,11 @@ import "./globals.css";
 
 //hoocks - functions - lib
 import { ThemeProvider } from "./context/ThemeContext";
+import Modal from "./components/ui/modal/modal";
+import { ModalProvider } from "./context/ModalContext";
 
 export const metadata = {
-//   title: "Template APP",
+  //   title: "Template APP",
   description: "Template applicazione web nextjs + tailwindcss",
 };
 
@@ -22,14 +24,17 @@ export default function RootLayout({ children }) {
       {/* <html lang="en"> */}
       <body
         className={`
-          antialiased overscroll-none 
+          relative antialiased overscroll-none 
           w-screen h-[100dvh]
           flex flex-col items-center justify-center 
           bg-background text-background-inverse
         `}
       >
         <ThemeProvider>
-          {children}
+          <ModalProvider>
+            <Modal />
+            {children}
+            </ModalProvider>
         </ThemeProvider>
       </body>
     </html>

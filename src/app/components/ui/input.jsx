@@ -32,7 +32,7 @@ export default function Input({
   // Cloniamo le icone per forzare il size
   const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
 
-  let InputSelected = <></>;
+  let InputSelected = (<></>);
 
   switch (type) {
     case "text":
@@ -42,6 +42,23 @@ export default function Input({
       InputSelected = (
         <InputBase
           type={type}
+          disabled={disabled}
+          icon={iconLeft}
+          errorMessage={errorMessage}
+          color={color}
+          name={name}
+          placeholder={placeholder}
+          ref={ref}
+          onKeyUp={onKeyUp}
+          onChange={onChange}
+          className={className}
+        />
+      );
+      break;
+
+    case "tel":
+      InputSelected = (
+        <InputTel
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
@@ -115,7 +132,7 @@ function InputBase({
   ref,
   onKeyUp = () => {},
   onChange = () => {},
-  className,
+  className = "",
 }) {
   return (
     <div className="relative w-full flex items-center justify-center">
@@ -126,7 +143,7 @@ function InputBase({
         // senza di quello perde il padding sinistro e si sovrappone l'icona
         className={`
           appearance-none
-          w-full rounded-lg px-4 py-2 h-10
+          w-full rounded-lg px-4 py-2 h-10 text-sm
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
@@ -136,6 +153,50 @@ function InputBase({
         name={name}
         type={type}
         placeholder={placeholder}
+        autoComplete="off"
+        onKeyUp={(e) => {
+          onKeyUp(e);
+        }}
+        onChange={(e) => {
+          onChange(e);
+        }}
+        ref={ref}
+      />
+    </div>
+  );
+}
+
+function InputTel({
+  disabled,
+  icon,
+  errorMessage,
+  color,
+  name,
+  value = 0,
+  ref,
+  onKeyUp = () => {},
+  onChange = () => {},
+  className = "",
+}) {
+
+  return (
+    <div className="w-full flex items-center justify-center">
+      <input
+        disabled={disabled}
+        // la classe apparence-none evita la perdita dello stile dopo la valorizzazione
+        // senza di quello perde il padding sinistro e si sovrappone l'icona
+        className={`
+          appearance-none
+          w-full rounded-lg px-4 py-2 h-10 text-sm   
+          border focus:border-2 focus:outline-0 
+          placeholder:text-muted-foreground disabled:opacity-50 
+          ${colorVariants[color] || colorVariants["default"]} 
+          ${icon && "pl-9"} 
+          ${errorMessage && "border-red-500"} 
+          ${className}`}
+        name={name}
+        type={"tel"}
+        value={value}
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
@@ -159,7 +220,7 @@ function InputPassword({
   ref,
   onKeyUp = () => {},
   onChange = () => {},
-  className,
+  className = "",
 }) {
   const [showText, setShowText] = useState(false);
 
@@ -172,7 +233,7 @@ function InputPassword({
         // senza di quello perde il padding sinistro e si sovrappone l'icona
         className={`
           appearance-none
-          w-full rounded-lg px-4 py-2 h-10  
+          w-full rounded-lg px-4 py-2 h-10 text-sm   
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 
@@ -217,14 +278,14 @@ function InputTextarea({
   ref,
   onKeyUp = () => {},
   onChange = () => {},
-  className,
+  className = "",
 }) {
   return (
     <textarea
       disabled={disabled}
       rows={rows}
       className={`
-          w-full rounded-lg p-2
+          w-full rounded-lg p-2 text-sm
           border focus:border-2 focus:outline-0 
           placeholder:text-muted-foreground disabled:opacity-50 
           ${colorVariants[color] || colorVariants["default"]} 

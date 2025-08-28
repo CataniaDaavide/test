@@ -24,6 +24,7 @@ export default function RegisterPage() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const [error, setError] = useState("");
   const [formValidationError, setFormValidationError] = useState({
     name: "",
     email: "",
@@ -91,6 +92,7 @@ export default function RegisterPage() {
   // click sul pulsante "crea account"
   const handleSubmit = async (e) => {
     try {
+      
       e.preventDefault();
       setError("")
 

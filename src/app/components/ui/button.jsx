@@ -49,7 +49,7 @@ export function ButtonIcon({
   icon,
   onClick,
   color,
-  className,
+  className = "",
   disabled = false,
 }) {
   // Cloniamo le icone per forzare il size

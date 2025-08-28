@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Calendar, Clock, Plus, Tag, Wallet } from "lucide-react";
 import Input from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -10,6 +10,7 @@ import { convertDate } from "../core/baseFunctions";
 import Tabs from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
 import { CardSliderTest } from "../components/ui/slider";
+import { ModalContext } from "../context/ModalContext";
 
 export default function App() {
   const tabs = [
@@ -124,6 +125,31 @@ function CardTest() {
 }
 
 function AllButtons() {
+  const { setModal } = useContext(ModalContext);
+  const showErrorModal = () => {
+    setModal({
+      show: true,
+      type: "error",
+      data: {
+        title: "ModalError",
+        desciption: "Lorem Ipsum is simply dummy text of the printing",
+        message:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      },
+    });
+  };
+
+  const showTransictionModal = () => {
+    setModal({
+      show: true,
+      type: "transiction",
+      data: {
+        title: "ModalTransiction",
+        description: "Registra una nuova entrata o uscita"
+      },
+    });
+  };
+
   return (
     <>
       <p>all buttons</p>
@@ -135,13 +161,13 @@ function AllButtons() {
         <Plus />
         <p>ciao</p>
       </Button>
-      <Button color={"success"}>
+      <Button onClick={showTransictionModal} color={"success"}>
         <Plus />
-        <p>ciao</p>
+        <p>showTransictionModal</p>
       </Button>
-      <Button color={"danger"}>
+      <Button onClick={showErrorModal} color={"danger"}>
         <Plus />
-        <p>ciao</p>
+        <p>showErrorModal</p>
       </Button>
       <Button color={"outline"}>
         <Plus />
@@ -190,4 +216,3 @@ function AllInput() {
     </>
   );
 }
-

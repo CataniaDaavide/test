@@ -4,6 +4,7 @@ import { Wallet } from "lucide-react";
 //components
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardHeaderContent,
@@ -23,13 +24,15 @@ export default function AuthLayout({ title, desciption, children }) {
       />
       <Card>
         <CardHeader>
-          <CardHeaderContent>
+          <CardHeaderContent
+            className={"!w-full !items-center !justify-center"}
+          >
             <Logo />
             <CardTitle>{title}</CardTitle>
             <CardDescription>{desciption}</CardDescription>
           </CardHeaderContent>
         </CardHeader>
-        {children}
+        <CardContent className={"flex flex-col gap-3 items-center"}>{children}</CardContent>
       </Card>
     </div>
   );
