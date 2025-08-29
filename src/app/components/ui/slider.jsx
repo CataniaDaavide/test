@@ -17,7 +17,7 @@ export function CardSliderTest() {
   );
 }
 
-export default function Slider({ cards }) {
+export default function Slider({ cards, CardComponent }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
 

@@ -13,7 +13,15 @@ import {
 import PercentageBar from "@/app/components/ui/percentage-bar";
 import { CardSliderTest } from "@/app/components/ui/slider";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
-import { ArrowRight, Calendar, ChartPie } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  ChartPie,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 //hoocks - functions - lib
@@ -25,12 +33,7 @@ import { useRouter } from "next/navigation";
 export default function DashboardPage() {
   return (
     <div className="w-full h-full flex flex-col gap-3 p-3">
-      <div className="w-full flex md:hidden">
-        <CardSliderTest />
-      </div>
-      <div className="w-full hidden md:flex">
-        <StatsContainer />
-      </div>
+      <StatsContainer />
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-3">
         <RecentMovementsContainer />
         <OtherStastsContainer />
@@ -40,13 +43,62 @@ export default function DashboardPage() {
 }
 
 function StatsContainer() {
+  const stats = [
+    {
+      title: "Entrate del mese",
+      amount: 0.0,
+      icon: <TrendingUp size={16} />,
+      percentage: 0,
+    },
+    {
+      title: "Uscite del mese",
+      amount: 0.0,
+      icon: <TrendingDown size={16} />,
+      percentage: 0,
+    },
+    {
+      title: "Saldo Totale",
+      amount: 0.0,
+      icon: <Wallet size={16} />,
+      // percentage: 0,
+    },
+    {
+      title: "Obiettivi ???",
+      amount: 0,
+      icon: <Target size={16} />,
+      // percentage: 0,
+    },
+  ];
   return (
-    <div className="w-full gap-3 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4">
-      <FakeCard type="STATS" />
-      <FakeCard type="STATS" />
-      <FakeCard type="STATS" />
-      <FakeCard type="STATS" />
-    </div>
+    <>
+      <div className="w-full flex md:hidden">
+        <CardSliderTest stats={stats} />
+      </div>
+
+      <div className="w-full hidden md:grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat, index) => {
+          return <ItemListStatsContainer key={index} stat={stat} />;
+        })}
+      </div>
+    </>
+  );
+}
+
+function ItemListStatsContainer({ stat }) {
+  const { title, icon, amount, percentage } = stat;
+  console.log(stat);
+
+  return (
+    <Card>
+      <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
+        <p>{title}</p>
+        {icon}
+      </div>
+      <p className="text-2xl font-bold">€{amount}</p>
+      {percentage != undefined && (
+        <p className="text-xs text-green-600 md:text-amber-500">{percentage}% dal mese scorso</p>
+      )}
+    </Card>
   );
 }
 
@@ -111,7 +163,7 @@ function OtherStastsContainer() {
 }
 
 function ExpensesByCategory() {
-  let expensesList = ["","","","","","","","","",];
+  let expensesList = ["", "", "", "", "", "", "", "", ""];
 
   return (
     <Card>
@@ -139,7 +191,7 @@ function ExpensesByCategory() {
 }
 
 function ItemListExpensesByCategory() {
-  return <PercentageBar title={"test"} percentage={30}/>;
+  return <PercentageBar title={"test"} percentage={30} />;
 }
 
 function MonthlyIncomeExpenseComparison() {
