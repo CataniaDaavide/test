@@ -10,25 +10,18 @@ import { convertDate } from "../core/baseFunctions";
 import Tabs from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
 import { CardSliderTest } from "../components/ui/slider";
+import { useExceptionManager } from "../context/ExceptionManagerContext";
 import { ModalContext } from "../context/ModalContext";
 
 export default function App() {
   const tabs = [
     {
-      value: "aaa",
-      tab: <ExampleCard />,
+      value: "ExampleCard",
+      tab: <ExampleCard />
     },
     {
       value: "CardSlider",
       tab: <CardSliderTest />,
-    },
-    {
-      value: "card test",
-      tab: <CardTest />,
-    },
-    {
-      value: "inputs/select",
-      tab: <AllInput />,
     },
     {
       value: "buttons",
@@ -53,90 +46,17 @@ export default function App() {
   );
 }
 
-function CardTest() {
-  const dateRef = useRef();
-  const timeRef = useRef();
-  const messageRef = useRef();
-  const [val, setVal] = useState("");
-
-  useEffect(() => {
-    dateRef.current.value = convertDate(new Date(), "yyyy-MM-dd");
-    timeRef.current.value = convertDate(new Date(), "HH:mm");
-  }, []);
-
-  const handleClick = () => {
-    let str = "";
-    if (dateRef.current.value) {
-      str += convertDate(new Date(dateRef.current.value), "dd/MM/yyyy") + "\n";
-    }
-    if (timeRef.current.value) {
-      str += timeRef.current.value + "\n";
-    }
-    if (messageRef.current.value) {
-      str += messageRef.current.value + "\n";
-    }
-    setVal(str);
-  };
-
-  const handleReset = () => {
-    dateRef.current.value = "";
-    timeRef.current.value = "";
-    messageRef.current.value = "";
-    setVal("");
-  };
-
-  return (
-    <Card>
-      <div className="w-full flex gap-3">
-        <Input
-          icon={<Calendar />}
-          title={"Data"}
-          type={"date"}
-          name={"data"}
-          ref={dateRef}
-        />
-        <Input
-          icon={<Clock />}
-          title={"Time"}
-          type={"time"}
-          name={"time"}
-          ref={timeRef}
-        />
-      </div>
-      <Input
-        title={"Textarea"}
-        type={"textarea"}
-        name={"textarea"}
-        rows={3}
-        ref={messageRef}
-      />
-      <ExampleSelectComponent />
-      <Button onClick={handleClick} color={"primary"}>
-        Stampa value
-      </Button>
-      <Button onClick={handleReset}>Reset value</Button>
-      {val && (
-        <Card>
-          <p className="whitespace-pre-line text-center">{val}</p>
-        </Card>
-      )}
-    </Card>
-  );
-}
-
 function AllButtons() {
-  const { setModal } = useContext(ModalContext);
+  const { base_exceptionManager } = useExceptionManager();
+  const { modal, setModal } = useContext(ModalContext);
   const showErrorModal = () => {
-    setModal({
-      show: true,
-      type: "error",
-      data: {
-        title: "ModalError",
-        desciption: "Lorem Ipsum is simply dummy text of the printing",
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      },
-    });
+    try {
+      throw new Error(
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic aliquid laboriosam natus consequatur corporis at quaerat vero impedit quisquam illum doloribus, temporibus facilis officia ut dolores ipsum eaque perferendis id rerum similique et repellat nostrum. Libero earum ipsam sint quam assumenda nam ratione alias similique est, et ut cumque quibusdam ea enim? Officiis quas minima, consectetur rerum laboriosam numquam modi aliquid ut. Facilis deserunt eveniet suscipit tempore, unde sunt velit possimus aliquam obcaecati mollitia totam ipsa laudantium vitae officia quam veniam. Qui iste quia nobis modi perferendis amet. Aliquam aperiam laborum eum deleniti autem, ipsum, odit, dolorum fuga eligendi esse doloremque aspernatur earum! Cumque, repudiandae voluptate, vero corrupti fugiat molestias optio repellat, error voluptatibus animi vel fuga temporibus modi excepturi dolores accusamus inventore quod. Quae nostrum magnam voluptatibus harum consequuntur nemo provident laborum omnis sunt ratione libero ea culpa blanditiis illo mollitia possimus ab reprehenderit magni, hic impedit soluta eveniet. Porro quae odit sunt sit dicta error ipsam perspiciatis, veniam quidem facere, consequatur vitae amet facilis omnis laboriosam voluptate. Aliquam cupiditate provident impedit fugiat cumque, illo aut quasi ex, veritatis accusantium exercitationem iure ab quisquam qui optio dolores placeat suscipit adipisci? Recusandae hic earum expedita inventore eligendi, excepturi aliquid voluptate necessitatibus quos dicta illo accusantium placeat autem aperiam obcaecati nam maiores corporis quisquam impedit at ex maxime laudantium! Harum deleniti saepe repudiandae et consequatur provident cupiditate ipsa quos, praesentium aliquam ipsam sint sunt vero accusantium consectetur quas reprehenderit necessitatibus quae. Ab excepturi ullam nisi natus quod ipsam voluptas eos, id ea quidem, veritatis saepe, est placeat necessitatibus delectus aliquam culpa? Perferendis autem sunt corporis earum, suscipit repellendus quisquam enim quibusdam animi qui tenetur temporibus dicta! Commodi optio doloribus autem fugit corporis maxime assumenda officia natus? In repellendus adipisci nisi officia dolores! Corporis ullam odio unde quos impedit ea est voluptas, explicabo neque atque, inventore"
+      );
+    } catch (error) {
+      base_exceptionManager(error);
+    }
   };
 
   const showTransictionModal = () => {
@@ -144,8 +64,17 @@ function AllButtons() {
       show: true,
       type: "transiction",
       data: {
-        title: "ModalTransiction",
-        description: "Registra una nuova entrata o uscita"
+        movementData: {
+          _id: "aaaaaaaaaaaa",
+          date: "2025-12-01T14:54:00.000Z",
+          createAt: "2025-12-01T14:54:00.000Z",
+          categorieId: "222",
+          accountOneId: "666",
+          amountOne: 1.2,
+          accountTwoId: "555",
+          amountTwo: 1.2,
+          description: "Ciao come stai, io tutto bene"
+        },
       },
     });
   };
@@ -155,64 +84,24 @@ function AllButtons() {
       <p>all buttons</p>
       <Button>
         <Plus />
-        <p>ciao</p>
+        <span>ciao</span>
       </Button>
       <Button color={"primary"}>
         <Plus />
-        <p>ciao</p>
+        <span>ciao</span>
       </Button>
       <Button onClick={showTransictionModal} color={"success"}>
         <Plus />
-        <p>showTransictionModal</p>
+        <span>showTransictionModal</span>
       </Button>
       <Button onClick={showErrorModal} color={"danger"}>
         <Plus />
-        <p>showErrorModal</p>
+        <span>showErrorModal</span>
       </Button>
       <Button color={"outline"}>
         <Plus />
-        <p>ciao</p>
+        <span>ciao</span>
       </Button>
-    </>
-  );
-}
-
-function AllInput() {
-  const inputRef = useRef();
-  const options = [
-    { value: "ciao1", data: {} },
-    { value: "ciao2", data: {} },
-    { value: "ciao3", data: {} },
-    { value: "ciao4", data: {} },
-    { value: "ciao5", data: {} },
-  ];
-  const [value, setValue] = useState({});
-
-  return (
-    <>
-      <p>all inputs</p>
-      <Card>
-        <Input
-          title={"Default color"}
-          type="password"
-          icon={<Wallet />}
-          ref={inputRef}
-        />
-      </Card>
-      <Input
-        title={"Primary color"}
-        icon={<Wallet />}
-        ref={inputRef}
-        color={"primary"}
-      />
-      <Input
-        title={"outline color"}
-        icon={<Wallet />}
-        ref={inputRef}
-        color={"outline"}
-      />
-      <p>Select</p>
-      <Select value={value} setValue={setValue} options={options} />
     </>
   );
 }

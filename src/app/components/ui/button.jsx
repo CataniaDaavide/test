@@ -3,10 +3,11 @@
 //hoocks - functions - lib
 import { useRouter } from "next/navigation";
 import { cloneElement, isValidElement } from "react";
-import { base_exceptionManager, fetchApi } from "../../core/baseFunctions.js";
+import { fetchApi } from "../../core/baseFunctions.js";
 
 //icons
 import { Loader, ChevronLeft, LogOut } from "lucide-react";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext.jsx";
 
 const colorVariants = {
   trasparent: "bg-trasparent hover:bg-border-card",
@@ -31,9 +32,9 @@ export function Button({
     <button
       disabled={disabled || isLoading}
       className={`
-        flex gap-3 items-center justify-center px-4 py-2 w-full h-10 
+        flex gap-1 items-center justify-center px-4 py-2 w-full h-10 
         transition-all duration-300 
-         text-sm font-semibold text-nowrap rounded-lg 
+        text-sm font-semibold text-nowrap rounded-lg 
         cursor-pointer disabled:cursor-not-allowed disabled:opacity-90 active:scale-95 disabled:active:scale-100
         ${colorVariants[color] || colorVariants["default"]}
         ${className}
@@ -91,6 +92,7 @@ export function ButtonBack({ className }) {
 }
 
 export function ButtonLogout({ color, className = "", showText = true  }) {
+  const { base_exceptionManager } = useExceptionManager()
   const router = useRouter();
   const handleLogout = async (e) => {
     try {
@@ -114,7 +116,7 @@ export function ButtonLogout({ color, className = "", showText = true  }) {
   return (
     <Button onClick={handleLogout} color={color} className={`text-red-500 ${className}`}>
       <LogOut size={16} />
-      {showText && <p>Logout</p>}
+      {showText && <span>Logout</span>}
     </Button>
   );
 }

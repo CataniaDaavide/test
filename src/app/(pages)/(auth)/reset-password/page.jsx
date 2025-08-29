@@ -4,7 +4,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  base_exceptionManager,
   fetchApi,
   formValidation,
 } from "@/app/core/baseFunctions";
@@ -16,8 +15,10 @@ import { Lock } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function LoginPage() {
+  const { base_exceptionManager } = useExceptionManager() 
   const router = useRouter();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -177,7 +178,7 @@ export default function LoginPage() {
         onKeyUp={handleKeyUp}
       />
       <Button onClick={handleSubmit} color={"primary"}>
-        Reset password
+        <span>Reset password</span>
       </Button>
       {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
     </AuthLayout>

@@ -19,13 +19,9 @@ export default function ModalError({ data, handleCloseModal }) {
           {title && <CardTitle>{title}</CardTitle>}
           {description && <CardDescription>{description}</CardDescription>}
         </CardHeaderContent>
-        
-        <CardHeaderActions className={"absolute top-3 right-3"}>
-            <ButtonIcon onClick={handleCloseModal} icon={<X />} className={`hover:!bg-transparent !text-muted-foreground hover:!text-background-inverse transition-all duration-300`} color={"trasparent"}/>
-        </CardHeaderActions>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="overflow-scroll scrollbar-hide">
         {message && <p>{message}</p>}
       </CardContent>
 

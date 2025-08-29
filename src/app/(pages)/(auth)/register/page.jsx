@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  base_exceptionManager,
   fetchApi,
   formValidation,
 } from "@/app/core/baseFunctions";
@@ -17,8 +16,10 @@ import { AtSign, Lock, User } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import Input from "@/app/components/ui/input";
 import AuthLayout from "../authLayout";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function RegisterPage() {
+  const { base_exceptionManager } = useExceptionManager()
   const router = useRouter();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -197,7 +198,7 @@ export default function RegisterPage() {
         onKeyUp={handleKeyUp}
       />
       <Button onClick={handleSubmit} color={"primary"}>
-        Crea account
+        <span>Crea account</span>
       </Button>
       <p className="text-sm text-muted-foreground">
         Hai gia un account?

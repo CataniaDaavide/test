@@ -28,7 +28,11 @@ export function CardHeader({ children, className = "" }) {
 
 // Contenitore per titolo + descrizione
 export function CardHeaderContent({ children, className = "" }) {
-  return <div className={`h-full flex flex-col gap-1 justify-center ${className}`}>{children}</div>;
+  return (
+    <div className={`h-full flex flex-col gap-1 justify-center ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 // Azioni nella header
@@ -39,9 +43,9 @@ export function CardHeaderActions({ children, className = "" }) {
 }
 
 // Titolo
-export function CardTitle({ children, className = ""}) {
+export function CardTitle({ children, className = "" }) {
   return (
-    <p className={`text-lg font-semibold flex gap-2 items-center ${className}`}>
+    <p className={`text-xl font-semibold flex gap-2 items-center ${className}`}>
       {children}
     </p>
   );
@@ -50,13 +54,17 @@ export function CardTitle({ children, className = ""}) {
 // Descrizione
 export function CardDescription({ children, className = "" }) {
   return (
-    <p className={`text-sm text-muted-foreground ${className}`}>{children}</p>
+    <p className={`text-muted-foreground ${className}`}>{children}</p>
   );
 }
 
 // Contenuto principale
 export function CardContent({ children, className = "" }) {
-  return <div className={`w-full h-full flex flex-col gap-3 ${className}`}>{children}</div>;
+  return (
+    <div className={`w-full h-full flex flex-col gap-3 ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 // Footer della card
@@ -97,9 +105,15 @@ export function ExampleCard({}) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button color="">Annulla</Button>
-        <Button color="danger">Elimina</Button>
-        <Button color="success">Conferma</Button>
+        <Button color="">
+          <span>Annulla</span>
+        </Button>
+        <Button color="danger">
+          <span>Elimina</span>
+        </Button>
+        <Button color="success">
+          <span>Conferma</span>
+        </Button>
       </CardFooter>
     </Card>
   );

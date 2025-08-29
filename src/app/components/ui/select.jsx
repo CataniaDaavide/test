@@ -69,7 +69,7 @@ export default function Select({
 
   return (
     <div ref={wrapperRef} className="relative w-full">
-      <TitleComponents title={title} required={required} />
+      <TitleComponents required={required}>{title}</TitleComponents>
       <SelectButton
         disabled={disabled}
         value={value?.value}

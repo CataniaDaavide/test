@@ -1,12 +1,13 @@
 "use client";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { SidebarContext } from "@/app/context/SidebarContext";
-import { base_exceptionManager } from "@/app/core/baseFunctions";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export default function MenuMobile() {
+  const { base_exceptionManager } = useExceptionManager()
   const { activeTab, setActiveTab } = useContext(SidebarContext);
 
   return (

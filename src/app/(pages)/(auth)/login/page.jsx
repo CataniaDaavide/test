@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   base_checkEmail,
-  base_exceptionManager,
   fetchApi,
   formValidation,
 } from "@/app/core/baseFunctions";
@@ -18,8 +17,10 @@ import { AtSign, Lock } from "lucide-react";
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function LoginPage() {
+  const {   base_exceptionManager } = useExceptionManager()
   const router = useRouter();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -171,11 +172,11 @@ export default function LoginPage() {
         onClick={handleSubmit}
         color={"primary"}
         isLoading={isLoading}
-      >Accedi</Button>
+      ><span>Accedi</span></Button>
       <Button
         onClick={handleDemoCredetial}
         color={"secondary"}
-      >Credenziali demo</Button>
+      ><span>Credenziali demo</span></Button>
       {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       <p className="text-sm text-muted-foreground">
         Non hai un account?

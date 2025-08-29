@@ -11,11 +11,24 @@ export function base_checkEmail(email) {
     return regex.test(email);
 }
 
-export function base_exceptionManager(error) {
-    /* 
-    - error: errore generato da qualche blocco di codice
-    */
+// base_exceptionManager sostituito con il Porvider - Context "ExceptionManagerContext"
+/*
+export function base_exceptionManager(error, setModal) {
+    // - error: errore generato da qualche blocco di codice
+    const { message } = error
+    console.log(message)
+    setModal({
+        show: true,
+        type: "error",
+        data: {
+            title: "ModalError - " + message,
+            desciption: "Lorem Ipsum is simply dummy text of the printing",
+            message:
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        },
+    });
 }
+*/
 
 export function formValidation(setError, fields) {
     /*
@@ -173,7 +186,7 @@ export function convertDate(dateIsoString, format = "dd/MM/yyyy HH:mm:ss") {
     */
 
     const dateObj = new Date(dateIsoString);
-    
+
     const map = {
         dd: String(dateObj.getDate()).padStart(2, "0"),
         d: dateObj.getDate(),

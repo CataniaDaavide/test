@@ -3,10 +3,13 @@ import { useContext } from "react";
 import { Card } from "../card";
 import { ModalContext } from "@/app/context/ModalContext";
 import ModalError from "./modal-error";
-import { base_exceptionManager } from "@/app/core/baseFunctions";
 import ModalTransiction from "./modal-transiction";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
+import { ButtonIcon } from "../button";
+import { X } from "lucide-react";
 
 export default function Modal() {
+  const { base_exceptionManager } = useExceptionManager()
   const { modal, setModal } = useContext(ModalContext);
 
   const handleCloseModal = () => {
@@ -55,6 +58,14 @@ export default function Modal() {
       onClick={handleOverlayClick} 
     >
       <Card className="relative h-[100dvh] !overscroll-none !border-0 md:!border-1 md:h-auto !rounded-none md:!rounded-xl md:max-w-md !justify-start">
+          <ButtonIcon
+            onClick={handleCloseModal}
+            icon={<X />}
+            className={`
+              absolute top-3 right-3
+              !rounded-full !text-muted-foreground hover:!text-background-inverse transition-all duration-300`}
+            color={"trasparent"}
+          />
         {ModalComponent}
       </Card>
     </div>

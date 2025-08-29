@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
+import { ExceptionProvider } from "./context/ExceptionManagerContext";
 
 export const metadata = {
   //   title: "Template APP",
@@ -30,12 +31,14 @@ export default function RootLayout({ children }) {
           bg-background text-background-inverse
         `}
       >
-        <ThemeProvider>
-          <ModalProvider>
-            <Modal />
-            {children}
-            </ModalProvider>
-        </ThemeProvider>
+        <ModalProvider>
+          <ExceptionProvider>
+            <ThemeProvider>
+              <Modal />
+              {children}
+            </ThemeProvider>
+          </ExceptionProvider>
+        </ModalProvider>
       </body>
     </html>
   );

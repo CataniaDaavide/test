@@ -3,9 +3,8 @@ import { SidebarContext } from "@/app/context/SidebarContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { ChevronsRight, LogOut, PanelLeft, Wallet } from "lucide-react";
-import { base_exceptionManager, fetchApi } from "@/app/core/baseFunctions";
-import { menuItems } from "@/app/(pages)/dashboard/layout";
-import ButtonToggleTheme from "./toggle-theme";
+import { fetchApi } from "@/app/core/baseFunctions";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function Sidebar({ items }) {
   const router = useRouter();
@@ -66,6 +65,7 @@ export default function Sidebar({ items }) {
 }
 
 function ButtonLogoutSidebar({ expand, router }) {
+  const { base_exceptionManager } = useExceptionManager()
   const handleLogout = async (e) => {
     try {
       e.preventDefault();
@@ -103,6 +103,7 @@ function ButtonLogoutSidebar({ expand, router }) {
 }
 
 function ItemListSidebar({ expand, item, activeTab, setActiveTab, router }) {
+  const { base_exceptionManager } = useExceptionManager()
   const [hoverText, setHoverText] = useState(false);
   const { title, icon, link, action } = item;
 

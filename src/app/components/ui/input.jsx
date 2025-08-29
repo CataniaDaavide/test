@@ -114,7 +114,7 @@ export default function Input({
 
   return (
     <div className="w-full flex flex-col justify-center">
-      <TitleComponents title={title} required={required} />
+      <TitleComponents required={required}>{title}</TitleComponents>
       {InputSelected}
       {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
     </div>
