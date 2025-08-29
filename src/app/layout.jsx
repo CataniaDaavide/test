@@ -20,12 +20,12 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="w-full h-full">
       {/* <html lang="en"> */}
       <body
         className={`
           relative antialiased overscroll-none 
-          w-screen h-[100dvh]
+          w-full h-full
           flex flex-col items-center justify-center 
           bg-background text-background-inverse
         `}
