@@ -20,7 +20,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="w-full h-full">
+    <html lang="en" className="w-full h-full overscroll-none">
       {/* <html lang="en"> */}
       <body
         className={`
