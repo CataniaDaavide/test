@@ -9,19 +9,27 @@ export function CardSliderTest() {
     { id: 3, text: "Card 3" },
     { id: 4, text: "Card 4" },
   ];
+  const containerRef = useRef(null);
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    setWidth(containerRef.current.offsetWidth)
+  },[containerRef])
 
   return (
-    <div className="w-full p-3">
-      <Slider cards={cards} />
-    </div>
+    <Slider cards={cards} containerRef={containerRef}>
+      {cards.map((card) => (
+        <CardTest key={card.id} card={card} cardWidth={width} />
+      ))}
+    </Slider>
   );
 }
 
-export default function Slider({ cards, CardComponent }) {
+export default function Slider({ cards, containerRef, children }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
 
-  const containerRef = useRef(null);
+  // const containerRef = useRef(null);
   const sliderRef = useRef(null);
 
   // refs per gestione drag
@@ -110,9 +118,7 @@ export default function Slider({ cards, CardComponent }) {
             transition: "transform 0.3s ease",
           }}
         >
-          {cards.map((card) => (
-            <CardTest key={card.id} card={card} cardWidth={cardWidth} />
-          ))}
+          {children}
         </div>
       </div>
 

@@ -14,7 +14,7 @@ import TitleComponents from "./title-components";
 import { Check, Eye, EyeOff } from "lucide-react";
 
 const colorVariants = {
-  outline: "bg-trasparent border-border-card focus:border-background-inverse",
+  outline: "bg-trasparent border border-border-card focus:border-background-inverse",
   primary: "bg-border-card border-0",
   default: "bg-card border-border-card focus:border-background-inverse",
 };
@@ -318,12 +318,12 @@ function InputCheckbox({
 
   const internalRef = useRef(null);
 
-  const colorVariantsChecked = {
-    success: "!bg-green-500",
-    danger: "!bg-red-500",
-    primary: "!bg-background-inverse text-background",
-    default: "",
-  };
+  // const colorVariantsChecked = {
+  //   success: "!bg-green-500",
+  //   danger: "!bg-red-500",
+  //   primary: "!bg-background-inverse text-background",
+  //   default: "",
+  // };
 
   // sincronizza ref esterno se presente
   useEffect(() => {
