@@ -12,12 +12,13 @@ import ButtonToggleTheme from "../components/ui/toggle-theme";
 import { CardSliderTest } from "../components/ui/slider";
 import { useExceptionManager } from "../context/ExceptionManagerContext";
 import { ModalContext } from "../context/ModalContext";
+import Badge from "../components/ui/badge";
 
 export default function App() {
   const tabs = [
     {
       value: "ExampleCard",
-      tab: <ExampleCard />
+      tab: <ExampleCard />,
     },
     {
       value: "CardSlider",
@@ -30,6 +31,8 @@ export default function App() {
   ];
   const [value, setValue] = useState(tabs[0]);
 
+  const checkRef = useRef();
+
   return (
     <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
       <ButtonToggleTheme
@@ -41,6 +44,17 @@ export default function App() {
         Uso questa pagina come test per i componenti
       </p>
       <Tabs tabs={tabs} value={value} setValue={setValue} />
+      <Badge>ciao</Badge>
+
+      <div className="flex gap-3">
+        <Input type="checkbox" ref={checkRef} />
+        <button
+          className="border px-4 py-2"
+          onClick={() => console.log(checkRef.current.checked)}
+        >
+          click
+        </button>
+      </div>
       {value.tab}
     </div>
   );
@@ -73,7 +87,7 @@ function AllButtons() {
           amountOne: 1.2,
           accountTwoId: "555",
           amountTwo: 1.2,
-          description: "Ciao come stai, io tutto bene"
+          description: "Ciao come stai, io tutto bene",
         },
       },
     });

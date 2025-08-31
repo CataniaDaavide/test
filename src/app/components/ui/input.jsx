@@ -1,11 +1,17 @@
 "use client";
 
 //hoocks - functions - lib
-import { cloneElement, isValidElement, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import TitleComponents from "./title-components";
 
 //icons
-import { Eye, EyeOff } from "lucide-react";
+import { Check, Eye, EyeOff } from "lucide-react";
 
 const colorVariants = {
   outline: "bg-trasparent border-border-card focus:border-background-inverse",
@@ -19,6 +25,7 @@ export default function Input({
   type = "text",
   required = false,
   placeholder,
+  defaultValue = "",
   icon,
   ref,
   errorMessage = "",
@@ -32,7 +39,7 @@ export default function Input({
   // Cloniamo le icone per forzare il size
   const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
 
-  let InputSelected = (<></>);
+  let InputSelected = <></>;
 
   switch (type) {
     case "text":
@@ -85,6 +92,21 @@ export default function Input({
           ref={ref}
           onKeyUp={onKeyUp}
           onChange={onChange}
+          className={className}
+        />
+      );
+      break;
+
+    case "checkbox":
+      InputSelected = (
+        <InputCheckbox
+          disabled={disabled}
+          errorMessage={errorMessage}
+          defaultChecked={defaultValue}
+          color={color}
+          ref={ref}
+          // onKeyUp={onKeyUp}
+          // onChange={onChange}
           className={className}
         />
       );
@@ -207,7 +229,7 @@ function InputTel({
     <div className="w-full flex items-center justify-center">
       <input
         disabled={disabled}
-        inputMode="decimal"  
+        inputMode="decimal"
         className={`
           appearance-none
           w-full rounded-lg px-4 py-2 h-10 text-sm   
@@ -217,7 +239,7 @@ function InputTel({
           ${errorMessage && "border-red-500"} 
           ${className}`}
         name={name}
-        type="tel"          
+        type="tel"
         defaultValue={value}
         autoComplete="off"
         placeholder={placeholder}
@@ -227,7 +249,6 @@ function InputTel({
     </div>
   );
 }
-
 
 function InputPassword({
   disabled,
@@ -283,6 +304,80 @@ function InputPassword({
         )}
       </button>
     </div>
+  );
+}
+
+function InputCheckbox({
+  defaultChecked = false,
+  errorMessage,
+  color,
+  ref: externalRef,
+}) {
+  const [isChecked, setIsChecked] = useState(defaultChecked);
+  const [isHidden, setIsHidden] = useState(!defaultChecked);
+
+  const internalRef = useRef(null);
+
+  const colorVariantsChecked = {
+    success: "!bg-green-500",
+    danger: "!bg-red-500",
+    primary: "!bg-background-inverse text-background",
+    default: "",
+  };
+
+  // sincronizza ref esterno se presente
+  useEffect(() => {
+    if (externalRef) {
+      externalRef.current = internalRef.current;
+    }
+  }, [externalRef]);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+
+    setIsChecked((prev) => {
+      const next = !prev;
+
+      if (next) {
+        setIsHidden(false);
+      } else {
+        setTimeout(() => setIsHidden(true), 80);
+      }
+
+      return next; 
+    });
+  };
+
+  return (
+    <>
+      <button
+        onClick={handleClick}
+        className={`
+          flex items-center justify-center
+          w-6 h-6 rounded-lg font-bold p-1
+          ${errorMessage && "border border-red-500 focus:border-red-500"}
+          ${colorVariants[color] || colorVariants["default"]}
+        `}
+      >
+        <Check
+          size={16}
+          strokeWidth={5}
+          className={`
+            ${isChecked ? "translate-y-0" : "translate-y-5"}
+            ${isHidden && "hidden"}
+            transition-all duration-300
+          `}
+        />
+      </button>
+
+      <input
+        type="checkbox"
+        className="hidden"
+        checked={isChecked}
+        ref={internalRef}
+        readOnly // necessario perché stiamo controllando lo stato via React
+      />
+    </>
   );
 }
 
