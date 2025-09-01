@@ -35,7 +35,7 @@ export default function DashboardPage() {
   return (
     <div className="w-full h-full flex flex-col gap-3 p-3">
       <StatsContainer />
-      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3">
         <RecentMovementsContainer />
         <OtherStastsContainer />
       </div>

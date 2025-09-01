@@ -1,7 +1,7 @@
 "use client";
 import { ButtonIcon } from "@/app/components/ui/button";
 import Tabs from "@/app/components/ui/tabs";
-import { Edit, Plus, RefreshCcw, Trash } from "lucide-react";
+import { Edit, Plus, RefreshCcw, Tag, Trash } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
@@ -13,7 +13,6 @@ import Emoji from "@/app/components/emoji";
 import { LoaderIcon } from "@/app/components/ui/loader-full-page";
 
 export default function CategoriesPage() {
-  const router = useRouter();
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
   const [isLoader, setIsLoader] = useState(false);
@@ -110,15 +109,28 @@ export default function CategoriesPage() {
 }
 
 function CardContainer({ tabsOptions, items }) {
-  const { modal, setModal } = useContext(ModalContext);
+  return (
+    <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
+      {items.map((item, index) => {
+        return <CategorieCard key={index} data={item} tabsOptions={tabsOptions} />;
+      })}
+    </div>
+  );
+}
 
+function CategorieCard({ data, tabsOptions}) {
+  const { setModal } = useContext(ModalContext);
+  const {_id, emoji, hexColor, status, type, name, userId  } = data
   // click sul pulsante edit
-  const handleEdit = () => {
+  const handleEdit = (e) => {
     try {
+      e.preventDefault()
+      console.log(1);
+      
       setModal({
         show: true,
-        type: "error",
-        data: {},
+        type: "categorie",
+        data: {...data},
       });
     } catch (error) {
       // base_exceptionManager(error)
@@ -133,35 +145,20 @@ function CardContainer({ tabsOptions, items }) {
   };
 
   return (
-    <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
-      {items.map((item, index) => {
-        const { name, emoji, hexColor, type } = item;
-
-        return (
-          <Card
-            key={index}
-            className="!flex-row !items-center !justify-between"
-          >
-            <div className="w-full flex items-center gap-3">
-              <Emoji emoji={emoji} hexColor={hexColor} />
-              <div>
-                <p className="text-nowrap">{name}</p>
-                <p className="text-sm text-gray-500">
-                  {tabsOptions.find((t) => type === t.value).label}
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-1">
-              <ButtonIcon
-                icon={<Edit />}
-                fn={handleEdit}
-                color={"trasparent"}
-              />
-              <ButtonIcon icon={<Trash />} fn={handleDelete} color={"danger"} />
-            </div>
-          </Card>
-        );
-      })}
-    </div>
+    <Card className="!flex-row !items-center !justify-between">
+      <div className="w-full flex items-center gap-3">
+        <Emoji emoji={emoji} hexColor={hexColor} />
+        <div>
+          <p className="text-nowrap">{name}</p>
+          <p className="text-sm text-gray-500">
+            {tabsOptions.find((t) => type === t.value).label}
+          </p>
+        </div>
+      </div>
+      <div className="flex gap-1">
+        <ButtonIcon icon={<Edit />} onClick={handleEdit} color={"trasparent"} />
+        <ButtonIcon icon={<Trash />} onClick={handleDelete} color={"danger"} />
+      </div>
+    </Card>
   );
 }

@@ -1,18 +1,18 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { Calendar, Clock, Plus, Tag, Wallet } from "lucide-react";
-import Input from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import {Plus } from "lucide-react";
+import Input, { ExampleCheckboxComponent } from "../components/ui/input";
+import { Button, ButtonIcon } from "../components/ui/button";
 import { Card, ExampleCard } from "../components/ui/card";
 import Select, { ExampleSelectComponent } from "../components/ui/select";
-import { convertDate } from "../core/baseFunctions";
 import Tabs, { ExampleTabsComponents } from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
-import { CardSliderTest } from "../components/ui/slider";
 import { useExceptionManager } from "../context/ExceptionManagerContext";
 import { ModalContext } from "../context/ModalContext";
 import Badge from "../components/ui/badge";
+import EmojiPicker from "../components/ui/emoji-picker";
+import ColorPicker from "../components/ui/color-picker";
 
 export default function App() {
   const [tabValue, setTabValue] = useState(1);
@@ -29,12 +29,20 @@ export default function App() {
       label: "checkbox",
       value: 3,
     },
+    {
+      label: "select",
+      value: 4,
+    },
+    {
+      label: "altri",
+      value: 5,
+    },
   ];
 
   const checkRef = useRef();
 
   return (
-    <div className="w-full h-full max-w-md p-3 flex flex-col gap-3 items-center justify-center">
+    <div className="w-full h-full max-w-md p-3 pt-5 flex flex-col gap-3 items-center">
       <ButtonToggleTheme
         className={"absolute top-3 right-3 !rounded-full"}
         color={"trasparent"}
@@ -47,7 +55,9 @@ export default function App() {
 
       {tabValue === 1 && <ExampleCard />}
       {tabValue === 2 && <AllButtons />}
-      {tabValue === 3 && <ExampleCheckboxComponents />}
+      {tabValue === 3 && <ExampleCheckboxComponent />}
+      {tabValue === 4 && <ExampleSelectComponent />}
+      {tabValue === 5 && <TestComponents />}
     </div>
   );
 }
@@ -108,25 +118,29 @@ function AllButtons() {
         <Plus />
         <span>ciao</span>
       </Button>
+      <div className="w-full flex gap-3 items-center justify-center">
+        <ButtonIcon icon={<Plus/>} color={""}/>
+        <ButtonIcon icon={<Plus/>} color={"outline"}/>
+        <ButtonIcon icon={<Plus/>} color={"trasparent"}/>
+        <ButtonIcon icon={<Plus/>} color={"success"}/>
+        <ButtonIcon icon={<Plus/>} color={"danger"}/>
+      </div>
     </>
   );
 }
 
-function ExampleCheckboxComponents() {
-  const checkRef = useRef();
-  const [checked, setChecked] = useState("false");
+function TestComponents(){
+  const [emoji, setEmoji] = useState()
+  const [color, setColor] = useState()
 
-  useEffect(() => {
-    console.log(checkRef.current.checked)
-  },[checkRef.current.value])
-
-  return (
-    <div className="w-full flex flex-col gap-3 items-center justify-center">
-      <p>esempio input checkbox component</p>
-      <div className="flex gap-1">
-        <Input type="checkbox" ref={checkRef} />
-        <p>value: {checked}</p>
-      </div>
+  return(
+    <div className="w-full flex flex-col items-center justify-center gap-3">
+      <Badge>ciao</Badge>
+      <ExampleTabsComponents />
+      <EmojiPicker value={emoji} setValue={setEmoji}/>
+      <ColorPicker value={color} setValue={setColor}/>
     </div>
-  );
+  )
 }
+
+

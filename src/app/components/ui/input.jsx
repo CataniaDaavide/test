@@ -14,7 +14,8 @@ import TitleComponents from "./title-components";
 import { Check, Eye, EyeOff } from "lucide-react";
 
 const colorVariants = {
-  outline: "bg-trasparent border border-border-card focus:border-background-inverse",
+  outline:
+    "bg-trasparent border border-border-card focus:border-background-inverse",
   primary: "bg-border-card border-0",
   default: "bg-card border-border-card focus:border-background-inverse",
 };
@@ -52,6 +53,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
+          defaultValue={defaultValue}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -106,7 +108,6 @@ export default function Input({
           color={color}
           ref={ref}
           // onKeyUp={onKeyUp}
-          onChange={onChange}
           className={className}
         />
       );
@@ -149,6 +150,7 @@ function InputBase({
   errorMessage,
   color,
   name,
+  defaultValue = "",
   placeholder,
   ref,
   onKeyUp = () => {},
@@ -174,6 +176,7 @@ function InputBase({
         name={name}
         type={type}
         placeholder={placeholder}
+        defaultValue={defaultValue}
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
@@ -310,7 +313,6 @@ function InputCheckbox({
   defaultChecked = false,
   errorMessage,
   color,
-  onChange = () => {},
   ref: externalRef,
 }) {
   const [isChecked, setIsChecked] = useState(defaultChecked);
@@ -327,7 +329,6 @@ function InputCheckbox({
 
   const handleClick = (e) => {
     e.preventDefault();
-    onChange()
     setIsChecked((prev) => {
       const next = !prev;
 
@@ -337,7 +338,7 @@ function InputCheckbox({
         setTimeout(() => setIsHidden(true), 80);
       }
 
-      return next; 
+      return next;
     });
   };
 
@@ -347,11 +348,11 @@ function InputCheckbox({
         onClick={handleClick}
         className={`
           flex items-center justify-center
-          w-6 h-6 rounded-lg font-bold p-1
-          ${errorMessage && "border-red-500 focus:border-red-500"}
+          w-6 h-6 rounded-lg font-bold p-1 border
           ${colorVariants[color] || colorVariants["default"]}
-        `}
-      >
+          ${errorMessage && "border-red-500 focus:border-red-500"}
+          `}
+          >
         <Check
           size={16}
           strokeWidth={5}
@@ -409,5 +410,27 @@ function InputTextarea({
       }}
       ref={ref}
     />
+  );
+}
+
+// -------------------------------------------------------------------------
+export function ExampleCheckboxComponent() {
+  const checkRef = useRef();
+  const [checked, setChecked] = useState("false");
+
+  return (
+    <div className="w-full flex flex-col gap-3 items-center justify-center border p-3">
+      <p>esempio input checkbox component</p>
+      <div className="flex gap-3">
+        <Input type="checkbox" ref={checkRef} />
+        <p>value: {checked}</p>
+      </div>
+      <button
+        onClick={() => setChecked(checkRef.current.checked ? "true" : "false")}
+      className="w-full px-4 py-2 rounded-lg bg-border-card"
+      >
+        click
+      </button>
+    </div>
   );
 }

@@ -22,7 +22,7 @@ export default function AuthLayout({ title, desciption, children }) {
         className={"absolute top-3 right-3 !rounded-full"}
         color={"trasparent"}
       />
-      <Card>
+      <Card className="bg-transparent !border-0">
         <CardHeader>
           <CardHeaderContent
             className={"!w-full !items-center !justify-center"}

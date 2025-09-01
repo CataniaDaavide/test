@@ -18,74 +18,24 @@ import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function ModalCategorie({ data, handleCloseModal }) {
   const { base_exceptionManager } = useExceptionManager();
-  const { movementData = {} } = data;
-  const {
-    _id,
-    // createAt,
-    type,
-    name,
-    emoji,
-    color,
-  } = movementData;
+  const { _id, emoji, hexColor, status, type, name, userId } = data;
+  console.log("aaa", _id, emoji, hexColor, status, type, name, userId);
   const title = _id ? "Modifica categoria" : "Creazione categoria";
   const description = "Crea una categoria per classificare entrate o uscite";
   const nameRef = useRef();
-  // const timeRef = useRef();
-  // const amountOneRef = useRef();
-  // const amountTwoRef = useRef();
-  // const descriptionRef = useRef();
   const [typeValue, setTypeValue] = useState();
   let typeOptions = [
     {
       _id: "111",
-      value: "Entrata",
+      label: "Entrata",
+      value: "E",
     },
     {
       _id: "222",
-      value: "Uscita",
+      label: "Uscita",
+      value: "U",
     },
   ];
-  //   {
-  //     _id: "333",
-  //     value: "categorie3",
-  //   },
-  //   {
-  //     _id: "444",
-  //     value: "categorie4",
-  //   },
-  // ];
-
-  // const [accountOneValue, setAccountOneValue] = useState();
-  // const [accountTwoValue, setAccountTwoValue] = useState();
-  // let accountOneOptions = [
-  //   {
-  //     _id: "555",
-  //     value: "account1",
-  //     type: "BANK",
-  //   },
-  //   {
-  //     _id: "666",
-  //     value: "account2",
-  //     type: "VOUCHER",
-  //   },
-  //   {
-  //     _id: "777",
-  //     value: "account3",
-  //     type: "VOUCHER",
-  //   },
-  //   {
-  //     _id: "888",
-  //     value: "account4",
-  //     type: "BANK",
-  //   },
-  // ];
-  // const [accountTwoOptions, setAccountTwoOptions] = useState([]);
-  // const [isVoucher, setIsVoucher] = useState(false);
-
-  // const setDateAndTime = (dateAndTime = new Date().toISOString()) => {
-  //   dateRef.current.value = convertDate(dateAndTime, "yyyy-MM-dd");
-  //   timeRef.current.value = convertDate(dateAndTime, "HH:mm");
-  // };
 
   // //initMovementData: evento che viene elaborato all render del componente la prima volta
   // useEffect(() => {
@@ -165,34 +115,34 @@ export default function ModalCategorie({ data, handleCloseModal }) {
     try {
       e.preventDefault();
 
-  //     const requestData = {
-  //       date: new Date(
-  //         `${dateRef.current.value}T${timeRef.current.value}`
-  //       ).toISOString(),
-  //       createAt: createAt ?? new Date().toISOString(),
-  //       categorieId: categorieValue._id.toString(),
-  //       accountOneId: accountOneValue._id.toString(),
-  //       amountOne: amountOneRef.current.value,
-  //     };
-  //     if (_id) {
-  //       requestData._id = _id;
-  //     }
-  //     if (isVoucher) {
-  //       if (accountTwoValue && accountTwoValue != {}) {
-  //         requestData.accountTwoId = accountTwoValue._id.toString();
-  //         requestData.amountTwo = amountTwoRef.current.value;
-  //       }
-  //     }
-  //     if (description) {
-  //       requestData.description = descriptionRef.current.value;
-  //     }
-  //     if (createAt) {
-  //       requestData.updateAt = new Date().toISOString();
-  //     }
+      //     const requestData = {
+      //       date: new Date(
+      //         `${dateRef.current.value}T${timeRef.current.value}`
+      //       ).toISOString(),
+      //       createAt: createAt ?? new Date().toISOString(),
+      //       categorieId: categorieValue._id.toString(),
+      //       accountOneId: accountOneValue._id.toString(),
+      //       amountOne: amountOneRef.current.value,
+      //     };
+      //     if (_id) {
+      //       requestData._id = _id;
+      //     }
+      //     if (isVoucher) {
+      //       if (accountTwoValue && accountTwoValue != {}) {
+      //         requestData.accountTwoId = accountTwoValue._id.toString();
+      //         requestData.amountTwo = amountTwoRef.current.value;
+      //       }
+      //     }
+      //     if (description) {
+      //       requestData.description = descriptionRef.current.value;
+      //     }
+      //     if (createAt) {
+      //       requestData.updateAt = new Date().toISOString();
+      //     }
 
-  //     console.log(requestData);
+      //     console.log(requestData);
 
-  //     handleCloseModal();
+      //     handleCloseModal();
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -222,6 +172,7 @@ export default function ModalCategorie({ data, handleCloseModal }) {
           title={"Nome"}
           required={true}
           type="text"
+          defaultValue={name}
           // icon={<Calendar />}
           ref={nameRef}
         />

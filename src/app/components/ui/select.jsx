@@ -11,15 +11,28 @@ const colorVariants = {
 
 export function ExampleSelectComponent() {
   const options = [
-    { value: "opzione1", data: { data1: "aaa", data2: "bbb", data3: "ccc" } },
-    { value: "opzione2", data: { data1: "ddd", data2: "eee", data3: "fff" } },
-    { value: "opzione3", data: { data1: "ggg", data2: "hhh", data3: "iii" } },
+    {
+      label: "ciao1",
+      value: "opzione1",
+      data: { data1: "aaa", data2: "bbb", data3: "ccc" },
+    },
+    {
+      label: "ciao2",
+      value: "opzione2",
+      data: { data1: "ddd", data2: "eee", data3: "fff" },
+    },
+    {
+      label: "ciao3",
+      value: "opzione3",
+      data: { data1: "ggg", data2: "hhh", data3: "iii" },
+    },
   ];
 
   const [value, setValue] = useState();
 
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-3">
+    <div className="w-full flex flex-col items-center justify-center gap-3 border p-3">
+      <p>esempio select component</p>
       <Select
         title="Titolo"
         required={true}
@@ -28,10 +41,9 @@ export function ExampleSelectComponent() {
         options={options}
         search={true}
       />
-      <div className="w-full flex flex-col gap-1 text-center border p-3">
-        <p className="text-green-500">Valore selezionato</p>
-        <p className="text-blue-500 break-words">{JSON.stringify(value)}</p>
-      </div>
+      <p className="text-blue-500 break-words text-center">
+        {JSON.stringify(value)}
+      </p>
     </div>
   );
 }
@@ -50,6 +62,7 @@ export default function Select({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
+  console.log("value:", value);
 
   // Chiudi quando clicchi fuori
   useEffect(() => {
@@ -72,7 +85,7 @@ export default function Select({
       <TitleComponents required={required}>{title}</TitleComponents>
       <SelectButton
         disabled={disabled}
-        value={value?.value}
+        value={value?.label}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         handleSelect={handleSelect}
@@ -179,7 +192,7 @@ function SelectOptions({
     if (inputSearch !== "") {
       setFilterOptions(
         options.filter((option) =>
-          option.value.toLowerCase().includes(inputSearch.toLowerCase())
+          option.label.toLowerCase().includes(inputSearch.toLowerCase())
         )
       );
     } else {
