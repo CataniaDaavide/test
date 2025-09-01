@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button";
 import { Card, ExampleCard } from "../components/ui/card";
 import Select, { ExampleSelectComponent } from "../components/ui/select";
 import { convertDate } from "../core/baseFunctions";
-import Tabs from "../components/ui/tabs";
+import Tabs, { ExampleTabsComponents } from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
 import { CardSliderTest } from "../components/ui/slider";
 import { useExceptionManager } from "../context/ExceptionManagerContext";
@@ -15,21 +15,21 @@ import { ModalContext } from "../context/ModalContext";
 import Badge from "../components/ui/badge";
 
 export default function App() {
+  const [tabValue, setTabValue] = useState(1);
   const tabs = [
     {
-      value: "ExampleCard",
-      tab: <ExampleCard />,
+      label: "ExampleCard",
+      value: 1,
     },
     {
-      value: "CardSlider",
-      tab: <CardSliderTest />,
+      label: "buttons",
+      value: 2,
     },
     {
-      value: "buttons",
-      tab: <AllButtons />,
+      label: "checkbox",
+      value: 3,
     },
   ];
-  const [value, setValue] = useState(tabs[0]);
 
   const checkRef = useRef();
 
@@ -43,19 +43,11 @@ export default function App() {
       <p className="text-muted-foreground">
         Uso questa pagina come test per i componenti
       </p>
-      <Tabs tabs={tabs} value={value} setValue={setValue} />
-      <Badge>ciao</Badge>
+      <Tabs tabs={tabs} value={tabValue} setValue={setTabValue} />
 
-      <div className="flex gap-3">
-        <Input type="checkbox" ref={checkRef} />
-        <button
-          className="border px-4 py-2"
-          onClick={() => console.log(checkRef.current.checked)}
-        >
-          click
-        </button>
-      </div>
-      {value.tab}
+      {tabValue === 1 && <ExampleCard />}
+      {tabValue === 2 && <AllButtons />}
+      {tabValue === 3 && <ExampleCheckboxComponents />}
     </div>
   );
 }
@@ -117,5 +109,24 @@ function AllButtons() {
         <span>ciao</span>
       </Button>
     </>
+  );
+}
+
+function ExampleCheckboxComponents() {
+  const checkRef = useRef();
+  const [checked, setChecked] = useState("false");
+
+  useEffect(() => {
+    console.log(checkRef.current.checked)
+  },[checkRef.current.value])
+
+  return (
+    <div className="w-full flex flex-col gap-3 items-center justify-center">
+      <p>esempio input checkbox component</p>
+      <div className="flex gap-1">
+        <Input type="checkbox" ref={checkRef} />
+        <p>value: {checked}</p>
+      </div>
+    </div>
   );
 }

@@ -19,7 +19,7 @@ export default function Tabs({
             key={index}
             disabled={disabled}
             tab={tab}
-            value={value.value}
+            currentValue={value}
             setValue={setValue}
           />
         );
@@ -28,50 +28,56 @@ export default function Tabs({
   );
 }
 
-function ItemListTabs({ disabled, tab, value, setValue }) {
-  const { value: tabValue } = tab;
+function ItemListTabs({ disabled, tab, currentValue, setValue }) {
+  const { label, value } = tab;
 
   return (
     <li>
       <button
         disabled={disabled}
-        onClick={() => setValue(tab)}
+        onClick={() => setValue(value)}
         className={`
           px-3 py-1 rounded-md text-sm
           transition-all duration-300
           cursor-pointer disabled:cursor-auto disabled:opacity-90 
-          ${value === tabValue && "bg-zinc-300 dark:bg-zinc-800"}
+          ${currentValue === value && "bg-zinc-300 dark:bg-zinc-800"}
           `}
       >
-        {tabValue}
+        {label}
       </button>
     </li>
   );
 }
 
 export function ExampleTabsComponents({}) {
+  const [tabValue, setTabValue] = useState(1);
   const tabs = [
     {
-      value: "entrate",
-      tab: <p>entrate tab</p>,
+      label: "tab1",
+      value: 1,
     },
     {
-      value: "uscite",
-      tab: <p>uscite tab</p>,
+      label: "tab2",
+      value: 2,
+    },
+    {
+      label: "tab3",
+      value: 3,
     },
   ];
 
-  const [value, setValue] = useState(tabs[0]);
-
   return (
-    <div className="flex flex-col gap-3 items-center justify-center w-full border p-3">
+    <div className="flex flex-col gap-1 items-center justify-center w-full p-3 border">
+      <p>esempio tab component</p>
       <Tabs
         tabs={tabs}
-        value={value}
-        setValue={setValue}
+        value={tabValue}
+        setValue={setTabValue}
         disabled={false}
       />
-      {value.tab}
+      {tabValue === 1 && <p>valore scelto : 1</p>}
+      {tabValue === 2 && <p>valore scelto : 2</p>}
+      {tabValue === 3 && <p>valore scelto : 3</p>}
     </div>
   );
 }

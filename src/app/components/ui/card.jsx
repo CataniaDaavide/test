@@ -45,7 +45,7 @@ export function CardHeaderActions({ children, className = "" }) {
 // Titolo
 export function CardTitle({ children, className = "" }) {
   return (
-    <p className={`text-xl font-semibold flex gap-2 items-center ${className}`}>
+    <p className={`text-lg font-semibold flex gap-2 items-center ${className}`}>
       {children}
     </p>
   );
@@ -54,7 +54,7 @@ export function CardTitle({ children, className = "" }) {
 // Descrizione
 export function CardDescription({ children, className = "" }) {
   return (
-    <p className={`text-muted-foreground ${className}`}>{children}</p>
+    <p className={`text-sm text-muted-foreground ${className}`}>{children}</p>
   );
 }
 

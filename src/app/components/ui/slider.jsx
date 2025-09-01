@@ -13,6 +13,7 @@ export function CardSliderTest() {
   const [width, setWidth] = useState(0)
 
   useEffect(() => {
+    console.log(containerRef.current.offsetWidth)
     setWidth(containerRef.current.offsetWidth)
   },[containerRef])
 

@@ -60,13 +60,13 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
         className={`flex flex-col gap-1 items-center justify-center cursor-pointer`}
       >
         {action && (
-          <div className="h-14 w-14 flex items-center justify-center rounded-full bg-card active:scale-95">
+          <div className="p-2 flex items-center justify-center rounded-full bg-card active:scale-95">
             {icon}
           </div>
         )}
         {link && (
           <div
-            className={`${activeTab.title != title && "text-muted-foreground"}`}
+            className={`${activeTab.title != title && "text-muted-foreground"} p-2`}
           >
             {icon}
           </div>

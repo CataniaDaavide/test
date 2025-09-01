@@ -55,6 +55,17 @@ export function ButtonIcon({
 }) {
   // Cloniamo le icone per forzare il size
   const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
+  const colorVariants = {
+    trasparent: "bg-trasparent hover:bg-border-card",
+    outline: "border border-background-inverse bg-trasparent",
+    success:
+      "hover:bg-green-500/10 text-black dark:text-white hover:text-green-500",
+    danger: "hover:bg-red-500/10 text-black dark:text-white hover:text-red-500",
+    secondary: "bg-border-card",
+    primary:
+      "bg-background-inverse hover:bg-background-inverse/90 text-background",
+    default: "bg-border-card hover:dark:bg-border-card/90",
+  };
 
   return (
     <button
@@ -91,8 +102,8 @@ export function ButtonBack({ className }) {
   );
 }
 
-export function ButtonLogout({ color, className = "", showText = true  }) {
-  const { base_exceptionManager } = useExceptionManager()
+export function ButtonLogout({ color, className = "", showText = true }) {
+  const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
   const handleLogout = async (e) => {
     try {
@@ -114,7 +125,11 @@ export function ButtonLogout({ color, className = "", showText = true  }) {
     }
   };
   return (
-    <Button onClick={handleLogout} color={color} className={`text-red-500 ${className}`}>
+    <Button
+      onClick={handleLogout}
+      color={color}
+      className={`text-red-500 ${className}`}
+    >
       <LogOut size={16} />
       {showText && <span>Logout</span>}
     </Button>

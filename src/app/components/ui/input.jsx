@@ -98,7 +98,7 @@ export default function Input({
       break;
 
     case "checkbox":
-      InputSelected = (
+      return (
         <InputCheckbox
           disabled={disabled}
           errorMessage={errorMessage}
@@ -106,11 +106,10 @@ export default function Input({
           color={color}
           ref={ref}
           // onKeyUp={onKeyUp}
-          // onChange={onChange}
+          onChange={onChange}
           className={className}
         />
       );
-      break;
 
     case "textarea":
       InputSelected = (
@@ -311,19 +310,13 @@ function InputCheckbox({
   defaultChecked = false,
   errorMessage,
   color,
+  onChange = () => {},
   ref: externalRef,
 }) {
   const [isChecked, setIsChecked] = useState(defaultChecked);
   const [isHidden, setIsHidden] = useState(!defaultChecked);
 
   const internalRef = useRef(null);
-
-  // const colorVariantsChecked = {
-  //   success: "!bg-green-500",
-  //   danger: "!bg-red-500",
-  //   primary: "!bg-background-inverse text-background",
-  //   default: "",
-  // };
 
   // sincronizza ref esterno se presente
   useEffect(() => {
@@ -334,7 +327,7 @@ function InputCheckbox({
 
   const handleClick = (e) => {
     e.preventDefault();
-
+    onChange()
     setIsChecked((prev) => {
       const next = !prev;
 
@@ -355,7 +348,7 @@ function InputCheckbox({
         className={`
           flex items-center justify-center
           w-6 h-6 rounded-lg font-bold p-1
-          ${errorMessage && "border border-red-500 focus:border-red-500"}
+          ${errorMessage && "border-red-500 focus:border-red-500"}
           ${colorVariants[color] || colorVariants["default"]}
         `}
       >

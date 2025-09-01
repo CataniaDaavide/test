@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/components/ui/button";
+import { Button, ButtonIcon } from "@/app/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import PercentageBar from "@/app/components/ui/percentage-bar";
-import { CardSliderTest } from "@/app/components/ui/slider";
+import Slider, { CardSliderTest } from "@/app/components/ui/slider";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import {
   ArrowRight,
@@ -23,6 +23,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 //hoocks - functions - lib
 
@@ -43,6 +44,13 @@ export default function DashboardPage() {
 }
 
 function StatsContainer() {
+  const containerRef = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    console.log(containerRef.current.offsetWidth);
+    setWidth(containerRef.current.offsetWidth);
+  }, [containerRef]);
   const stats = [
     {
       title: "Entrate del mese",
@@ -72,7 +80,11 @@ function StatsContainer() {
   return (
     <>
       <div className="w-full flex md:hidden">
-        <CardSliderTest stats={stats} />
+        <Slider cards={stats} containerRef={containerRef}>
+          {stats.map((stat, index) => (
+            <ItemListStatsContainer key={index} stat={stat} cardWidth={width} />
+          ))}
+        </Slider>
       </div>
 
       <div className="w-full hidden md:grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
@@ -84,19 +96,24 @@ function StatsContainer() {
   );
 }
 
-function ItemListStatsContainer({ stat }) {
+function ItemListStatsContainer({ stat, cardWidth }) {
   const { title, icon, amount, percentage } = stat;
   console.log(stat);
 
   return (
     <Card>
-      <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
+      <div
+        className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground"
+        style={{ width: cardWidth ?? "full" }}
+      >
         <p>{title}</p>
         {icon}
       </div>
       <p className="text-2xl font-bold">€{amount}</p>
       {percentage != undefined && (
-        <p className="text-xs text-green-600 md:text-amber-500">{percentage}% dal mese scorso</p>
+        <p className="text-xs text-green-600 md:text-amber-500">
+          {percentage}% dal mese scorso
+        </p>
       )}
     </Card>
   );
@@ -124,10 +141,11 @@ function RecentMovementsContainer() {
             <CardDescription>Ultimi 10 movimenti</CardDescription>
           </CardHeaderContent>
           <CardHeaderActions>
-            <Button onClick={handleClick} color={"trasparent"}>
-              <ArrowRight />
-              <span>Vedi tutti</span>
-            </Button>
+            <ButtonIcon
+              onClick={handleClick}
+              icon={<ArrowRight />}
+              color={"trasparent"}
+            ></ButtonIcon>
           </CardHeaderActions>
         </CardHeader>
 

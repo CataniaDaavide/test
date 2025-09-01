@@ -47,7 +47,7 @@ function HeaderMobile({
   actions = [],
 }) {
   return (
-    <div className="p-3 w-full flex items-center justify-between border-b-1 border-border-card">
+    <div className="p-3 w-full flex items-center justify-between">
       <div className="flex items-center justify-center">
         <ButtonBack />
         <div className="flex flex-col">
