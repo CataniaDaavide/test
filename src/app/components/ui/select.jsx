@@ -154,7 +154,7 @@ function SelectOptionsDelete({ value, handleSelect, isOpen }) {
           onClick={(e) => {
             e.preventDefault(); // blocca il comportamento del button
             e.stopPropagation(); // blocca la propagazione al parent
-            handleSelect({}); // resetta il valore
+            handleSelect(undefined); // resetta il valore
           }}
           className="flex items-center justify-center p-2"
         >

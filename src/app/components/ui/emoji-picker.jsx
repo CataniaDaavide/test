@@ -91,8 +91,8 @@ export default function EmojiPicker({
       <TitleComponents required={true}>Emoji</TitleComponents>
       <div
         className={`
-            w-full grid gap-3 grid-cols-6 items-center justify-center h-full max-h-[300px] 
-            overflow-scroll border border-border-card p-3 rounded-xl ${errorMessage && "!border-red-500"}${className}
+            w-full flex flex-wrap gap-3 md:grid md:grid-cols-6 items-center justify-center h-full max-h-[300px] 
+            overflow-scroll overflow-x-hidden border border-border-card p-3 rounded-xl ${errorMessage && "!border-red-500"}${className}
         `}
       >
         {emojisOptions.map((item, index) => {

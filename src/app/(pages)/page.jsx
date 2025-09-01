@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import {Plus } from "lucide-react";
+import { Plus, TriangleAlert } from "lucide-react";
 import Input, { ExampleCheckboxComponent } from "../components/ui/input";
 import { Button, ButtonIcon } from "../components/ui/button";
 import { Card, ExampleCard } from "../components/ui/card";
@@ -47,10 +47,12 @@ export default function App() {
         className={"absolute top-3 right-3 !rounded-full"}
         color={"trasparent"}
       />
-      <p>App page</p>
-      <p className="text-muted-foreground">
-        Uso questa pagina come test per i componenti
-      </p>
+      <div className="text-center">
+        <p className="text-2xl font-bold">App page</p>
+        <p className="text-muted-foreground text-sm">
+          Uso questa pagina come test per i componenti
+        </p>
+      </div>
       <Tabs tabs={tabs} value={tabValue} setValue={setTabValue} />
 
       {tabValue === 1 && <ExampleCard />}
@@ -67,9 +69,28 @@ function AllButtons() {
   const { modal, setModal } = useContext(ModalContext);
   const showErrorModal = () => {
     try {
-      throw new Error(
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic aliquid laboriosam natus consequatur corporis at quaerat vero impedit quisquam illum doloribus, temporibus facilis officia ut dolores ipsum eaque perferendis id rerum similique et repellat nostrum. Libero earum ipsam sint quam assumenda nam ratione alias similique est, et ut cumque quibusdam ea enim? Officiis quas minima, consectetur rerum laboriosam numquam modi aliquid ut. Facilis deserunt eveniet suscipit tempore, unde sunt velit possimus aliquam obcaecati mollitia totam ipsa laudantium vitae officia quam veniam. Qui iste quia nobis modi perferendis amet. Aliquam aperiam laborum eum deleniti autem, ipsum, odit, dolorum fuga eligendi esse doloremque aspernatur earum! Cumque, repudiandae voluptate, vero corrupti fugiat molestias optio repellat, error voluptatibus animi vel fuga temporibus modi excepturi dolores accusamus inventore quod. Quae nostrum magnam voluptatibus harum consequuntur nemo provident laborum omnis sunt ratione libero ea culpa blanditiis illo mollitia possimus ab reprehenderit magni, hic impedit soluta eveniet. Porro quae odit sunt sit dicta error ipsam perspiciatis, veniam quidem facere, consequatur vitae amet facilis omnis laboriosam voluptate. Aliquam cupiditate provident impedit fugiat cumque, illo aut quasi ex, veritatis accusantium exercitationem iure ab quisquam qui optio dolores placeat suscipit adipisci? Recusandae hic earum expedita inventore eligendi, excepturi aliquid voluptate necessitatibus quos dicta illo accusantium placeat autem aperiam obcaecati nam maiores corporis quisquam impedit at ex maxime laudantium! Harum deleniti saepe repudiandae et consequatur provident cupiditate ipsa quos, praesentium aliquam ipsam sint sunt vero accusantium consectetur quas reprehenderit necessitatibus quae. Ab excepturi ullam nisi natus quod ipsam voluptas eos, id ea quidem, veritatis saepe, est placeat necessitatibus delectus aliquam culpa? Perferendis autem sunt corporis earum, suscipit repellendus quisquam enim quibusdam animi qui tenetur temporibus dicta! Commodi optio doloribus autem fugit corporis maxime assumenda officia natus? In repellendus adipisci nisi officia dolores! Corporis ullam odio unde quos impedit ea est voluptas, explicabo neque atque, inventore"
-      );
+      setModal({
+        show: true,
+        type: "alert",
+        data: {
+          title: "Errore",
+          icon:<TriangleAlert size={40} className="text-amber-600" />,
+          message: (
+            <p className="text-muted-foreground">
+              Sei sicuro di voler eliminare la categoria {"emoji"} - {"name"}?
+              <br />
+              <br />
+              Cliccando su <strong className="text-background-inverse">Elimina</strong>, la categoria verrà rimossa
+              dall’elenco e non sarà più modificabile.
+              <br />
+              <br />
+              Le transazioni già assegnate a questa categoria resteranno
+              invariate e continueranno a mostrarla normalmente.
+            </p>
+          ),
+          buttons:["close", <Button onClick={() => console.log("danger")} color={"danger"}>danger</Button>]
+        },
+      });
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -119,28 +140,26 @@ function AllButtons() {
         <span>ciao</span>
       </Button>
       <div className="w-full flex gap-3 items-center justify-center">
-        <ButtonIcon icon={<Plus/>} color={""}/>
-        <ButtonIcon icon={<Plus/>} color={"outline"}/>
-        <ButtonIcon icon={<Plus/>} color={"trasparent"}/>
-        <ButtonIcon icon={<Plus/>} color={"success"}/>
-        <ButtonIcon icon={<Plus/>} color={"danger"}/>
+        <ButtonIcon icon={<Plus />} color={""} />
+        <ButtonIcon icon={<Plus />} color={"outline"} />
+        <ButtonIcon icon={<Plus />} color={"trasparent"} />
+        <ButtonIcon icon={<Plus />} color={"success"} />
+        <ButtonIcon icon={<Plus />} color={"danger"} />
       </div>
     </>
   );
 }
 
-function TestComponents(){
-  const [emoji, setEmoji] = useState()
-  const [color, setColor] = useState()
+function TestComponents() {
+  const [emoji, setEmoji] = useState();
+  const [color, setColor] = useState();
 
-  return(
+  return (
     <div className="w-full flex flex-col items-center justify-center gap-3">
       <Badge>ciao</Badge>
       <ExampleTabsComponents />
-      <EmojiPicker value={emoji} setValue={setEmoji}/>
-      <ColorPicker value={color} setValue={setColor}/>
+      <EmojiPicker value={emoji} setValue={setEmoji} />
+      <ColorPicker value={color} setValue={setColor} />
     </div>
-  )
+  );
 }
-
-

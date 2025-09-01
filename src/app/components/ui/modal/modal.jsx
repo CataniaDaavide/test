@@ -2,17 +2,17 @@
 import { useContext } from "react";
 import { Card } from "../card";
 import { ModalContext } from "@/app/context/ModalContext";
-import ModalError from "./modal-error";
 import ModalTransiction from "./modal-transiction";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ButtonIcon } from "../button";
 import { X } from "lucide-react";
 import ModalCategorie from "./modal-categorie";
+import ModalAlert from "./modal-alert";
 
 export default function Modal() {
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
-
+  const { show , type, data } = modal
   const handleCloseModal = () => {
     try {
       setModal({
@@ -37,17 +37,17 @@ export default function Modal() {
   // Scegli il componente in base al tipo
   let ModalComponent = null;
   if (modal.type?.length) {
-    switch (modal.type) {
-      case "error":
+    switch (type) {
+      case "alert":
         ModalComponent = (
-          <ModalError data={modal.data} handleCloseModal={handleCloseModal} />
+          <ModalAlert data={data} handleCloseModal={handleCloseModal} />
         );
         break;
 
       case "transiction":
         ModalComponent = (
           <ModalTransiction
-            data={modal.data}
+            data={data}
             handleCloseModal={handleCloseModal}
           />
         );
@@ -56,7 +56,7 @@ export default function Modal() {
       case "categorie":
         ModalComponent = (
           <ModalCategorie
-            data={modal.data}
+            data={data}
             handleCloseModal={handleCloseModal}
           />
         );
@@ -64,7 +64,7 @@ export default function Modal() {
 
       default:
         ModalComponent = (
-          <ModalError data={modal.data} handleCloseModal={handleCloseModal} />
+          <ModalAlert data={data} handleCloseModal={handleCloseModal} />
         );
         break;
     }
@@ -72,10 +72,10 @@ export default function Modal() {
 
   return (
     <div
-      className="absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center md:p-3 bg-black/50"
+      className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center ${type === "alert" ? "p-3" : "md:p-3"} bg-black/50`}
       onClick={handleOverlayClick}
     >
-      <Card className="relative h-[100dvh] !overscroll-none !border-0 md:!border-1 md:h-auto !rounded-none md:!rounded-xl md:max-w-md !justify-start">
+      <Card className={`relative md:!max-w-md md:!h-auto ${type === "alert" ? "!max-w-sm" : "h-[100dvh] !border-0 md:!border-1 "}`}>
         <ButtonIcon
           onClick={handleCloseModal}
           icon={<X />}
