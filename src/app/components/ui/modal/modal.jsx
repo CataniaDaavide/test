@@ -75,7 +75,7 @@ export default function Modal() {
       className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center ${type === "alert" ? "p-3" : "md:p-3"} bg-black/50`}
       onClick={handleOverlayClick}
     >
-      <Card className={`relative md:!max-w-md md:!h-auto ${type === "alert" ? "!max-w-sm" : "h-[100dvh] !border-0 md:!border-1 "}`}>
+      <Card className={`relative md:!max-w-md md:!h-auto ${type === "alert" ? "max-w-md" : "h-[100dvh] !rounded-none md:!rounded-xl !border-0 md:!border-1 "}`}>
         <ButtonIcon
           onClick={handleCloseModal}
           icon={<X />}

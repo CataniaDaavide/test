@@ -20,13 +20,13 @@ export const colorsOptions = [
   "bg-[#66D9E8]",
 ];
 
-export default function ColorPicker({ value, setValue, errorMessage = "", className = "" }) {
-  useEffect(() => setValue(colorsOptions[0].split(/\[|\]/)[1]), []);
+export default function ColorPicker({ title, required = false, value, setValue, errorMessage = "", className = "" }) {
+  useEffect(() => setValue(value ?? colorsOptions[0].split(/\[|\]/)[1]), []);
 
   return (
     <div className="w-full flex flex-col gap-1">
-      <TitleComponents required={true} className={"!m-0"}>
-        Colore
+      <TitleComponents required={required} className={"!m-0"}>
+        {title}
       </TitleComponents>
       <div
         className={`w-full grid gap-1 grid-cols-5 items-center justify-center h-full ${className}`}
@@ -50,7 +50,7 @@ export default function ColorPicker({ value, setValue, errorMessage = "", classN
 function ItemListColorPicker({ color, value, setValue }) {
   return (
     <div
-      className={`w-full h-15 p-1 rounded-xl ${
+      className={`w-full h-12 p-1 rounded-xl ${
         `bg-[${value}]` === color && "border-2 !border-background-inverse"
       }`}
     >

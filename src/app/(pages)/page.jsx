@@ -1,7 +1,7 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
-import { Plus, TriangleAlert } from "lucide-react";
+import { useContext, useRef, useState } from "react";
+import { LogIn, Plus, TriangleAlert } from "lucide-react";
 import Input, { ExampleCheckboxComponent } from "../components/ui/input";
 import { Button, ButtonIcon } from "../components/ui/button";
 import { Card, ExampleCard } from "../components/ui/card";
@@ -13,8 +13,10 @@ import { ModalContext } from "../context/ModalContext";
 import Badge from "../components/ui/badge";
 import EmojiPicker from "../components/ui/emoji-picker";
 import ColorPicker from "../components/ui/color-picker";
+import { useRouter } from "next/navigation";
 
 export default function App() {
+  const router = useRouter()
   const [tabValue, setTabValue] = useState(1);
   const tabs = [
     {
@@ -43,6 +45,7 @@ export default function App() {
 
   return (
     <div className="w-full h-full max-w-md p-3 pt-5 flex flex-col gap-3 items-center">
+      <ButtonIcon onClick={() => router.push("/login")} icon={<LogIn />} className="absolute top-3 left-3 !rounded-full" color={"trasparent"}/>
       <ButtonToggleTheme
         className={"absolute top-3 right-3 !rounded-full"}
         color={"trasparent"}

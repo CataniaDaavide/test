@@ -81,14 +81,16 @@ export const emojisOptions = [
 export default function EmojiPicker({
   value,
   setValue,
+  title,
+  required = false,
   errorMessage = "",
   className = "",
 }) {
-  useEffect(() => setValue(emojisOptions[0]), []);
+  useEffect(() => setValue(value ?? emojisOptions[0]), []);
 
   return (
     <div className="w-full flex flex-col gap-1">
-      <TitleComponents required={true}>Emoji</TitleComponents>
+      <TitleComponents required={required}>{title}</TitleComponents>
       <div
         className={`
             w-full flex flex-wrap gap-3 md:grid md:grid-cols-6 items-center justify-center h-full max-h-[300px] 
@@ -118,7 +120,7 @@ function ItemListEmojiPicker({ emoji, value, setValue }) {
       className={`
             flex items-center justify-center cursor-pointer h-15 w-15 text-xl
             border-2 rounded-lg border-border-card
-            ${value === emoji && "!border-background-inverse !bg-border-card"}
+            ${value == emoji && "!border-background-inverse !bg-border-card"}
         `}
     >
       {emoji}

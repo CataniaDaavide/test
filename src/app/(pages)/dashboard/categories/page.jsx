@@ -1,14 +1,13 @@
 "use client";
 import { ButtonIcon } from "@/app/components/ui/button";
 import Tabs from "@/app/components/ui/tabs";
-import { Edit, Plus, RefreshCcw, Tag, Trash } from "lucide-react";
+import { Edit, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { fetchApi } from "@/app/core/baseFunctions";
 import { Card } from "@/app/components/ui/card";
-import { useRouter } from "next/navigation";
 import Emoji from "@/app/components/emoji";
 import { LoaderIcon } from "@/app/components/ui/loader-full-page";
 
@@ -17,7 +16,7 @@ export default function CategoriesPage() {
   const { modal, setModal } = useContext(ModalContext);
   const [isLoader, setIsLoader] = useState(false);
   const [categories, setCategories] = useState({ income: [], expense: [] });
-  const [tabValue, setTabValue] = useState("U");
+  const [tab, setTab] = useState("U");
   const tabsOptions = [
     {
       label: "Uscite",
@@ -31,20 +30,19 @@ export default function CategoriesPage() {
 
   const handleNewCategorie = (e) => {
     try {
-      //TODO:
       setModal({
         show: true,
         type: "categorie",
-        data: { title: "ciaoo", description: "aaaaaaaaaaaaaaa" },
+        data: {},
       });
     } catch (error) {
       base_exceptionManager(error);
     }
   };
 
-  const fn = async () => {
+  const loadCategories = async () => {
     setIsLoader(true);
-    await fetchApi("/api/categories/getCategories", "POST", {}, async (res) => {
+    await fetchApi("/api/categories/categories-get", "POST", {}, async (res) => {
       const data = await res.json();
 
       if (!res.ok && data.error != "") {
@@ -61,22 +59,22 @@ export default function CategoriesPage() {
     setIsLoader(false);
   };
 
-  // evento che gestisce il recupero dei dati quando la pagina viene inizializzata
+  // evento che gestisce il recupero dei dati quando la pagina viene renderizzata
   // e quando viene chiuso il modal
   useEffect(() => {
     if (modal && modal.show === false) {
-      // aggiungere funzioni recupero dati
-      fn();
+      // funzione per recupero le categorie
+      loadCategories();
     }
   }, [modal]);
 
   return (
     <div className="w-full h-full flex flex-col gap-3 px-3">
       <div className="w-full flex items-center justify-between flex-wrap gap-3">
-        <Tabs tabs={tabsOptions} value={tabValue} setValue={setTabValue} />
+        <Tabs tabs={tabsOptions} value={tab} setValue={setTab} />
         <div className="flex gap-3 w-full md:w-fit">
           <ButtonIcon
-            onClick={fn}
+            onClick={loadCategories}
             icon={<RefreshCcw className="hover:animate-spin" />}
           />
           <Button onClick={handleNewCategorie}>
@@ -89,13 +87,13 @@ export default function CategoriesPage() {
         <LoaderIcon className={"mt-3"} />
       ) : (
         <>
-          {tabValue === "U" && (
+          {tab === "U" && (
             <CardContainer
               tabsOptions={tabsOptions}
               items={categories.expense}
             />
           )}
-          {tabValue === "E" && (
+          {tab === "E" && (
             <CardContainer
               tabsOptions={tabsOptions}
               items={categories.income}
@@ -103,7 +101,6 @@ export default function CategoriesPage() {
           )}
         </>
       )}
-      <p>{isLoader ? "true" : "false"}</p>
     </div>
   );
 }
@@ -112,35 +109,105 @@ function CardContainer({ tabsOptions, items }) {
   return (
     <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
       {items.map((item, index) => {
-        return <CategorieCard key={index} data={item} tabsOptions={tabsOptions} />;
+        return (
+          <CategorieCard key={index} data={item} tabsOptions={tabsOptions} />
+        );
       })}
     </div>
   );
 }
 
-function CategorieCard({ data, tabsOptions}) {
+function CategorieCard({ data, tabsOptions }) {
+  const { base_exceptionManager } = useExceptionManager();
   const { setModal } = useContext(ModalContext);
-  const {_id, emoji, hexColor, status, type, name, userId  } = data
-  // click sul pulsante edit
+  const { _id, emoji, hexColor, status, type, name, userId } = data;
+  // click sul pulsante modifica
   const handleEdit = (e) => {
     try {
-      e.preventDefault()
-      console.log(1);
-      
+      e.preventDefault();
+
       setModal({
         show: true,
         type: "categorie",
-        data: {...data},
+        data: { ...data, handleDelete: handleDelete },
       });
     } catch (error) {
-      // base_exceptionManager(error)
+      base_exceptionManager(error);
     }
   };
-  // click sul pulsante delete
-  const handleDelete = () => {
+
+  const handleCloseModal = () => {
     try {
+      setModal({
+        show:false,
+        type:"",
+        data: undefined
+      })
     } catch (error) {
-      // base_exceptionManager(error)
+      base_exceptionManager(error)
+    }
+  }
+
+  //click sul pulsante conferma eliminazione
+  const handleConfirmDelete = async (e) => {
+    try {
+      e.preventDefault();
+      const requestData = {
+        _id: _id,
+      };
+      await fetchApi(
+        "/api/categories/categorie-delete",
+        "POST",
+        requestData,
+        async (res) => {
+          const data = await res.json();
+
+          if (!res.ok && data.error != "") {
+            base_exceptionManager({message: data.error})
+          }else{
+            handleCloseModal();
+          }
+        }
+      );
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
+  // click sul pulsante elimina
+  const handleDelete = (e) => {
+    try {
+      e.preventDefault();
+      setModal({
+        show: true,
+        type: "alert",
+        data: {
+          title: "Eliminazione categoria",
+          icon: <TriangleAlert size={40} className="text-amber-600" />,
+          message: (
+            <p className="text-muted-foreground">
+              Sei sicuro di voler eliminare la categoria {emoji} - {name}?
+              <br />
+              <br />
+              Cliccando su
+              <strong className="text-background-inverse ml-1">Elimina</strong>, la
+              categoria verrà rimossa dall’elenco e non sarà più modificabile.
+              <br />
+              <br />
+              Le transazioni già assegnate a questa categoria resteranno
+              invariate e continueranno a mostrarla normalmente.
+            </p>
+          ),
+          buttons: [
+            "cancel",
+            <Button onClick={handleConfirmDelete} color={"danger"}>
+              Elimina
+            </Button>,
+          ],
+        },
+      });
+    } catch (error) {
+      base_exceptionManager(error);
     }
   };
 

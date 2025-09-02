@@ -2,6 +2,7 @@
 import { createContext, useContext } from "react";
 import { ModalContext } from "./ModalContext";
 import { Button } from "../components/ui/button";
+import { TriangleAlert } from "lucide-react";
 
 const ExceptionContext = createContext();
 
@@ -13,12 +14,14 @@ export function ExceptionProvider({ children }) {
       const { message } = error;
       setModal({
         show: true,
-        type: "error",
+        type: "alert",
         data: {
           title: "Errore",
-          buttons: ["close", <Button color="danger" onClick={() => console.log("ciao")}><span>ciao</span></Button>],
-          // desciption: "Lorem Ipsum is simply dummy text",
-          message: message,
+          icon: <TriangleAlert size={40} className="text-amber-600" />,
+          buttons: ["close"],
+          message: (
+            <p className="text-muted-foreground">{message}</p>
+          ),
         },
       });
     } catch (error) {}

@@ -11,7 +11,13 @@ import { Button, ButtonIcon } from "../button";
 import React from "react";
 
 export default function ModalAlert({ data, handleCloseModal }) {
-  const { title = "undefined", description = "", icon = undefined, message = "", buttons = [] } = data;
+  const {
+    title = "undefined",
+    description = "",
+    icon = undefined,
+    message = "",
+    buttons = [],
+  } = data;
   return (
     <>
       <CardHeader className="!w-full !flex-col gap-1 !items-center">
@@ -22,16 +28,16 @@ export default function ModalAlert({ data, handleCloseModal }) {
         </CardHeaderContent>
       </CardHeader>
 
-      <CardContent className="!max-h-[300px] overflow-y-scroll">
+      <CardContent className="min-h-[100px] !max-h-[300px] overflow-y-scroll">
         {message}
       </CardContent>
 
       <CardFooter className={"md:mt-3"}>
         {buttons.map((button, index) => {
-          if (button === "close") {
+          if (button === "close" || button === "cancel") {
             return (
               <Button key={index} onClick={handleCloseModal}>
-                <span>Chiudi</span>
+                <span>{button === "close" ? "Chiudi" : "Chiudi"}</span>
               </Button>
             );
           }

@@ -62,7 +62,6 @@ export default function Select({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
-  console.log("value:", value);
 
   // Chiudi quando clicchi fuori
   useEffect(() => {
@@ -239,7 +238,7 @@ function SelectOptions({
 }
 
 function ItemListSelectOptions({ option, value, handleSelect }) {
-  const { value: optionValue } = option;
+  const { label, value: optionValue } = option;
 
   return (
     <li
@@ -250,7 +249,7 @@ function ItemListSelectOptions({ option, value, handleSelect }) {
               ${value === optionValue && "bg-zinc-300 dark:bg-zinc-800"}
             `}
     >
-      {optionValue}
+      {label}
       {value === optionValue && value && <Check size={16} />}
     </li>
   );
