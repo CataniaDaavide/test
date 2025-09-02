@@ -93,7 +93,7 @@ export default function EmojiPicker({
       <TitleComponents required={required}>{title}</TitleComponents>
       <div
         className={`
-            w-full flex flex-wrap gap-3 md:grid md:grid-cols-6 items-center justify-center h-full max-h-[300px] 
+            w-full flex flex-wrap gap-3 md:grid md:grid-cols-6 items-center justify-center h-[160px]
             overflow-scroll overflow-x-hidden border border-border-card p-3 rounded-xl ${errorMessage && "!border-red-500"}${className}
         `}
       >
