@@ -48,7 +48,6 @@ function StatsContainer() {
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    console.log(containerRef.current.offsetWidth);
     setWidth(containerRef.current.offsetWidth);
   }, [containerRef]);
   const stats = [
@@ -98,7 +97,6 @@ function StatsContainer() {
 
 function ItemListStatsContainer({ stat, cardWidth }) {
   const { title, icon, amount, percentage } = stat;
-  console.log(stat);
 
   return (
     <Card>

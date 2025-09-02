@@ -17,8 +17,9 @@ import EmojiPicker from "../emoji-picker";
 import ColorPicker from "../color-picker";
 import { ModalContext } from "@/app/context/ModalContext";
 import { fetchApi } from "@/app/core/baseFunctions";
+import { AccountsTypeOptions } from "@/app/(pages)/dashboard/accounts/page";
 
-export default function ModalCategorie({ data, handleCloseModal }) {
+export default function ModalAccount({ data, handleCloseModal }) {
   const { base_exceptionManager } = useExceptionManager();
   // const { setModal } = useContext(ModalContext);
   const {
@@ -29,25 +30,19 @@ export default function ModalCategorie({ data, handleCloseModal }) {
     type: currentType,
     name,
     userId,
+    amount = 0.00,
     handleDelete,
   } = data;
-  const title = _id ? "Modifica categoria" : "Creazione categoria";
-  const description = "Crea una categoria per classificare entrate o uscite";
+  
+  const title = _id ? "Modifica conto" : "Creazione conto";
+  const description =
+    "Crea un conto per organizzare le tue finanze in modo chiaro e semplice";
   const [error, setError] = useState();
   const nameRef = useRef();
+  const amountRef = useRef();
   const [emoji, setEmoji] = useState(currentEmoji);
-  let typesOptions = [
-    {
-      label: "Uscita",
-      value: "U",
-    },
-    {
-      label: "Entrata",
-      value: "E",
-    },
-  ];
   const [type, setType] = useState(
-    typesOptions.find((x) => x.value === currentType)
+    AccountsTypeOptions.find((x) => x.value === currentType)
   );
   const [hexColor, setHexColor] = useState(currentHexColor);
 
@@ -62,12 +57,13 @@ export default function ModalCategorie({ data, handleCloseModal }) {
         status: status ?? "A", //A = ATTIVO
         type: type?.value,
         userId: userId,
+        amount: amountRef.current.value
       };
       if (_id) {
         requestData._id = _id;
       }
       await fetchApi(
-        "/api/categories/categorieEdit",
+        "/api/accounts/accountEdit",
         "POST",
         requestData,
         async (res) => {
@@ -103,6 +99,14 @@ export default function ModalCategorie({ data, handleCloseModal }) {
           defaultValue={name}
           ref={nameRef}
         />
+        <Input
+          title={"Saldo iniziale"}
+          required={true}
+          type="tel"
+          placeholder={"0,00"}
+          defaultValue={amount}
+          ref={amountRef}
+        />
         <EmojiPicker
           title={"Emoji"}
           required={true}
@@ -112,7 +116,7 @@ export default function ModalCategorie({ data, handleCloseModal }) {
         <Select
           title={"Tipo"}
           required={true}
-          options={typesOptions}
+          options={AccountsTypeOptions}
           value={type}
           setValue={setType}
         />

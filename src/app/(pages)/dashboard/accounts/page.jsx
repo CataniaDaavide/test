@@ -39,7 +39,7 @@ export default function CategoriesPage() {
 
   const loadAccounts = async () => {
     setIsLoader(true);
-    await fetchApi("/api/accounts/accounts-get", "POST", {}, async (res) => {
+    await fetchApi("/api/accounts/accountsGet", "POST", {}, async (res) => {
       const data = await res.json();
 
       if (!res.ok && data.error != "") {
@@ -140,7 +140,7 @@ function AccountCard({ data }) {
         _id: _id,
       };
       await fetchApi(
-        "/api/accounts/account-delete",
+        "/api/accounts/accountDelete",
         "POST",
         requestData,
         async (res) => {

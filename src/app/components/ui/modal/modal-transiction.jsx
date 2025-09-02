@@ -41,18 +41,22 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   let categorieOptions = [
     {
       _id: "111",
+      label: "Categoria1",
       value: "categorie1",
     },
     {
       _id: "222",
+      label: "Categoria2",
       value: "categorie2",
     },
     {
       _id: "333",
+      label: "Categoria3",
       value: "categorie3",
     },
     {
       _id: "444",
+      label: "Categoria4",
       value: "categorie4",
     },
   ];
@@ -62,21 +66,25 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   let accountOneOptions = [
     {
       _id: "555",
+      label: "Account1",
       value: "account1",
       type: "BANK",
     },
     {
       _id: "666",
+      label: "Account2",
       value: "account2",
       type: "VOUCHER",
     },
     {
       _id: "777",
+      label: "Account3",
       value: "account3",
       type: "VOUCHER",
     },
     {
       _id: "888",
+      label: "Account4",
       value: "account4",
       type: "BANK",
     },
@@ -191,8 +199,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       if (createAt) {
         requestData.updateAt = new Date().toISOString();
       }
-
-      console.log(requestData);
 
       handleCloseModal();
     } catch (error) {

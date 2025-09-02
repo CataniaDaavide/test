@@ -91,7 +91,7 @@ function AllButtons() {
               invariate e continueranno a mostrarla normalmente.
             </p>
           ),
-          buttons:["close", <Button onClick={() => console.log("danger")} color={"danger"}>danger</Button>]
+          buttons:["close"]
         },
       });
     } catch (error) {

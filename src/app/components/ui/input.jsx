@@ -71,6 +71,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
+          defaultValue={defaultValue}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -88,6 +89,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
+          defaultValue={defaultValue}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -119,6 +121,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
+          defaultValue={defaultValue}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -195,7 +198,7 @@ function InputTel({
   errorMessage,
   color,
   name,
-  value = 0,
+  defaultValue = "0.00",
   ref,
   onChange = () => {},
   className = "",
@@ -226,7 +229,6 @@ function InputTel({
     e.target.value = val;
     onChange(e);
   };
-
   return (
     <div className="w-full flex items-center justify-center">
       <input
@@ -242,7 +244,7 @@ function InputTel({
           ${className}`}
         name={name}
         type="tel"
-        defaultValue={value}
+        defaultValue={defaultValue}
         autoComplete="off"
         placeholder={placeholder}
         onChange={handleChange}
@@ -258,6 +260,7 @@ function InputPassword({
   errorMessage,
   color,
   name,
+  defaultValue = "",
   placeholder = "••••••",
   ref,
   onKeyUp = () => {},
@@ -285,6 +288,7 @@ function InputPassword({
         name={name}
         type={showText ? "text" : "password"}
         placeholder={placeholder}
+        defaultValue={defaultValue}
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
@@ -352,7 +356,7 @@ function InputCheckbox({
           ${colorVariants[color] || colorVariants["default"]}
           ${errorMessage && "border-red-500 focus:border-red-500"}
           `}
-          >
+      >
         <Check
           size={16}
           strokeWidth={5}
@@ -380,6 +384,7 @@ function InputTextarea({
   disabled,
   icon,
   errorMessage,
+  defaultValue = "",
   color,
   name,
   placeholder,
@@ -401,6 +406,7 @@ function InputTextarea({
           ${className}`}
       name={name}
       placeholder={placeholder}
+      defaultValue={defaultValue}
       autoComplete="off"
       onKeyUp={(e) => {
         onKeyUp(e);
@@ -427,7 +433,7 @@ export function ExampleCheckboxComponent() {
       </div>
       <button
         onClick={() => setChecked(checkRef.current.checked ? "true" : "false")}
-      className="w-full px-4 py-2 rounded-lg bg-border-card"
+        className="w-full px-4 py-2 rounded-lg bg-border-card"
       >
         click
       </button>

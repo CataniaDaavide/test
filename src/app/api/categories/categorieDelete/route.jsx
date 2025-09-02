@@ -47,7 +47,7 @@ export async function POST(req) {
     });
   } catch (error) {
     rtn.error =
-      error.message.toString() + " on endpoint:/api/categories/categorie-delete";
+      error.message.toString() + " on endpoint:/api/categories/categorieDelete";
     rtn.response = "";
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }

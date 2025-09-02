@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { categoriesModel } from "@/app/models/categoriesModel";
 import connectDB from "@/app/core/mongodbFunctions";
 import { Currency } from "lucide-react";
+import { accountsModel } from "@/app/models/accountsModel";
 
 export async function POST(req) {
   //inzizializzazioni valori di ritorno della chiamta
@@ -12,16 +12,17 @@ export async function POST(req) {
 
   try {
     const {
-      _id: categorieId,
+      _id: accountId,
       name,
       emoji,
       hexColor,
       status,
       type,
       userId,
+      amount,
     } = await req.json();
     const cookieStore = await cookies();
-    
+
     // controllo esistenza della sessione
     const hasSessionToken = cookieStore.has("sessionToken");
     if (!hasSessionToken) {
@@ -54,47 +55,54 @@ export async function POST(req) {
       rtn.error = "type is required";
       return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }
-      if (categorieId && !userId || userId === "") {
-        rtn.error = "userId is required";
-        return new NextResponse(JSON.stringify(rtn), { status: 500 });
-      }
+    if (!amount || amount === "") {
+      rtn.error = "amount is required";
+      return new NextResponse(JSON.stringify(rtn), { status: 500 });
+    }
+    if ((accountId && !userId) || userId === "") {
+      rtn.error = "userId is required";
+      return new NextResponse(JSON.stringify(rtn), { status: 500 });
+    }
     //connessione al database e recupero collezzione "users"
     await connectDB();
 
-    let categorie = {};
-    if (categorieId && categorieId != "") {
+    let account = {};
+    const convertedAmount = Number(amount).toFixed(2);
+    if (accountId && accountId != "") {
       //edit
-      const filter = { _id: categorieId, userId: _id };
+      const filter = { _id: accountId, userId: _id };
       const update = {
-        _id: categorieId,
+        _id: accountId,
         name: name,
         type: type,
         hexColor: hexColor,
         emoji: emoji,
         status: status,
         userId: _id,
+        amount: convertedAmount,
       };
-      categorie = await categoriesModel.updateOne(filter, update);
+      account = await accountsModel.updateOne(filter, update);      
     } else {
       //create
-      categorie = await categoriesModel.create({
+      account = await accountsModel.create({
         name: name,
         type: type,
         hexColor: hexColor,
         emoji: emoji,
         status: status,
         userId: _id,
+        amount: convertedAmount,
       });
     }
 
     // dataResponse.result = true;
     // rtn.response = dataResponse;
-    return new NextResponse(JSON.stringify({ categorie: categorie }), {
+    return new NextResponse(JSON.stringify({ account: account }), {
       status: 200,
     });
   } catch (error) {
     rtn.error =
-      error.message.toString() + " on endpoint:/api/categories/categorie-edit";
+      error.message.toString() + " on endpoint:/api/categories/categorieEdit";
     rtn.response = "";
     return new NextResponse(JSON.stringify(rtn), { status: 500 });
   }

@@ -39,7 +39,6 @@ export default function LoginPage() {
 
   // inizializzazione delle regole di validazione
   function formValidationInit() {
-    console.log("formValidationInit");
     try {
       const fields = {
         email: {

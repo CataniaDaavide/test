@@ -42,7 +42,7 @@ export default function CategoriesPage() {
 
   const loadCategories = async () => {
     setIsLoader(true);
-    await fetchApi("/api/categories/categories-get", "POST", {}, async (res) => {
+    await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
       const data = await res.json();
 
       if (!res.ok && data.error != "") {
@@ -156,7 +156,7 @@ function CategorieCard({ data, tabsOptions }) {
         _id: _id,
       };
       await fetchApi(
-        "/api/categories/categorie-delete",
+        "/api/categories/categorieDelete",
         "POST",
         requestData,
         async (res) => {

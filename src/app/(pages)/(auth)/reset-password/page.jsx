@@ -12,7 +12,7 @@ import {
 import { Lock } from "lucide-react";
 
 //components
-import { Button } from "@/app/components/ui/button";
+import { Button, ButtonBack } from "@/app/components/ui/button";
 import AuthLayout from "../authLayout";
 import Input from "@/app/components/ui/input";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
@@ -144,6 +144,7 @@ export default function LoginPage() {
       title={"Reset password"}
       desciption={"Reimposta la tua password in modo sicuro per continuare"}
     >
+      <ButtonBack className={"absolute top-3 left-3"} />
       <Input
         title={"Password"}
         name="password"

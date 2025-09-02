@@ -8,6 +8,7 @@ import { ButtonIcon } from "../button";
 import { X } from "lucide-react";
 import ModalCategorie from "./modal-categorie";
 import ModalAlert from "./modal-alert";
+import ModalAccount from "./modal-account";
 
 export default function Modal() {
   const { base_exceptionManager } = useExceptionManager();
@@ -56,6 +57,15 @@ export default function Modal() {
       case "categorie":
         ModalComponent = (
           <ModalCategorie
+            data={data}
+            handleCloseModal={handleCloseModal}
+          />
+        );
+        break;
+
+      case "account":
+        ModalComponent = (
+          <ModalAccount
             data={data}
             handleCloseModal={handleCloseModal}
           />
