@@ -65,7 +65,7 @@ export default function Sidebar({ items }) {
 }
 
 function ButtonLogoutSidebar({ expand, router }) {
-  const { base_exceptionManager } = useExceptionManager()
+  const { base_exceptionManager } = useExceptionManager();
   const handleLogout = async (e) => {
     try {
       e.preventDefault();
@@ -75,8 +75,8 @@ function ButtonLogoutSidebar({ expand, router }) {
         const data = await res.json();
 
         if (!res.ok && data.error != "") {
+          base_exceptionManager({ message: data.error });
           return;
-          //setError(data.error);
         }
 
         router.push("/login");
@@ -103,7 +103,7 @@ function ButtonLogoutSidebar({ expand, router }) {
 }
 
 function ItemListSidebar({ expand, item, activeTab, setActiveTab, router }) {
-  const { base_exceptionManager } = useExceptionManager()
+  const { base_exceptionManager } = useExceptionManager();
   const [hoverText, setHoverText] = useState(false);
   const { title, icon, link, action } = item;
 

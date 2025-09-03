@@ -23,12 +23,16 @@ export default function LoginPage() {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
   const newPasswordRef = useRef();
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
   const [error, setError] = useState("");
   const [formValidationError, setFormValidationError] = useState({
     password: "",
     confirmPassword: "",
     newPassword: "",
   });
+  const isFirstRender = useState(true)
 
   useEffect(() => {
     // Aggiorna dinamicamente il titolo della pagina
@@ -40,29 +44,29 @@ export default function LoginPage() {
     try {
       const fields = {
         password: {
-          value: passwordRef.current.value,
+          value: password,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
           },
         },
         confirmPassword: {
-          value: confirmPasswordRef.current.value,
+          value: confirmPassword,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
             match: {
-              value: passwordRef.current.value,
+              value: password,
               message: "Le password non coincidono",
             },
           },
         },
         newPassword: {
-          value: newPasswordRef.current.value,
+          value: newPassword,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
             callback: {
               callback: () => {
                 const valid =
-                  passwordRef.current.value !== newPasswordRef.current.value;
+                  password !== newPassword;
                 return {
                   valid,
                   message:
@@ -82,6 +86,23 @@ export default function LoginPage() {
     }
   }
 
+  // evento che gestice gli errori della
+  // form validator quando i campi vengono compilati
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Solo se ci sono già errori
+    const hasExistingErrors = Object.values(formValidationError).some(
+      (error) => error !== ""
+    );
+    if (hasExistingErrors) {
+      formValidationInit();
+    }
+  }, [password, confirmPassword, newPassword]);
+
   // click sul pulsante "accedi"
   const handleSubmit = async (e) => {
     try {
@@ -92,9 +113,9 @@ export default function LoginPage() {
 
       // chimata endpoint /api/auth/login
       const requestData = {
-        password: passwordRef.current.value,
-        confirmPassword: confirmPasswordRef.current.value,
-        newPassword: newPasswordRef.current.value,
+        password: password,
+        confirmPassword: confirmPassword,
+        newPassword: newPassword,
       };
       await fetchApi(
         "/api/auth/reset-password",
@@ -152,10 +173,11 @@ export default function LoginPage() {
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}
-        ref={passwordRef}
+        val={password}
+        onChange={(e)=>setPassword(e.target.value)}
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
-      />
+        />
       <Input
         title={"Conferma password"}
         name="confirmPassword"
@@ -164,9 +186,11 @@ export default function LoginPage() {
         required={true}
         placeholder={"••••••"}
         ref={confirmPasswordRef}
+        value={confirmPassword}
+        onChange={(e)=>setConfirmPassword(e.target.value)}
         errorMessage={formValidationError.confirmPassword}
         onKeyUp={handleKeyUp}
-      />
+        />
       <Input
         title={"Nuova password"}
         name="newPassword"
@@ -175,6 +199,8 @@ export default function LoginPage() {
         required={true}
         placeholder={"••••••"}
         ref={newPasswordRef}
+        value={newPassword}
+        onChange={(e)=>setNewPassword(e.target.value)}
         errorMessage={formValidationError.newPassword}
         onKeyUp={handleKeyUp}
       />

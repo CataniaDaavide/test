@@ -59,6 +59,7 @@ export default function Select({
   color,
   disabled = false,
   className = "",
+  errorMessage = "",
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
@@ -101,6 +102,7 @@ export default function Select({
         color={color}
         className={className}
       />
+      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
     </div>
   );
 }

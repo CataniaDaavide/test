@@ -4,10 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  fetchApi,
-  formValidation,
-} from "@/app/core/baseFunctions";
+import { base_checkEmail, fetchApi, formValidation } from "@/app/core/baseFunctions";
 
 //icons
 import { AtSign, Lock, User } from "lucide-react";
@@ -19,12 +16,15 @@ import AuthLayout from "../authLayout";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function RegisterPage() {
-  const { base_exceptionManager } = useExceptionManager()
+  const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
-  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [formValidationError, setFormValidationError] = useState({
     name: "",
@@ -32,6 +32,7 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     // Aggiorna dinamicamente il titolo della pagina
@@ -43,13 +44,13 @@ export default function RegisterPage() {
     try {
       const fields = {
         name: {
-          value: nameRef.current.value,
+          value: name,
           validators: {
             notEmpty: { message: "Nome obbligatorio" },
           },
         },
         email: {
-          value: emailRef.current.value,
+          value: email,
           validators: {
             notEmpty: { message: "Email obbligatoria" },
             callback: {
@@ -65,17 +66,17 @@ export default function RegisterPage() {
           },
         },
         password: {
-          value: passwordRef.current.value,
+          value: password,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
           },
         },
         confirmPassword: {
-          value: confirmPasswordRef.current.value,
+          value: confirmPassword,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
             match: {
-              value: passwordRef.current.value,
+              value: password,
               message: "Le password non coincidono",
             },
           },
@@ -90,21 +91,37 @@ export default function RegisterPage() {
     }
   }
 
+  // evento che gestice gli errori della
+  // form validator quando i campi vengono compilati
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Solo se ci sono già errori
+    const hasExistingErrors = Object.values(formValidationError).some(
+      (error) => error !== ""
+    );
+    if (hasExistingErrors) {
+      formValidationInit();
+    }
+  }, [name, email, password, confirmPassword]);
+
   // click sul pulsante "crea account"
   const handleSubmit = async (e) => {
     try {
-      
       e.preventDefault();
-      setError("")
+      setError("");
 
       const hasError = formValidationInit();
       if (hasError) return;
 
       // chimata endpoint /api/auth/register
       const requestData = {
-        name: nameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
+        name: name,
+        email: email,
+        password: password,
       };
       await fetchApi("/api/auth/register", "POST", requestData, async (res) => {
         const data = await res.json();
@@ -160,7 +177,8 @@ export default function RegisterPage() {
         icon={<User />}
         required={true}
         placeholder={"Inserisci nome"}
-        ref={nameRef}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         errorMessage={formValidationError.name}
         onKeyUp={handleKeyUp}
       />
@@ -171,6 +189,8 @@ export default function RegisterPage() {
         icon={<AtSign />}
         required={true}
         placeholder={"Inserisci email"}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         ref={emailRef}
         errorMessage={formValidationError.email}
         onKeyUp={handleKeyUp}
@@ -182,6 +202,8 @@ export default function RegisterPage() {
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         ref={passwordRef}
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
@@ -193,6 +215,8 @@ export default function RegisterPage() {
         icon={<Lock />}
         required={true}
         placeholder={"••••••"}
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
         ref={confirmPasswordRef}
         errorMessage={formValidationError.confirmPassword}
         onKeyUp={handleKeyUp}
@@ -200,6 +224,7 @@ export default function RegisterPage() {
       <Button onClick={handleSubmit} color={"primary"}>
         <span>Crea account</span>
       </Button>
+      {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       <p className="text-sm text-muted-foreground">
         Hai gia un account?
         <Link

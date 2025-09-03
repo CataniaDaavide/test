@@ -26,7 +26,7 @@ export default function Input({
   type = "text",
   required = false,
   placeholder,
-  defaultValue = "",
+  value,
   icon,
   ref,
   errorMessage = "",
@@ -53,7 +53,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
-          defaultValue={defaultValue}
+          value={value}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -71,7 +71,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
-          defaultValue={defaultValue}
+          value={value}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -89,7 +89,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
-          defaultValue={defaultValue}
+          value={value}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -106,7 +106,6 @@ export default function Input({
         <InputCheckbox
           disabled={disabled}
           errorMessage={errorMessage}
-          defaultChecked={defaultValue}
           color={color}
           ref={ref}
           // onKeyUp={onKeyUp}
@@ -121,7 +120,7 @@ export default function Input({
           disabled={disabled}
           icon={iconLeft}
           errorMessage={errorMessage}
-          defaultValue={defaultValue}
+          value={value}
           color={color}
           name={name}
           placeholder={placeholder}
@@ -153,7 +152,7 @@ function InputBase({
   errorMessage,
   color,
   name,
-  defaultValue = "",
+  value,
   placeholder,
   ref,
   onKeyUp = () => {},
@@ -179,7 +178,7 @@ function InputBase({
         name={name}
         type={type}
         placeholder={placeholder}
-        defaultValue={defaultValue}
+        value={value}
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
@@ -198,7 +197,7 @@ function InputTel({
   errorMessage,
   color,
   name,
-  defaultValue = "0.00",
+  value,
   ref,
   onChange = () => {},
   className = "",
@@ -244,7 +243,7 @@ function InputTel({
           ${className}`}
         name={name}
         type="tel"
-        defaultValue={defaultValue}
+        value={value}
         autoComplete="off"
         placeholder={placeholder}
         onChange={handleChange}
@@ -260,7 +259,7 @@ function InputPassword({
   errorMessage,
   color,
   name,
-  defaultValue = "",
+  value,
   placeholder = "••••••",
   ref,
   onKeyUp = () => {},
@@ -288,7 +287,7 @@ function InputPassword({
         name={name}
         type={showText ? "text" : "password"}
         placeholder={placeholder}
-        defaultValue={defaultValue}
+        value={value}
         autoComplete="off"
         onKeyUp={(e) => {
           onKeyUp(e);
@@ -384,7 +383,7 @@ function InputTextarea({
   disabled,
   icon,
   errorMessage,
-  defaultValue = "",
+  value,
   color,
   name,
   placeholder,
@@ -406,7 +405,7 @@ function InputTextarea({
           ${className}`}
       name={name}
       placeholder={placeholder}
-      defaultValue={defaultValue}
+      value={value}
       autoComplete="off"
       onKeyUp={(e) => {
         onKeyUp(e);

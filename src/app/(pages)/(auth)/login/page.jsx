@@ -20,29 +20,30 @@ import { Button } from "@/app/components/ui/button";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 
 export default function LoginPage() {
-  const {   base_exceptionManager } = useExceptionManager()
+  const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const passwordRef = useRef(); // serve per gestire handleKeyUp
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formValidationError, setFormValidationError] = useState({
     email: "",
     password: "",
   });
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     // Aggiorna dinamicamente il titolo della pagina
     document.title = `Login`;
   }, []);
 
-
   // inizializzazione delle regole di validazione
   function formValidationInit() {
     try {
       const fields = {
         email: {
-          value: emailRef.current.value,
+          value: email,
           validators: {
             notEmpty: { message: "Email obbligatoria" },
             callback: {
@@ -58,7 +59,7 @@ export default function LoginPage() {
           },
         },
         password: {
-          value: passwordRef.current.value,
+          value: password,
           validators: {
             notEmpty: { message: "Password obbligatoria" },
           },
@@ -73,20 +74,37 @@ export default function LoginPage() {
     }
   }
 
+  // evento che gestice gli errori della
+  // form validator quando i campi vengono compilati
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Solo se ci sono già errori
+    const hasExistingErrors = Object.values(formValidationError).some(
+      (error) => error !== ""
+    );
+    if (hasExistingErrors) {
+      formValidationInit();
+    }
+  }, [email, password]);
+
   // click sul pulsante "accedi"
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-      setError("")
+      setError("");
 
       const hasError = formValidationInit();
       if (hasError) return exit();
 
       // chimata endpoint /api/auth/login
       const requestData = {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
+        email: email,
+        password: password,
       };
       await fetchApi("/api/auth/login", "POST", requestData, async (res) => {
         const data = await res.json();
@@ -133,8 +151,8 @@ export default function LoginPage() {
   const handleDemoCredetial = (e) => {
     try {
       e.preventDefault();
-      emailRef.current.value = "test@gmail.com";
-      passwordRef.current.value = "123";
+      setEmail("test@gmail.com");
+      setPassword("123");
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -152,7 +170,8 @@ export default function LoginPage() {
         icon={<AtSign />}
         required={true}
         placeholder={"Inserisci email"}
-        ref={emailRef}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         errorMessage={formValidationError.email}
         onKeyUp={handleKeyUp}
       />
@@ -164,18 +183,17 @@ export default function LoginPage() {
         required={true}
         placeholder={"••••••"}
         ref={passwordRef}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         errorMessage={formValidationError.password}
         onKeyUp={handleKeyUp}
       />
-      <Button
-        onClick={handleSubmit}
-        color={"primary"}
-        isLoading={isLoading}
-      ><span>Accedi</span></Button>
-      <Button
-        onClick={handleDemoCredetial}
-        color={"secondary"}
-      ><span>Credenziali demo</span></Button>
+      <Button onClick={handleSubmit} color={"primary"} isLoading={isLoading}>
+        <span>Accedi</span>
+      </Button>
+      <Button onClick={handleDemoCredetial} color={"secondary"}>
+        <span>Credenziali demo</span>
+      </Button>
       {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       <p className="text-sm text-muted-foreground">
         Non hai un account?

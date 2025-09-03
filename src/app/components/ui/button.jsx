@@ -114,8 +114,8 @@ export function ButtonLogout({ color, className = "", showText = true }) {
         const data = await res.json();
 
         if (!res.ok && data.error != "") {
+          base_exceptionManager({ message: data.error });
           return;
-          //setError(data.error);
         }
 
         router.push("/login");

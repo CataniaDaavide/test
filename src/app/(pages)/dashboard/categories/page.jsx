@@ -16,7 +16,6 @@ export default function CategoriesPage() {
   const { modal, setModal } = useContext(ModalContext);
   const [isLoader, setIsLoader] = useState(false);
   const [categories, setCategories] = useState({ income: [], expense: [] });
-  const [tab, setTab] = useState("U");
   const tabsOptions = [
     {
       label: "Uscite",
@@ -27,7 +26,9 @@ export default function CategoriesPage() {
       value: "E",
     },
   ];
+  const [tab, setTab] = useState(tabsOptions[0].value);
 
+  // click sul pulsante "nuova categoria"
   const handleNewCategorie = (e) => {
     try {
       setModal({
@@ -40,13 +41,14 @@ export default function CategoriesPage() {
     }
   };
 
+  // recupero categorie
   const loadCategories = async () => {
     setIsLoader(true);
     await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
       const data = await res.json();
 
       if (!res.ok && data.error != "") {
-        // setError(data.error);
+        base_exceptionManager({ message: data.error });
         return;
       }
 
@@ -121,6 +123,7 @@ function CategorieCard({ data, tabsOptions }) {
   const { base_exceptionManager } = useExceptionManager();
   const { setModal } = useContext(ModalContext);
   const { _id, emoji, hexColor, status, type, name, userId } = data;
+
   // click sul pulsante modifica
   const handleEdit = (e) => {
     try {
@@ -136,17 +139,18 @@ function CategorieCard({ data, tabsOptions }) {
     }
   };
 
+  // click sul pulsante elimina
   const handleCloseModal = () => {
     try {
       setModal({
-        show:false,
-        type:"",
-        data: undefined
-      })
+        show: false,
+        type: "",
+        data: undefined,
+      });
     } catch (error) {
-      base_exceptionManager(error)
+      base_exceptionManager(error);
     }
-  }
+  };
 
   //click sul pulsante conferma eliminazione
   const handleConfirmDelete = async (e) => {
@@ -163,8 +167,9 @@ function CategorieCard({ data, tabsOptions }) {
           const data = await res.json();
 
           if (!res.ok && data.error != "") {
-            base_exceptionManager({message: data.error})
-          }else{
+            base_exceptionManager({ message: data.error });
+            return
+          } else {
             handleCloseModal();
           }
         }
@@ -190,8 +195,9 @@ function CategorieCard({ data, tabsOptions }) {
               <br />
               <br />
               Cliccando su
-              <strong className="text-background-inverse ml-1">Elimina</strong>, la
-              categoria verrà rimossa dall’elenco e non sarà più modificabile.
+              <strong className="text-background-inverse ml-1">Elimina</strong>,
+              la categoria verrà rimossa dall’elenco e non sarà più
+              modificabile.
               <br />
               <br />
               Le transazioni già assegnate a questa categoria resteranno

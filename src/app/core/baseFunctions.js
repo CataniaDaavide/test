@@ -48,7 +48,7 @@ export function formValidation(setError, fields) {
 
             // NotEmpty
             if (validatorName === "notEmpty") {
-                if (!value || value.toString().trim() === "") {
+                if (value === undefined || value.toString().trim() === "") {
                     newError[fieldName] = validator.message;
                     hasError = true;
                     break;

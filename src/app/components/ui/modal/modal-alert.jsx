@@ -1,4 +1,3 @@
-import { TriangleAlert, X } from "lucide-react";
 import {
   CardContent,
   CardDescription,
@@ -7,7 +6,7 @@ import {
   CardHeaderContent,
   CardTitle,
 } from "../card";
-import { Button, ButtonIcon } from "../button";
+import { Button } from "../button";
 import React from "react";
 
 export default function ModalAlert({ data, handleCloseModal }) {

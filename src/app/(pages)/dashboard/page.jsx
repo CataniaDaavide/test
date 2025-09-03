@@ -13,6 +13,8 @@ import {
 import PercentageBar from "@/app/components/ui/percentage-bar";
 import Slider, { CardSliderTest } from "@/app/components/ui/slider";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
+import { ModalContext } from "@/app/context/ModalContext";
+import { fetchApi } from "@/app/core/baseFunctions";
 import {
   ArrowRight,
   Calendar,
@@ -23,33 +25,98 @@ import {
   Wallet,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-
-//hoocks - functions - lib
-
-//icons
-
-//components
+import { useContext, useEffect, useRef, useState } from "react";
 
 export default function DashboardPage() {
+  const { modal } = useContext(ModalContext);
+  const { base_exceptionManager } = useExceptionManager();
+  const [movements, setMovements] = useState([]);
+  const [isLoader, setIsLoader] = useState(false);
+
+  // recupero movimenti
+  const loadMovements = async () => {
+    setIsLoader(true);
+    const now = new Date();
+
+    // dateEnd = ultimo giorno del mese corrente alle 23:59:59
+    const dateEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    dateEnd.setHours(23, 59, 59, 0);
+
+    // dateStart = primo giorno del mese 3 mesi fa alle 00:00:00
+    const startMonth = now.getMonth() - 3;
+    const startYear = now.getFullYear() + Math.floor(startMonth / 12);
+    const normalizedStartMonth = (startMonth + 12) % 12; // gestisce i mesi negativi
+
+    const dateStart = new Date(startYear, normalizedStartMonth, 1);
+    dateStart.setHours(0, 0, 0, 0);
+
+    const requestData = {
+      dateStart: dateStart,
+      dateEnd: dateEnd,
+    };
+
+    await fetchApi(
+      "/api/movements/movementsGet",
+      "POST",
+      requestData,
+      async (res) => {
+        const data = await res.json();
+
+        if (!res.ok && data.error != "") {
+          base_exceptionManager({ message: data.error });
+          return;
+        }
+
+        const { movements } = data;
+        setMovements(movements);
+      }
+    );
+    setIsLoader(false);
+  };
+
+  // evento che gestisce il recupero dei dati quando la pagina viene renderizzata
+  // e quando viene chiuso il modal
+  useEffect(() => {
+    if (modal && modal.show === false) {
+      // funzione per recupero le categorie
+      loadMovements();
+    }
+  }, [modal]);
+
   return (
     <div className="w-full h-full flex flex-col gap-3 p-3">
-      <StatsContainer />
-      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3">
-        <RecentMovementsContainer />
-        <OtherStastsContainer />
-      </div>
+      <StatsContainer movements={movements} />
+      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3">
+        <RecentMovementsContainer movements={movements} />
+        <OtherStastsContainer movements={movements} />
+      </div> */}
     </div>
   );
 }
 
-function StatsContainer() {
-  const containerRef = useRef(null);
-  const [width, setWidth] = useState(0);
+function StatsContainer({ movements }) {
+  // const containerRef = useRef(null);
+  // const [width, setWidth] = useState(0);
 
-  useEffect(() => {
-    setWidth(containerRef.current.offsetWidth);
-  }, [containerRef]);
+  // useEffect(() => {
+  //   setWidth(containerRef.current.offsetWidth);
+  // }, [containerRef]);
+
+  // calcola inizio e fine del mese corrente
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  startOfMonth.setHours(0, 0, 0, 0);
+
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  endOfMonth.setHours(23, 59, 59, 999);
+
+  const filtered = movements.filter((item) => {
+    const itemDate = new Date(item.date); // <- importante!
+    return itemDate >= startOfMonth && itemDate <= endOfMonth;
+  });
+
+  console.log(movements, "filtered:", filtered);
+
   const stats = [
     {
       title: "Entrate del mese",
@@ -78,15 +145,16 @@ function StatsContainer() {
   ];
   return (
     <>
-      <div className="w-full flex md:hidden">
+      {/* <div className="w-full flex md:hidden">
         <Slider cards={stats} containerRef={containerRef}>
           {stats.map((stat, index) => (
             <ItemListStatsContainer key={index} stat={stat} cardWidth={width} />
           ))}
         </Slider>
-      </div>
+      </div> */}
 
-      <div className="w-full hidden md:grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+      {/* <div className="w-full hidden md:grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4"> */}
+      <div className="w-full grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat, index) => {
           return <ItemListStatsContainer key={index} stat={stat} />;
         })}
