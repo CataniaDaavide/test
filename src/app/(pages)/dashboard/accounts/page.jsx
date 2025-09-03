@@ -100,10 +100,10 @@ function AccountsContainer({ accounts }) {
         <p className="text-lg md:text-2xl font-bold">Patrimonio totale:</p>
         <p
           className={`text-xl font-bold ${
-            totalAmount > 0 ? "text-green-600" : "text-red-600"
+            Number(totalAmount) > 0 ? "text-green-600" : "text-red-600"
           }`}
         >
-          €{totalAmount}
+          €{totalAmount.toFixed(2).replace(".", ",")}
         </p>
       </div>
       <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">

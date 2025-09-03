@@ -27,6 +27,57 @@ import {
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
+function calculateTotalIncomeAndExpenses(
+  dateStart,
+  dateEnd,
+  movements,
+  base_exceptionManager
+) {
+  try {
+    const income = [];
+    const expense = [];
+    var totalIncome = 0;
+    var totalExpense = 0;
+
+    const movementsFilteredByDate = movements.filter((item) => {
+      const itemDate = new Date(item.date);
+      return itemDate >= dateStart && itemDate <= dateEnd;
+    });
+
+    movementsFilteredByDate.map((item) => {
+      if (item.type === "E") {
+        income.push(item);
+        item.accounts.map((acc) => {
+          totalIncome += acc.amount;
+        });
+      } else if (item.type) {
+        expense.push(item);
+        item.accounts.map((acc) => {
+          totalExpense += acc.amount;
+        });
+      }
+    });
+
+    return {
+      income: income,
+      expense: expense,
+      totalIncome: totalIncome,
+      totalExpense: totalExpense,
+    };
+  } catch (error) {
+    base_exceptionManager(error);
+  }
+}
+
+function calculatePercentChange(current, previous) {
+  if (previous === 0) {
+    if (current === 0) return 0; // nessun cambiamento
+    return Infinity; // crescita non definita (da 0 a >0)
+  }
+  const change = ((current - previous) / previous) * 100;
+  return change.toFixed(2); // es. 25 significa +25%, -10 significa -10%
+}
+
 export default function DashboardPage() {
   const { modal } = useContext(ModalContext);
   const { base_exceptionManager } = useExceptionManager();
@@ -39,16 +90,23 @@ export default function DashboardPage() {
     const now = new Date();
 
     // dateEnd = ultimo giorno del mese corrente alle 23:59:59
-    const dateEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    dateEnd.setHours(23, 59, 59, 0);
+    const dateEnd = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      0
+    );
 
     // dateStart = primo giorno del mese 3 mesi fa alle 00:00:00
     const startMonth = now.getMonth() - 3;
     const startYear = now.getFullYear() + Math.floor(startMonth / 12);
     const normalizedStartMonth = (startMonth + 12) % 12; // gestisce i mesi negativi
 
-    const dateStart = new Date(startYear, normalizedStartMonth, 1);
-    dateStart.setHours(0, 0, 0, 0);
+    const dateStart = new Date(startYear, normalizedStartMonth, 1, 0, 0, 0, 0);
+    console.log(dateStart, dateEnd);
 
     const requestData = {
       dateStart: dateStart,
@@ -86,15 +144,16 @@ export default function DashboardPage() {
   return (
     <div className="w-full h-full flex flex-col gap-3 p-3">
       <StatsContainer movements={movements} />
-      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3">
-        <RecentMovementsContainer movements={movements} />
-        <OtherStastsContainer movements={movements} />
-      </div> */}
+      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3"> */}
+      <RecentMovementsContainer movements={movements} />
+      {/* <OtherStastsContainer movements={movements} /> */}
+      {/* </div> */}
     </div>
   );
 }
 
 function StatsContainer({ movements }) {
+  const { base_exceptionManager } = useExceptionManager();
   // const containerRef = useRef(null);
   // const [width, setWidth] = useState(0);
 
@@ -102,45 +161,122 @@ function StatsContainer({ movements }) {
   //   setWidth(containerRef.current.offsetWidth);
   // }, [containerRef]);
 
-  // calcola inizio e fine del mese corrente
+  const [totalAccounts, setTotalAccounts] = useState(0);
+
+  // recupero conti
+  const loadAccounts = async () => {
+    await fetchApi("/api/accounts/accountsGet", "POST", {}, async (res) => {
+      const data = await res.json();
+
+      if (!res.ok && data.error != "") {
+        base_exceptionManager({ message: data.error });
+        return;
+      }
+
+      const { accounts } = data;
+      var total = 0;
+      accounts.map((item) => {
+        total += item.amount;
+      });
+      setTotalAccounts(total.toFixed(2).toString().replace(".", ","));
+    });
+  };
+  loadAccounts();
+
+  // calcolo dati mese corrente
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  startOfMonth.setHours(0, 0, 0, 0);
+  const startOfCurrentMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1,
+    0,
+    0,
+    0,
+    0
+  );
+  const endOfCurrentMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
 
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  endOfMonth.setHours(23, 59, 59, 999);
+  const {
+    income: currentIncome,
+    expense: currentExpense,
+    totalIncome: currentTotaleIncome,
+    totalExpense: currentTotaleExpense,
+  } = calculateTotalIncomeAndExpenses(
+    startOfCurrentMonth,
+    endOfCurrentMonth,
+    movements,
+    base_exceptionManager
+  );
 
-  const filtered = movements.filter((item) => {
-    const itemDate = new Date(item.date); // <- importante!
-    return itemDate >= startOfMonth && itemDate <= endOfMonth;
-  });
+  // calcolo dati mese precedente
+  const startOfPreviousMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1,
+    0,
+    0,
+    0,
+    0
+  );
 
-  console.log(movements, "filtered:", filtered);
+  const endOfPreviousMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  const {
+    income: previusIncome,
+    expense: previusExpense,
+    totalIncome: previusTotaleIncome,
+    totalExpense: previusTotaleExpense,
+  } = calculateTotalIncomeAndExpenses(
+    startOfPreviousMonth,
+    endOfPreviousMonth,
+    movements,
+    base_exceptionManager
+  );
 
   const stats = [
     {
       title: "Entrate del mese",
-      amount: 0.0,
+      amount: currentTotaleIncome.toString().replace(".", ","),
       icon: <TrendingUp size={16} />,
-      percentage: 0,
+      percentage: calculatePercentChange(
+        currentTotaleIncome,
+        previusTotaleIncome
+      ),
     },
     {
       title: "Uscite del mese",
-      amount: 0.0,
+      amount: currentTotaleExpense.toString().replace(".", ","),
       icon: <TrendingDown size={16} />,
-      percentage: 0,
+      percentage: calculatePercentChange(
+        currentTotaleExpense,
+        previusTotaleExpense
+      ),
     },
     {
       title: "Saldo Totale",
-      amount: 0.0,
+      amount: totalAccounts,
       icon: <Wallet size={16} />,
-      // percentage: 0,
     },
     {
       title: "Obiettivi ???",
       amount: 0,
       icon: <Target size={16} />,
-      // percentage: 0,
     },
   ];
   return (
@@ -177,7 +313,11 @@ function ItemListStatsContainer({ stat, cardWidth }) {
       </div>
       <p className="text-2xl font-bold">€{amount}</p>
       {percentage != undefined && (
-        <p className="text-xs text-green-600 md:text-amber-500">
+        <p
+          className={`text-sm ${
+            percentage >= 0 ? "text-green-600" : "text-red-600"
+          }`}
+        >
           {percentage}% dal mese scorso
         </p>
       )}
@@ -185,9 +325,35 @@ function ItemListStatsContainer({ stat, cardWidth }) {
   );
 }
 
-function RecentMovementsContainer() {
+function RecentMovementsContainer({ movements = [] }) {
   const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
+
+  // calcolo dati mese corrente
+  const now = new Date();
+  const startOfCurrentMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1,
+    0,
+    0,
+    0,
+    0
+  );
+  const endOfCurrentMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  const movementsFilteredByDate = movements.filter((item) => {
+    const itemDate = new Date(item.date);
+    return itemDate >= startOfCurrentMonth && itemDate <= endOfCurrentMonth;
+  }).slice(0,10);
 
   // click sul pulsante vedi tutti i moviemnti
   const handleClick = (e) => {
@@ -216,21 +382,16 @@ function RecentMovementsContainer() {
         </CardHeader>
 
         <CardContent>
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
-          <FakeCard type="RECENT MOVEMENT" />
+          {movementsFilteredByDate.map((movement,index) => {
+            return(
+              <div key={index} className="W-full p-3 border">
+                <p>{movement.date}</p>
+                <p>{movement.amount}</p>
+                <p>{movement.type}</p>
+                <p>{movement.userId}</p>
+              </div>
+            )
+          })}
         </CardContent>
       </Card>
     </div>
