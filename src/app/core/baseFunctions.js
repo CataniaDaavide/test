@@ -11,25 +11,6 @@ export function base_checkEmail(email) {
     return regex.test(email);
 }
 
-// base_exceptionManager sostituito con il Porvider - Context "ExceptionManagerContext"
-/*
-export function base_exceptionManager(error, setModal) {
-    // - error: errore generato da qualche blocco di codice
-    const { message } = error
-    console.log(message)
-    setModal({
-        show: true,
-        type: "error",
-        data: {
-            title: "ModalError - " + message,
-            desciption: "Lorem Ipsum is simply dummy text of the printing",
-            message:
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        },
-    });
-}
-*/
-
 export function formValidation(setError, fields) {
     /*
     - setError: funzione per settare gli errori che vengono trovati
@@ -168,6 +149,28 @@ export async function fetchApi(
     } catch (error) {
         base_exceptionManager(error);
     }
+}
+
+// Funzione per ottenere il primo e l'ultimo giorno della data passata come parametro
+export function getFirstAndLastDaysMonth(strDate) {
+  const date = new Date(strDate);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  // Primo giorno alle 00:00:00.000
+  const first = new Date(year, month, 1, 0, 0, 0, 0);
+
+  // Ultimo giorno alle 23:59:59.999
+  const last = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+  // Converti in ISO locale
+  const firstIso = first.toISOString();
+  const lastIso = last.toISOString();  
+
+  return {
+    first: firstIso,
+    last: lastIso
+  };
 }
 
 //**********************************************************************

@@ -1,8 +1,9 @@
 import { Loader } from "lucide-react";
 
 export default function LoaderFullPage({ className }) {
+  //w-[100dvw] h-[100dvh]
   return (
-    <div className={`w-[100dvw] h-[100dvh] bg-background flex items-center justify-center ${className}`}>
+    <div className={`w-full h-full bg-background flex items-center justify-center ${className}`}>
       <Loader className="animate-spin" />
     </div>
   );
