@@ -13,6 +13,7 @@ import {
 } from "@/app/components/ui/card";
 import PercentageBar from "@/app/components/ui/percentage-bar";
 import Slider, { CardSliderTest } from "@/app/components/ui/slider";
+import TitleComponents from "@/app/components/ui/title-components";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
@@ -28,7 +29,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
-function movementsFilteredByDate(data = [], start, end) {
+function filteredMovementsByDate(data = [], start, end) {
   const dateStart = new Date(start);
   const dateEnd = new Date(end);
   if (dateStart == "Invalid Date" || dateEnd == "Invalid Date") {
@@ -53,13 +54,13 @@ function calculateTotalIncomeAndExpenses(
     var totalIncome = 0;
     var totalExpense = 0;
 
-    const movementsFiltered = movementsFilteredByDate(
+    const filteredMovements = filteredMovementsByDate(
       movements,
       dateStart,
       dateEnd
     );
 
-    movementsFiltered.map((item) => {
+    filteredMovements.map((item) => {
       if (item.type === "E") {
         income.push(item);
         item.accounts.map((acc) => {
@@ -221,23 +222,27 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 p-3">
-      {/* <StatsContainer
+    <div className="w-full h-full flex flex-col gap-3 p-3 overflow-y-scroll scrollbar-hide">
+      <StatsContainer
         movements={movements}
-        accounts={accounts}
-        startOfCurrentMonth={startOfCurrentMonth}
-        endOfCurrentMonth={endOfCurrentMonth}
-      /> */}
-      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3"> */}
-      <RecentMovementsContainer
-        movements={movements}
-        categories={categories}
         accounts={accounts}
         startOfCurrentMonth={startOfCurrentMonth}
         endOfCurrentMonth={endOfCurrentMonth}
       />
-      {/* <OtherStastsContainer movements={movements} /> */}
-      {/* </div> */}
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <RecentMovementsContainer
+          movements={movements}
+          categories={categories}
+          startOfCurrentMonth={startOfCurrentMonth}
+          endOfCurrentMonth={endOfCurrentMonth}
+        />
+        <OtherStastsContainer
+          movements={movements}
+          startOfCurrentMonth={startOfCurrentMonth}
+          endOfCurrentMonth={endOfCurrentMonth}
+          categories={categories}
+        />
+      </div>
     </div>
   );
 }
@@ -404,14 +409,13 @@ function ItemListStatsContainer({ stat, cardWidth }) {
 function RecentMovementsContainer({
   movements = [],
   categories = [],
-  accounts = [],
   startOfCurrentMonth = new Date(),
   endOfCurrentMonth = new Date(),
 }) {
   const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
 
-  const movementsFiltered = movementsFilteredByDate(
+  const filteredMovements = filteredMovementsByDate(
     movements,
     startOfCurrentMonth,
     endOfCurrentMonth
@@ -427,8 +431,8 @@ function RecentMovementsContainer({
   };
 
   return (
-    <div className="grid col-span-2">
-      <Card className="w-full">
+    <div className="h-full grid col-span-2">
+      <Card className="w-full !bg-transparent !border-0 !p-0 md:!bg-card md:!border-1 md:!p-5">
         <CardHeader>
           <CardHeaderContent>
             <CardTitle>Movimenti recenti</CardTitle>
@@ -444,7 +448,7 @@ function RecentMovementsContainer({
         </CardHeader>
 
         <CardContent>
-          {movementsFiltered.map((movement, index) => {
+          {filteredMovements.map((movement, index) => {
             return (
               <MovementsCard
                 key={index}
@@ -459,17 +463,96 @@ function RecentMovementsContainer({
   );
 }
 
-function OtherStastsContainer() {
+function MovementsCard({ data, categories = [] }) {
+  const { _id, userId, type, description, date, categorieId, accounts, name } =
+    data;
+  const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
+  const [categorie, setCategorie] = useState(null);
+
+  const convertedDate = convertDate(date, "dd/MM/yyyy HH:mm");
+  // const truncatedDdescription =
+  //   description.length > 30 ? description.slice(0, 50) + "..." : description;
+  const colorAmount = type === "E" ? "text-green-600" : "text-red-600";
+  const sign = type === "E" ? "+" : "-";
+  useEffect(() => {
+    const found = categories.find((c) => c._id === categorieId);
+    setCategorie(found || null);
+  }, [categories, categorieId]);
+
+  if (!categorie) return null;
+
+  return (
+    <Card className="!flex-row !items-center !justify-between">
+      <div className="w-full flex items-center gap-3">
+        <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
+        <div className="max-w-[120px]">
+          <p className="text-nowrap">{categorie?.name}</p>
+          <p className="text-sm text-gray-500">{convertedDate}</p>
+          {/* {truncatedDdescription && <p className="text-sm text-gray-500">
+            {truncatedDdescription}
+          </p>} */}
+        </div>
+      </div>
+      <div className="flex flex-col items-center">
+        <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
+          {sign} €{amount.toFixed(2)}
+        </p>
+      </div>
+    </Card>
+  );
+}
+
+function OtherStastsContainer({
+  movements,
+  startOfCurrentMonth,
+  endOfCurrentMonth,
+  categories,
+}) {
+  const filteredMovements = filteredMovementsByDate(
+    movements,
+    startOfCurrentMonth,
+    endOfCurrentMonth
+  );
+
   return (
     <div className="flex flex-col gap-3">
-      <ExpensesByCategory />
+      <ExpensesByCategory
+        movements={filteredMovements}
+        categories={categories}
+      />
       <MonthlyIncomeExpenseComparison />
     </div>
   );
 }
 
-function ExpensesByCategory() {
-  let expensesList = ["", "", "", "", "", "", "", "", ""];
+function ExpensesByCategory({ movements, categories }) {
+  var filteredCategories = new Map();
+  var totalExpense = 0;
+  categories.map((c) => {
+    const { _id, name, type } = c;
+    if (type === "U") {
+      filteredCategories.set(_id, {
+        _id: _id,
+        name: name,
+        type: type,
+        totalAmount: 0,
+      });
+    }
+  });
+
+  movements.map((m) => {
+    const { type, categorieId, accounts } = m;
+    if (type === "U") {
+      const totalAccounts = accounts.reduce((acc, x) => acc + x.amount, 0);
+      const categorie = filteredCategories.get(categorieId);
+      categorie.totalAmount += totalAccounts;
+      totalExpense += totalAccounts;
+      filteredCategories.set(categorieId, categorie);
+    }
+  });
+
+  // Converto la Map in array per poter fare .map()
+  const categoriesArray = Array.from(filteredCategories.values());
 
   return (
     <Card>
@@ -482,11 +565,19 @@ function ExpensesByCategory() {
         </CardHeaderContent>
       </CardHeader>
       <CardContent className="min-h-20 flex flex-col gap-3 items-center justify-center">
-        {expensesList.length != 0 ? (
+        {categoriesArray.length != 0 ? (
           <>
-            {expensesList.map((item, index) => (
-              <ItemListExpensesByCategory key={index} />
-            ))}
+            {categoriesArray.map((item, index) => {
+              if (item.totalAmount != 0) {
+                return (
+                  <ItemListExpensesByCategory
+                    key={index}
+                    data={item}
+                    totalExpense={totalExpense}
+                  />
+                );
+              }
+            })}
           </>
         ) : (
           <p className="text-muted-foreground">Nessun movimento trovato</p>
@@ -496,8 +587,18 @@ function ExpensesByCategory() {
   );
 }
 
-function ItemListExpensesByCategory() {
-  return <PercentageBar title={"test"} percentage={30} />;
+function ItemListExpensesByCategory({ data, totalExpense }) {
+  const { name, totalAmount } = data;
+  const percentage = ((totalAmount / totalExpense) * 100).toFixed(2);
+  console.log(data);
+
+  return (
+    <PercentageBar
+      titleSx={name}
+      titleDx={`€ ${totalAmount}`}
+      percentage={totalAmount === 0 ? totalAmount : percentage}
+    />
+  );
 }
 
 function MonthlyIncomeExpenseComparison() {
@@ -514,151 +615,6 @@ function MonthlyIncomeExpenseComparison() {
       <CardContent>
         <p>da fare</p>
       </CardContent>
-    </Card>
-  );
-}
-
-function MovementsCard({ data, categories = [] }) {
-  const { base_exceptionManager } = useExceptionManager();
-  const { setModal } = useContext(ModalContext);
-  const { _id, userId, type, description, date, categorieId, accounts, name } =
-    data;
-  const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
-  const [categorie, setCategorie] = useState(null);
-
-  const convertedDate = convertDate(date, "dd/MM/yyyy HH:mm")
-  const truncatedDdescription = description.length > 30 ? description.slice(0,50) + "..." : description
-  const colorAmount = type === "E" ? "text-green-600" : "text-red-600"
-          
-  useEffect(() => {
-    const found = categories.find((c) => c._id === categorieId);
-    setCategorie(found || null);
-  }, [categories, categorieId]);
-
-  if (!categorie) return null;
-
-  // // click sul pulsante modifica
-  // const handleEdit = (e) => {
-  //   try {
-  //     e.preventDefault();
-
-  //     setModal({
-  //       show: true,
-  //       type: "account",
-  //       data: { ...data, handleDelete: handleDelete },
-  //     });
-  //   } catch (error) {
-  //     base_exceptionManager(error);
-  //   }
-  // };
-
-  // // click sul pulsante elimina
-  // const handleCloseModal = () => {
-  //   try {
-  //     setModal({
-  //       show: false,
-  //       type: "",
-  //       data: undefined,
-  //     });
-  //   } catch (error) {
-  //     base_exceptionManager(error);
-  //   }
-  // };
-
-  // // click sul pulsante conferma eliminazione
-  // const handleConfirmDelete = async (e) => {
-  //   try {
-  //     e.preventDefault();
-  //     const requestData = {
-  //       _id: _id,
-  //     };
-  //     await fetchApi(
-  //       "/api/accounts/accountDelete",
-  //       "POST",
-  //       requestData,
-  //       async (res) => {
-  //         const data = await res.json();
-
-  //         if (!res.ok && data.error != "") {
-  //           base_exceptionManager({ message: data.error });
-  //         } else {
-  //           handleCloseModal();
-  //         }
-  //       }
-  //     );
-  //   } catch (error) {
-  //     base_exceptionManager(error);
-  //   }
-  // };
-
-  // // click sul pulsante elimina
-  // const handleDelete = (e) => {
-  //   try {
-  //     e.preventDefault();
-  //     setModal({
-  //       show: true,
-  //       type: "alert",
-  //       data: {
-  //         title: "Eliminazione conto",
-  //         icon: <TriangleAlert size={40} className="text-amber-600" />,
-  //         message: (
-  //           <p className="text-muted-foreground">
-  //             Sei sicuro di voler eliminare il conto {name}?
-  //             <br />
-  //             <br />
-  //             Cliccando su
-  //             <strong className="text-background-inverse ml-1">Elimina</strong>,
-  //             il conto verrà rimosso dall’elenco e non sarà più utilizzabile.
-  //             <br />
-  //             <br />
-  //             Le transazioni associate a questo conto resteranno invariate e
-  //             continueranno a mostrarla come conto di riferimento.
-  //           </p>
-  //         ),
-  //         buttons: [
-  //           "cancel",
-  //           <Button onClick={handleConfirmDelete} color={"danger"}>
-  //             Elimina
-  //           </Button>,
-  //         ],
-  //       },
-  //     });
-  //   } catch (error) {
-  //     base_exceptionManager(error);
-  //   }
-  // };
-
-  return (
-    <Card className="!flex-row !items-center !justify-between">
-      <div className="w-full flex items-center gap-3">
-        <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
-        <div>
-          <p className="text-nowrap">{categorie?.name}</p>
-          <p className="text-sm text-gray-500">{convertedDate}</p>
-          {truncatedDdescription && <p className="text-sm text-gray-500 max-w-[120px] border">
-            {truncatedDdescription}
-          </p>}
-        </div>
-      </div>
-      <div className="flex flex-col items-center">
-        <p
-          className={`text-lg font-bold md:pr-3 ${colorAmount}`}
-        >
-          €{amount.toFixed(2)}
-        </p>
-        {/* <div className="flex gap-1">
-          <ButtonIcon
-            icon={<Edit />}
-            onClick={handleEdit}
-            color={"trasparent"}
-          />
-          <ButtonIcon
-            icon={<Trash />}
-            onClick={handleDelete}
-            color={"danger"}
-          />
-        </div>  */}
-      </div>
     </Card>
   );
 }

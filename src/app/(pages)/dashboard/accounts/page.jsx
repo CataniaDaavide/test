@@ -106,7 +106,7 @@ function AccountsContainer({ accounts }) {
           €{totalAmount.toFixed(2).replace(".", ",")}
         </p>
       </div>
-      <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
+      <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3 pb-3">
         {accounts.map((item, index) => {
           return <AccountCard key={index} data={item} />;
         })}

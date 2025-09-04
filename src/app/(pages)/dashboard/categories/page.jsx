@@ -109,7 +109,7 @@ export default function CategoriesPage() {
 
 function CardContainer({ tabsOptions, items }) {
   return (
-    <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3">
+    <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3 pb-3">
       {items.map((item, index) => {
         return (
           <CategorieCard key={index} data={item} tabsOptions={tabsOptions} />
