@@ -99,17 +99,25 @@ function AllButtons() {
     }
   };
 
-  const showTransictionModal = () => {
+    const showTransictionModalNew = () => {
+    setModal({
+      show: true,
+      type: "transiction",
+      data: {},
+    });
+  };
+
+  const showTransictionModalEdit = () => {
     setModal({
       show: true,
       type: "transiction",
       data: {
         movementData: {
-          _id: "aaaaaaaaaaaa",
+          _id: "1234567890",
           date: "2025-12-01T14:54:00.000Z",
           createAt: "2025-12-01T14:54:00.000Z",
-          categorieId: "222",
-          accountOneId: "666",
+          categorieId: "68b38561f67de76b78729cb7",
+          accountOneId: "68b5b079208f92fc4e27e4a3",
           amountOne: 1.2,
           accountTwoId: "555",
           amountTwo: 1.2,
@@ -130,9 +138,13 @@ function AllButtons() {
         <Plus />
         <span>ciao</span>
       </Button>
-      <Button onClick={showTransictionModal} color={"success"}>
+      <Button onClick={showTransictionModalNew} color={"success"}>
         <Plus />
-        <span>showTransictionModal</span>
+        <span>showTransictionModal new</span>
+      </Button>
+      <Button onClick={showTransictionModalEdit} color={"success"}>
+        <Plus />
+        <span>showTransictionModal edit</span>
       </Button>
       <Button onClick={showErrorModal} color={"danger"}>
         <Plus />

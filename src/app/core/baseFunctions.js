@@ -187,8 +187,13 @@ export function convertDate(dateIsoString, format = "dd/MM/yyyy HH:mm:ss") {
     const format = "dd/MM/yyyy HH:mm:ss"; const date = new Date().toISOString()
     console.log(convertDate(date, format)) // 23/08/2025 14:45:07
     */
-
-    const dateObj = new Date(dateIsoString);
+    
+    let dateObj;
+    if(dateIsoString){
+        dateObj = new Date(dateIsoString)
+    }else{
+        dateObj = new Date()
+    }
 
     const map = {
         dd: String(dateObj.getDate()).padStart(2, "0"),

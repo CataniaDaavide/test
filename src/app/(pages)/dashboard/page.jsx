@@ -16,7 +16,7 @@ import PercentageBar from "@/app/components/ui/percentage-bar";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
-import { ArrowRight, Calendar, ChartPie, Target, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, Calendar, ChartPie, Plus, Target, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
@@ -94,6 +94,7 @@ export default function DashboardPage() {
     });
   };
 
+  // recupero categorie
   const loadCategories = async () => {
     await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
       const data = await res.json();
@@ -105,6 +106,7 @@ export default function DashboardPage() {
     });
   };
 
+  // recupero conti
   const loadAccounts = async () => {
     await fetchApi("/api/accounts/accountsGet", "POST", {}, async (res) => {
       const data = await res.json();
@@ -279,7 +281,6 @@ function MovementsCard({ data, categories = [] }) {
   const { type, description, date, categorieId, accounts } = data;
   const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
   const [categorie, setCategorie] = useState(null);
-
   const convertedDate = convertDate(date, "dd/MM/yyyy HH:mm");
   const colorAmount = type === "E" ? "text-green-600" : "text-red-600";
   const sign = type === "E" ? "+" : "-";
@@ -295,9 +296,10 @@ function MovementsCard({ data, categories = [] }) {
     <Card className="!flex-row !items-center !justify-between">
       <div className="w-full flex items-center gap-3">
         <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
-        <div className="max-w-[120px]">
+        <div className="max-w-[120px] md:max-w-[300px]">
           <p className="text-nowrap">{categorie?.name}</p>
           <p className="text-sm text-gray-500">{convertedDate}</p>
+          <p className="text-sm text-gray-500 truncate">{description}</p>
         </div>
       </div>
       <div className="flex flex-col items-center">
@@ -380,7 +382,7 @@ function ItemListExpensesByCategory({ data, totalExpense }) {
   return (
     <PercentageBar
       titleSx={name}
-      titleDx={`€ ${totalAmount}`}
+      titleDx={`€ ${totalAmount.toFixed(2).replace(".", ",")}`}
       percentage={totalAmount === 0 ? totalAmount : percentage}
     />
   );

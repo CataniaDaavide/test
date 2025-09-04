@@ -12,155 +12,156 @@ import {
 import { Button, ButtonIcon } from "../button";
 import Input from "../input";
 import { useEffect, useRef, useState } from "react";
-import { convertDate } from "@/app/core/baseFunctions";
+import { convertDate, fetchApi } from "@/app/core/baseFunctions";
 import Select from "../select";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
+import { AccountsTypeOptions } from "@/app/(pages)/dashboard/accounts/page";
 
 export default function ModalTransiction({ data, handleCloseModal }) {
   const { base_exceptionManager } = useExceptionManager();
   const { movementData = {} } = data;
   const {
     _id,
-    date,
+    date: previusDate,
     createAt,
     categorieId,
     accountOneId,
-    amountOne,
+    amountOne: previusAmountOne,
     accountTwoId,
-    amountTwo,
-    description: movementDescription,
+    amountTwo: previusAmountTwo,
+    description: previusDescription,
   } = movementData;
-  const title = _id ? "Modifica movimento" : "Creazione movimento"  
-  const description = "Registra una nuova entrata o uscita"
-  const dateRef = useRef();
-  const timeRef = useRef();
-  const amountOneRef = useRef();
-  const amountTwoRef = useRef();
-  const descriptionRef = useRef();
-  const [categorieValue, setCategorieValue] = useState();
-  let categorieOptions = [
-    {
-      _id: "111",
-      label: "Categoria1",
-      value: "categorie1",
-    },
-    {
-      _id: "222",
-      label: "Categoria2",
-      value: "categorie2",
-    },
-    {
-      _id: "333",
-      label: "Categoria3",
-      value: "categorie3",
-    },
-    {
-      _id: "444",
-      label: "Categoria4",
-      value: "categorie4",
-    },
-  ];
-
-  const [accountOneValue, setAccountOneValue] = useState();
-  const [accountTwoValue, setAccountTwoValue] = useState();
-  let accountOneOptions = [
-    {
-      _id: "555",
-      label: "Account1",
-      value: "account1",
-      type: "BANK",
-    },
-    {
-      _id: "666",
-      label: "Account2",
-      value: "account2",
-      type: "VOUCHER",
-    },
-    {
-      _id: "777",
-      label: "Account3",
-      value: "account3",
-      type: "VOUCHER",
-    },
-    {
-      _id: "888",
-      label: "Account4",
-      value: "account4",
-      type: "BANK",
-    },
-  ];
-  const [accountTwoOptions, setAccountTwoOptions] = useState([]);
+  const title = _id ? "Modifica movimento" : "Creazione movimento";
+  const modalDescription = "Registra una nuova entrata o uscita";
+  const [date, setDate] = useState(
+    previusDate ? convertDate(previusDate, "yyyy-MM-dd") : convertDate(undefined, "yyyy-MM-dd")
+  );
   const [isVoucher, setIsVoucher] = useState(false);
+  const [time, setTime] = useState(previusDate ? convertDate(previusDate, "HH:mm") : convertDate(undefined, "HH:mm"));
+  const [amountOne, setAmountOne] = useState(previusAmountOne || 0);
+  const [amountTwo, setAmountTwo] = useState(previusAmountTwo || 0);
+  const [description, setDescription] = useState(previusDescription || "");
 
-  const setDateAndTime = (dateAndTime = new Date().toISOString()) => {
-    dateRef.current.value = convertDate(dateAndTime, "yyyy-MM-dd");
-    timeRef.current.value = convertDate(dateAndTime, "HH:mm");
+  const [categories, setCategories] = useState();
+  const [categorieValue, setCategorieValue] = useState();
+
+  const [accounts, setAccounts] = useState();
+  const [accountValue, setAccountValue] = useState();
+
+  const [accountTwo, setAccountTwo] = useState();
+  const [accountsTwoValue, setAccountsTwoValue] = useState();
+
+  // recupero categorie
+  const loadCategories = async () => {
+    await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
+      const data = await res.json();
+      if (!res.ok && data.error) {
+        base_exceptionManager({ message: data.error });
+        return;
+      }
+
+      const arr = [];
+      const { categories } = data;
+      categories.forEach((c) => {
+        const { _id, emoji, name, type } = c;
+        arr.push({
+          _id: _id,
+          label: `${emoji} ${name} - ${type === "E" ? "entrate" : "uscite"}`,
+          value: name.toLowerCase(),
+        });
+      });
+      setCategories(arr);
+    });
   };
 
-  //initMovementData: evento che viene elaborato all render del componente la prima volta
-  useEffect(() => {
-    try {
-      if (_id) {
-        //edit
-        setDateAndTime(date);
-        setCategorieValue(
-          categorieOptions.find((x) => x._id.toString() === categorieId)
-        );
-        const tempAccountOneValue = accountOneOptions.find(
-          (x) => x._id.toString() === accountOneId
-        );
-        setAccountOneValue(tempAccountOneValue);
-        amountOneRef.current.value = amountOne;
-
-        if (tempAccountOneValue && tempAccountOneValue != {}) {
-          const { type } = tempAccountOneValue;
-          if (type && type.toString().trim().toUpperCase() === "VOUCHER") {
-            setIsVoucher(true);
-            const arr = accountOneOptions.filter(
-              (x) => x?.type.toString().trim().toUpperCase() != "VOUCHER"
-            );
-            setAccountTwoOptions(arr);
-            if (accountTwoId) {
-              const tempAccounTwoValue = arr.find(
-                (x) => x._id.toString() === accountTwoId
-              );
-              setAccountTwoValue(tempAccounTwoValue);
-              // amountTwoRef.current.value = amountTwo;
-            }
-          } else {
-            setIsVoucher(false);
-          }
-        }
-
-        descriptionRef.current.value = movementDescription;
-      } else {
-        //create
-        setDateAndTime();
+  // recupero conti
+  const loadAccounts = async () => {
+    await fetchApi("/api/accounts/accountsGet", "POST", {}, async (res) => {
+      const data = await res.json();
+      if (!res.ok && data.error) {
+        base_exceptionManager({ message: data.error });
+        return;
       }
-    } catch (error) {
-      base_exceptionManager(error);
-    }
+
+      const arr = [];
+      const { accounts } = data;
+      
+      accounts.forEach((c) => {
+        const { _id, emoji, name, type } = c;
+        const typeLabel = AccountsTypeOptions.find(x => x.value === type)?.label.slice(2).toLowerCase()
+        arr.push({
+          _id: _id,
+          label: `${emoji} ${name} - ${typeLabel}`,
+          value: name.toLowerCase(),
+          type: type
+        });
+      });
+      setAccounts(arr);
+    });
+  };
+
+  useEffect(() => {
+    loadCategories();
+    loadAccounts();
   }, []);
+
+  useEffect(() => {
+    if (categories) {
+      setCategorieValue(categories.find((x) => x._id.toString() === categorieId));
+    }
+    if (accounts) {
+      setAccountValue(accounts.find((x) => x._id.toString() === accountOneId));
+    }
+  }, [categories, accounts]);
+
+  //initMovementData: evento che viene elaborato all render del componente la prima volta
+  // useEffect(() => {
+  //   try {
+  //     loadCategories();
+  //     loadAccounts();
+
+  //     if (_id) {
+  //       //edit
+  //       // if (tempAccountOneValue && tempAccountOneValue != {}) {
+  //       //   const { type } = tempAccountOneValue;
+  //       //   if (type && type.toString().trim().toUpperCase() === "VOUCHER") {
+  //       //     setIsVoucher(true);
+  //       //     const arr = accountOneOptions.filter((x) => x?.type.toString().trim().toUpperCase() != "VOUCHER");
+  //       //     setAccountTwoOptions(arr);
+  //       //     if (accountTwoId) {
+  //       //       const tempAccounTwoValue = arr.find((x) => x._id.toString() === accountTwoId);
+  //       //       setAccountTwoValue(tempAccounTwoValue);
+  //       //       // amountTwoRef.current.value = amountTwo;
+  //       //     }
+  //       //   } else {
+  //       //     setIsVoucher(false);
+  //       //   }
+  //       // }
+  //     } else {
+  //       //create
+  //       setDateAndTime();
+  //     }
+  //   } catch (error) {
+  //     base_exceptionManager(error);
+  //   }
+  // }, []);
 
   // evento che imposta il valore al amount dell secondo conto se siamo in edit
   // e arriva un data contenente come primo conto un type "VOUCHER"
-  useEffect(() => {
-    if (amountTwo && isVoucher) {
-      amountTwoRef.current.value = amountTwo;
-    }
-  }, [isVoucher]);
+  // useEffect(() => {
+  //   if (amountTwo && isVoucher) {
+  //     amountTwoRef.current.value = amountTwo;
+  //   }
+  // }, [isVoucher]);
 
-  // evento che viene elaborato ad ogni cambiamento di "accountOneValue" (valore della select "Conto1")
+  // evento che viene elaborato ad ogni cambiamento di "accountValue" (valore della select "Conto1")
   useEffect(() => {
     try {
-      if (accountOneValue && accountOneValue != {}) {
-        const { type } = accountOneValue;
-        if (type && type.toString().trim().toUpperCase() === "VOUCHER") {
+      if (accountValue && accountValue != {}) {
+        const { type } = accountValue;
+        if (type && type.toString().trim().toUpperCase() === "V") {
           setIsVoucher(true);
-          const arr = accountOneOptions.filter(
-            (x) => x?.type.toString().trim().toUpperCase() != "VOUCHER"
-          );
-          setAccountTwoOptions(arr);
+          setAccountTwo(accounts.filter((x) => x?.type.toString().trim().toUpperCase() != "V"));
         } else {
           setIsVoucher(false);
         }
@@ -168,7 +169,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     } catch (error) {
       base_exceptionManager(error);
     }
-  }, [accountOneValue]);
+  }, [accountValue]);
 
   // click sul pulsante modifica o crea
   const handleSubmit = (e) => {
@@ -176,9 +177,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       e.preventDefault();
 
       const requestData = {
-        date: new Date(
-          `${dateRef.current.value}T${timeRef.current.value}`
-        ).toISOString(),
+        date: new Date(`${dateRef.current.value}T${timeRef.current.value}`).toISOString(),
         createAt: createAt ?? new Date().toISOString(),
         categorieId: categorieValue._id.toString(),
         accountOneId: accountOneValue._id.toString(),
@@ -221,7 +220,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       <CardHeader>
         <CardHeaderContent>
           {title && <CardTitle>{title}</CardTitle>}
-          {description && <CardDescription>{description}</CardDescription>}
+          {modalDescription && <CardDescription>{modalDescription}</CardDescription>}
         </CardHeaderContent>
       </CardHeader>
 
@@ -232,53 +231,46 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             required={true}
             type="date"
             icon={<Calendar />}
-            ref={dateRef}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
           <Input
             title={"Orario"}
             required={true}
             type="time"
             icon={<Clock />}
-            ref={timeRef}
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
           />
         </div>
         <Select
           title={"Categoria"}
           required={true}
-          options={categorieOptions}
+          options={categories}
           value={categorieValue}
           setValue={setCategorieValue}
         />
         <Select
           title={isVoucher ? "Conto1" : "Conto"}
           required={true}
-          options={accountOneOptions}
-          value={accountOneValue}
-          setValue={setAccountOneValue}
+          options={accounts}
+          value={accountValue}
+          setValue={setAccountValue}
         />
-        <Input
-          title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"}
-          type="tel"
-          ref={amountOneRef}
-        />
+         <Input title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"} type="tel" value={amountOne} onChange={(e) => setAmountOne(e.target.value)} />
         {isVoucher && (
           <>
             <Select
               title={"Conto2"}
               required={true}
-              options={accountTwoOptions}
-              value={accountTwoValue}
-              setValue={setAccountTwoValue}
+              options={accountTwo}
+              value={accountsTwoValue}
+              setValue={setAccountsTwoValue}
             />
-            <Input title={"Importo conto2 (€)"} type="tel" ref={amountTwoRef} />
+            <Input title={"Importo conto2 (€)"} type="tel" value={amountTwo} onChange={(e) => setAccountTwo(e.target.value)} />
           </>
         )}
-        <Input
-          title={"Descrizione"}
-          type="textarea"
-          placeholder={"Inserisci una descrizione"}
-          ref={descriptionRef}
-        />
+        <Input title={"Descrizione"} type="textarea" placeholder={"Inserisci una descrizione"} value={description} onChange={(e) => setAmountTwo(e.target.value)} />
       </CardContent>
 
       <CardFooter className={"mt-3"}>
