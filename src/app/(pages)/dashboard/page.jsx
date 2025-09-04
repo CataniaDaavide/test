@@ -1,5 +1,6 @@
 "use client";
 
+import Emoji from "@/app/components/emoji";
 import { Button, ButtonIcon } from "@/app/components/ui/button";
 import {
   Card,
@@ -14,7 +15,7 @@ import PercentageBar from "@/app/components/ui/percentage-bar";
 import Slider, { CardSliderTest } from "@/app/components/ui/slider";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
-import { fetchApi } from "@/app/core/baseFunctions";
+import { convertDate, fetchApi } from "@/app/core/baseFunctions";
 import {
   ArrowRight,
   Calendar,
@@ -26,6 +27,19 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+
+function movementsFilteredByDate(data = [], start, end) {
+  const dateStart = new Date(start);
+  const dateEnd = new Date(end);
+  if (dateStart == "Invalid Date" || dateEnd == "Invalid Date") {
+    return [];
+  }
+
+  return data.filter((item) => {
+    const itemDate = new Date(item.date);
+    return itemDate >= dateStart && itemDate <= dateEnd;
+  });
+}
 
 function calculateTotalIncomeAndExpenses(
   dateStart,
@@ -39,12 +53,13 @@ function calculateTotalIncomeAndExpenses(
     var totalIncome = 0;
     var totalExpense = 0;
 
-    const movementsFilteredByDate = movements.filter((item) => {
-      const itemDate = new Date(item.date);
-      return itemDate >= dateStart && itemDate <= dateEnd;
-    });
+    const movementsFiltered = movementsFilteredByDate(
+      movements,
+      dateStart,
+      dateEnd
+    );
 
-    movementsFilteredByDate.map((item) => {
+    movementsFiltered.map((item) => {
       if (item.type === "E") {
         income.push(item);
         item.accounts.map((acc) => {
@@ -78,10 +93,14 @@ function calculatePercentChange(current, previous) {
   return change.toFixed(2); // es. 25 significa +25%, -10 significa -10%
 }
 
+// -----------------------------------------------------------------
+
 export default function DashboardPage() {
   const { modal } = useContext(ModalContext);
   const { base_exceptionManager } = useExceptionManager();
   const [movements, setMovements] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
 
   // recupero movimenti
@@ -106,7 +125,6 @@ export default function DashboardPage() {
     const normalizedStartMonth = (startMonth + 12) % 12; // gestisce i mesi negativi
 
     const dateStart = new Date(startYear, normalizedStartMonth, 1, 0, 0, 0, 0);
-    console.log(dateStart, dateEnd);
 
     const requestData = {
       dateStart: dateStart,
@@ -132,36 +150,23 @@ export default function DashboardPage() {
     setIsLoader(false);
   };
 
-  // evento che gestisce il recupero dei dati quando la pagina viene renderizzata
-  // e quando viene chiuso il modal
-  useEffect(() => {
-    if (modal && modal.show === false) {
-      // funzione per recupero le categorie
-      loadMovements();
-    }
-  }, [modal]);
+  // recupero categorie
+  const loadCategories = async () => {
+    setIsLoader(true);
 
-  return (
-    <div className="w-full h-full flex flex-col gap-3 p-3">
-      <StatsContainer movements={movements} />
-      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3"> */}
-      <RecentMovementsContainer movements={movements} />
-      {/* <OtherStastsContainer movements={movements} /> */}
-      {/* </div> */}
-    </div>
-  );
-}
+    await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
+      const data = await res.json();
 
-function StatsContainer({ movements }) {
-  const { base_exceptionManager } = useExceptionManager();
-  // const containerRef = useRef(null);
-  // const [width, setWidth] = useState(0);
+      if (!res.ok && data.error != "") {
+        base_exceptionManager({ message: data.error });
+        return;
+      }
 
-  // useEffect(() => {
-  //   setWidth(containerRef.current.offsetWidth);
-  // }, [containerRef]);
-
-  const [totalAccounts, setTotalAccounts] = useState(0);
+      const { categories } = data;
+      setCategories(categories);
+    });
+    setIsLoader(false);
+  };
 
   // recupero conti
   const loadAccounts = async () => {
@@ -174,14 +179,25 @@ function StatsContainer({ movements }) {
       }
 
       const { accounts } = data;
-      var total = 0;
-      accounts.map((item) => {
-        total += item.amount;
-      });
-      setTotalAccounts(total.toFixed(2).toString().replace(".", ","));
+      setAccounts(accounts);
+      // var total = 0;
+      // accounts.map((item) => {
+      //   total += item.amount;
+      // });
+      // setTotalAccounts(total.toFixed(2).toString().replace(".", ","));
     });
   };
-  loadAccounts();
+
+  // evento che gestisce il recupero dei dati quando la pagina viene renderizzata
+  // e quando viene chiuso il modal
+  useEffect(() => {
+    if (modal && modal.show === false) {
+      // funzione per recupero le categorie
+      loadMovements();
+      loadCategories();
+      loadAccounts();
+    }
+  }, [modal]);
 
   // calcolo dati mese corrente
   const now = new Date();
@@ -204,6 +220,75 @@ function StatsContainer({ movements }) {
     999
   );
 
+  return (
+    <div className="w-full h-full flex flex-col gap-3 p-3">
+      {/* <StatsContainer
+        movements={movements}
+        accounts={accounts}
+        startOfCurrentMonth={startOfCurrentMonth}
+        endOfCurrentMonth={endOfCurrentMonth}
+      /> */}
+      {/* <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 pb-3"> */}
+      <RecentMovementsContainer
+        movements={movements}
+        categories={categories}
+        accounts={accounts}
+        startOfCurrentMonth={startOfCurrentMonth}
+        endOfCurrentMonth={endOfCurrentMonth}
+      />
+      {/* <OtherStastsContainer movements={movements} /> */}
+      {/* </div> */}
+    </div>
+  );
+}
+
+function StatsContainer({
+  movements = [],
+  accounts = [],
+  startOfCurrentMonth = new Date(),
+  endOfCurrentMonth = new Date(),
+}) {
+  const { base_exceptionManager } = useExceptionManager();
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  // const containerRef = useRef(null);
+  // const [width, setWidth] = useState(0);
+
+  // useEffect(() => {
+  //   setWidth(containerRef.current.offsetWidth);
+  // }, [containerRef]);
+
+  // evento per calcolare il tolale dei soldi disponibili nei vari accounts
+  useEffect(() => {
+    if (accounts.length > 0) {
+      var total = 0;
+      accounts.map((item) => {
+        total += item.amount;
+      });
+      setTotalAccounts(total.toFixed(2).toString().replace(".", ","));
+    }
+  }, [accounts]);
+
+  // calcolo dati mese precedente
+  const now = new Date();
+  const startOfPreviousMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1,
+    0,
+    0,
+    0,
+    0
+  );
+  const endOfPreviousMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
   const {
     income: currentIncome,
     expense: currentExpense,
@@ -215,28 +300,6 @@ function StatsContainer({ movements }) {
     movements,
     base_exceptionManager
   );
-
-  // calcolo dati mese precedente
-  const startOfPreviousMonth = new Date(
-    now.getFullYear(),
-    now.getMonth() - 1,
-    1,
-    0,
-    0,
-    0,
-    0
-  );
-
-  const endOfPreviousMonth = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    0,
-    23,
-    59,
-    59,
-    999
-  );
-
   const {
     income: previusIncome,
     expense: previusExpense,
@@ -254,6 +317,7 @@ function StatsContainer({ movements }) {
       title: "Entrate del mese",
       amount: currentTotaleIncome.toString().replace(".", ","),
       icon: <TrendingUp size={16} />,
+      type: "E",
       percentage: calculatePercentChange(
         currentTotaleIncome,
         previusTotaleIncome
@@ -263,6 +327,7 @@ function StatsContainer({ movements }) {
       title: "Uscite del mese",
       amount: currentTotaleExpense.toString().replace(".", ","),
       icon: <TrendingDown size={16} />,
+      type: "U",
       percentage: calculatePercentChange(
         currentTotaleExpense,
         previusTotaleExpense
@@ -300,7 +365,22 @@ function StatsContainer({ movements }) {
 }
 
 function ItemListStatsContainer({ stat, cardWidth }) {
-  const { title, icon, amount, percentage } = stat;
+  const { title, icon, amount, percentage, type } = stat;
+  let percentageColor = "";
+
+  if (type === "E") {
+    if (percentage >= 0) {
+      percentageColor = "text-green-600";
+    } else {
+      percentageColor = "text-red-600";
+    }
+  } else {
+    if (percentage >= 0) {
+      percentageColor = "text-red-600";
+    } else {
+      percentageColor = "text-green-600";
+    }
+  }
 
   return (
     <Card>
@@ -313,11 +393,7 @@ function ItemListStatsContainer({ stat, cardWidth }) {
       </div>
       <p className="text-2xl font-bold">€{amount}</p>
       {percentage != undefined && (
-        <p
-          className={`text-sm ${
-            percentage >= 0 ? "text-green-600" : "text-red-600"
-          }`}
-        >
+        <p className={`text-sm ${percentageColor}`}>
           {percentage}% dal mese scorso
         </p>
       )}
@@ -325,35 +401,21 @@ function ItemListStatsContainer({ stat, cardWidth }) {
   );
 }
 
-function RecentMovementsContainer({ movements = [] }) {
+function RecentMovementsContainer({
+  movements = [],
+  categories = [],
+  accounts = [],
+  startOfCurrentMonth = new Date(),
+  endOfCurrentMonth = new Date(),
+}) {
   const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
 
-  // calcolo dati mese corrente
-  const now = new Date();
-  const startOfCurrentMonth = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    1,
-    0,
-    0,
-    0,
-    0
-  );
-  const endOfCurrentMonth = new Date(
-    now.getFullYear(),
-    now.getMonth() + 1,
-    0,
-    23,
-    59,
-    59,
-    999
-  );
-
-  const movementsFilteredByDate = movements.filter((item) => {
-    const itemDate = new Date(item.date);
-    return itemDate >= startOfCurrentMonth && itemDate <= endOfCurrentMonth;
-  }).slice(0,10);
+  const movementsFiltered = movementsFilteredByDate(
+    movements,
+    startOfCurrentMonth,
+    endOfCurrentMonth
+  ).slice(0, 10);
 
   // click sul pulsante vedi tutti i moviemnti
   const handleClick = (e) => {
@@ -382,15 +444,14 @@ function RecentMovementsContainer({ movements = [] }) {
         </CardHeader>
 
         <CardContent>
-          {movementsFilteredByDate.map((movement,index) => {
-            return(
-              <div key={index} className="W-full p-3 border">
-                <p>{movement.date}</p>
-                <p>{movement.amount}</p>
-                <p>{movement.type}</p>
-                <p>{movement.userId}</p>
-              </div>
-            )
+          {movementsFiltered.map((movement, index) => {
+            return (
+              <MovementsCard
+                key={index}
+                data={movement}
+                categories={categories}
+              />
+            );
           })}
         </CardContent>
       </Card>
@@ -457,10 +518,147 @@ function MonthlyIncomeExpenseComparison() {
   );
 }
 
-function FakeCard({ type = "" }) {
+function MovementsCard({ data, categories = [] }) {
+  const { base_exceptionManager } = useExceptionManager();
+  const { setModal } = useContext(ModalContext);
+  const { _id, userId, type, description, date, categorieId, accounts, name } =
+    data;
+  const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
+  const [categorie, setCategorie] = useState(null);
+
+  const convertedDate = convertDate(date, "dd/MM/yyyy HH:mm")
+  const truncatedDdescription = description.length > 30 ? description.slice(0,50) + "..." : description
+  const colorAmount = type === "E" ? "text-green-600" : "text-red-600"
+          
+  useEffect(() => {
+    const found = categories.find((c) => c._id === categorieId);
+    setCategorie(found || null);
+  }, [categories, categorieId]);
+
+  if (!categorie) return null;
+
+  // // click sul pulsante modifica
+  // const handleEdit = (e) => {
+  //   try {
+  //     e.preventDefault();
+
+  //     setModal({
+  //       show: true,
+  //       type: "account",
+  //       data: { ...data, handleDelete: handleDelete },
+  //     });
+  //   } catch (error) {
+  //     base_exceptionManager(error);
+  //   }
+  // };
+
+  // // click sul pulsante elimina
+  // const handleCloseModal = () => {
+  //   try {
+  //     setModal({
+  //       show: false,
+  //       type: "",
+  //       data: undefined,
+  //     });
+  //   } catch (error) {
+  //     base_exceptionManager(error);
+  //   }
+  // };
+
+  // // click sul pulsante conferma eliminazione
+  // const handleConfirmDelete = async (e) => {
+  //   try {
+  //     e.preventDefault();
+  //     const requestData = {
+  //       _id: _id,
+  //     };
+  //     await fetchApi(
+  //       "/api/accounts/accountDelete",
+  //       "POST",
+  //       requestData,
+  //       async (res) => {
+  //         const data = await res.json();
+
+  //         if (!res.ok && data.error != "") {
+  //           base_exceptionManager({ message: data.error });
+  //         } else {
+  //           handleCloseModal();
+  //         }
+  //       }
+  //     );
+  //   } catch (error) {
+  //     base_exceptionManager(error);
+  //   }
+  // };
+
+  // // click sul pulsante elimina
+  // const handleDelete = (e) => {
+  //   try {
+  //     e.preventDefault();
+  //     setModal({
+  //       show: true,
+  //       type: "alert",
+  //       data: {
+  //         title: "Eliminazione conto",
+  //         icon: <TriangleAlert size={40} className="text-amber-600" />,
+  //         message: (
+  //           <p className="text-muted-foreground">
+  //             Sei sicuro di voler eliminare il conto {name}?
+  //             <br />
+  //             <br />
+  //             Cliccando su
+  //             <strong className="text-background-inverse ml-1">Elimina</strong>,
+  //             il conto verrà rimosso dall’elenco e non sarà più utilizzabile.
+  //             <br />
+  //             <br />
+  //             Le transazioni associate a questo conto resteranno invariate e
+  //             continueranno a mostrarla come conto di riferimento.
+  //           </p>
+  //         ),
+  //         buttons: [
+  //           "cancel",
+  //           <Button onClick={handleConfirmDelete} color={"danger"}>
+  //             Elimina
+  //           </Button>,
+  //         ],
+  //       },
+  //     });
+  //   } catch (error) {
+  //     base_exceptionManager(error);
+  //   }
+  // };
+
   return (
-    <div className="w-full h-30 bg-card border border-border-card rounded-lg text-muted-foreground flex items-center justify-center">
-      FakeCard - {type}
-    </div>
+    <Card className="!flex-row !items-center !justify-between">
+      <div className="w-full flex items-center gap-3">
+        <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
+        <div>
+          <p className="text-nowrap">{categorie?.name}</p>
+          <p className="text-sm text-gray-500">{convertedDate}</p>
+          {truncatedDdescription && <p className="text-sm text-gray-500 max-w-[120px] border">
+            {truncatedDdescription}
+          </p>}
+        </div>
+      </div>
+      <div className="flex flex-col items-center">
+        <p
+          className={`text-lg font-bold md:pr-3 ${colorAmount}`}
+        >
+          €{amount.toFixed(2)}
+        </p>
+        {/* <div className="flex gap-1">
+          <ButtonIcon
+            icon={<Edit />}
+            onClick={handleEdit}
+            color={"trasparent"}
+          />
+          <ButtonIcon
+            icon={<Trash />}
+            onClick={handleDelete}
+            color={"danger"}
+          />
+        </div>  */}
+      </div>
+    </Card>
   );
 }

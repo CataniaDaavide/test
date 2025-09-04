@@ -120,7 +120,7 @@ export default function RegisterPage() {
       // chimata endpoint /api/auth/register
       const requestData = {
         name: name,
-        email: email,
+        email: email.trim().toLowerCase(),
         password: password,
       };
       await fetchApi("/api/auth/register", "POST", requestData, async (res) => {
@@ -194,6 +194,7 @@ export default function RegisterPage() {
         ref={emailRef}
         errorMessage={formValidationError.email}
         onKeyUp={handleKeyUp}
+        className="lowercase"
       />
       <Input
         title={"Password"}

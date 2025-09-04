@@ -103,7 +103,7 @@ export default function LoginPage() {
 
       // chimata endpoint /api/auth/login
       const requestData = {
-        email: email,
+        email: email.trim().toLowerCase(),
         password: password,
       };
       await fetchApi("/api/auth/login", "POST", requestData, async (res) => {
@@ -174,6 +174,7 @@ export default function LoginPage() {
         onChange={(e) => setEmail(e.target.value)}
         errorMessage={formValidationError.email}
         onKeyUp={handleKeyUp}
+        className="lowercase"
       />
       <Input
         title={"Password"}
