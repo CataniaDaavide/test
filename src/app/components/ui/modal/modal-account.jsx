@@ -38,8 +38,6 @@ export default function ModalAccount({ data, handleCloseModal }) {
     amount: currentAmount,
     handleDelete,
   } = data;
-  console.log(data, currentName);
-  
   const title = _id ? "Modifica conto" : "Creazione conto";
   const description =
     "Crea un conto per organizzare le tue finanze in modo chiaro e semplice";

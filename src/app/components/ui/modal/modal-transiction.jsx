@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, Clock, X } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import {
   CardContent,
   CardDescription,
@@ -9,7 +9,7 @@ import {
   CardHeaderContent,
   CardTitle,
 } from "../card";
-import { Button, ButtonIcon } from "../button";
+import { Button } from "../button";
 import Input from "../input";
 import { useEffect, useRef, useState } from "react";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
@@ -36,20 +36,30 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const [date, setDate] = useState(
     previusDate ? convertDate(previusDate, "yyyy-MM-dd") : convertDate(undefined, "yyyy-MM-dd")
   );
+  const isFirstRender = useRef(true);
+  const [formValidationError, setFormValidationError] = useState({
+    date: "",
+    time: "",
+    categorie: "",
+    accountOne: "",
+    amountOne: "",
+    accountTwo: "",
+    amountTwo: "",
+  });
   const [isVoucher, setIsVoucher] = useState(false);
   const [time, setTime] = useState(previusDate ? convertDate(previusDate, "HH:mm") : convertDate(undefined, "HH:mm"));
-  const [amountOne, setAmountOne] = useState(previusAmountOne || 0);
-  const [amountTwo, setAmountTwo] = useState(previusAmountTwo || 0);
   const [description, setDescription] = useState(previusDescription || "");
-
+  
   const [categories, setCategories] = useState();
   const [categorieValue, setCategorieValue] = useState();
-
+  
   const [accounts, setAccounts] = useState();
   const [accountValue, setAccountValue] = useState();
-
+  const [amountOne, setAmountOne] = useState(previusAmountOne || 0);
+  
   const [accountTwo, setAccountTwo] = useState();
-  const [accountsTwoValue, setAccountsTwoValue] = useState();
+  const [accountTwoValue, setaccountTwoValue] = useState();
+  const [amountTwo, setAmountTwo] = useState(previusAmountTwo || 0);
 
   // recupero categorie
   const loadCategories = async () => {
@@ -85,26 +95,89 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
       const arr = [];
       const { accounts } = data;
-      
+
       accounts.forEach((c) => {
         const { _id, emoji, name, type } = c;
-        const typeLabel = AccountsTypeOptions.find(x => x.value === type)?.label.slice(2).toLowerCase()
+        const typeLabel = AccountsTypeOptions.find((x) => x.value === type)
+          ?.label.slice(2)
+          .toLowerCase();
         arr.push({
           _id: _id,
           label: `${emoji} ${name} - ${typeLabel}`,
           value: name.toLowerCase(),
-          type: type
+          type: type,
         });
       });
       setAccounts(arr);
     });
   };
 
+  // inizializzazione delle regole di validazione
+  function formValidationInit() {
+    try {
+      const fields = {
+        date: {
+          value: date,
+          validators: {
+            notEmpty: { message: "Data obbligatorio" },
+          },
+        },
+        time: {
+          value: time,
+          validators: {
+            notEmpty: { message: "Orario obbligatorio" },
+          },
+        },
+        categorieValue: {
+          value: categorieValue,
+          validators: {
+            notEmpty: { message: "Categoria obbligatoria" },
+          },
+        },
+        accountOne: {
+          value: accountOne,
+          validators: {
+            notEmpty: { message: "Conto1 obbligatorio" },
+          },
+        },
+        amount: {
+          value: hexColor,
+          validators: {
+            notEmpty: { message: "Colore obbligatorio" },
+          },
+        },
+      };
+
+      // Esegui validazione
+      const hasError = formValidation(setFormValidationError, fields);
+      return hasError;
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  }
+
+  // evento che gestice gli errori della
+  // form validator quando i campi vengono compilati
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Solo se ci sono già errori
+    const hasExistingErrors = Object.values(formValidationError).some((error) => error !== "");
+    if (hasExistingErrors) {
+      formValidationInit();
+    }
+  }, [date, time, categorieValue, accountValue, amountOne, accountTwo, amountTwo]);
+
+  // recupero dati
   useEffect(() => {
     loadCategories();
     loadAccounts();
   }, []);
 
+  // init value categorie e account
   useEffect(() => {
     if (categories) {
       setCategorieValue(categories.find((x) => x._id.toString() === categorieId));
@@ -113,46 +186,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       setAccountValue(accounts.find((x) => x._id.toString() === accountOneId));
     }
   }, [categories, accounts]);
-
-  //initMovementData: evento che viene elaborato all render del componente la prima volta
-  // useEffect(() => {
-  //   try {
-  //     loadCategories();
-  //     loadAccounts();
-
-  //     if (_id) {
-  //       //edit
-  //       // if (tempAccountOneValue && tempAccountOneValue != {}) {
-  //       //   const { type } = tempAccountOneValue;
-  //       //   if (type && type.toString().trim().toUpperCase() === "VOUCHER") {
-  //       //     setIsVoucher(true);
-  //       //     const arr = accountOneOptions.filter((x) => x?.type.toString().trim().toUpperCase() != "VOUCHER");
-  //       //     setAccountTwoOptions(arr);
-  //       //     if (accountTwoId) {
-  //       //       const tempAccounTwoValue = arr.find((x) => x._id.toString() === accountTwoId);
-  //       //       setAccountTwoValue(tempAccounTwoValue);
-  //       //       // amountTwoRef.current.value = amountTwo;
-  //       //     }
-  //       //   } else {
-  //       //     setIsVoucher(false);
-  //       //   }
-  //       // }
-  //     } else {
-  //       //create
-  //       setDateAndTime();
-  //     }
-  //   } catch (error) {
-  //     base_exceptionManager(error);
-  //   }
-  // }, []);
-
-  // evento che imposta il valore al amount dell secondo conto se siamo in edit
-  // e arriva un data contenente come primo conto un type "VOUCHER"
-  // useEffect(() => {
-  //   if (amountTwo && isVoucher) {
-  //     amountTwoRef.current.value = amountTwo;
-  //   }
-  // }, [isVoucher]);
 
   // evento che viene elaborato ad ogni cambiamento di "accountValue" (valore della select "Conto1")
   useEffect(() => {
@@ -176,30 +209,35 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     try {
       e.preventDefault();
 
+      const hasError = formValidationInit();
+      if (hasError) return exit();
+
       const requestData = {
-        date: new Date(`${dateRef.current.value}T${timeRef.current.value}`).toISOString(),
+        date: new Date(`${date}T${time}`).toISOString(),
         createAt: createAt ?? new Date().toISOString(),
         categorieId: categorieValue._id.toString(),
-        accountOneId: accountOneValue._id.toString(),
-        amountOne: amountOneRef.current.value,
+        accountOneId: accountValue._id.toString(),
+        amountOne: amountOne,
       };
       if (_id) {
         requestData._id = _id;
       }
       if (isVoucher) {
-        if (accountTwoValue && accountTwoValue != {}) {
+        if (accountTwo && accountTwo != {}) {
           requestData.accountTwoId = accountTwoValue._id.toString();
-          requestData.amountTwo = amountTwoRef.current.value;
+          requestData.amountTwo = amountTwo;
         }
       }
       if (description) {
-        requestData.description = descriptionRef.current.value;
+        requestData.description = description;
       }
       if (createAt) {
         requestData.updateAt = new Date().toISOString();
       }
 
-      handleCloseModal();
+      console.log(requestData);
+
+      // handleCloseModal();
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -233,7 +271,8 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             icon={<Calendar />}
             value={date}
             onChange={(e) => setDate(e.target.value)}
-          />
+            errorMessage={formValidationError.date}
+            />
           <Input
             title={"Orario"}
             required={true}
@@ -241,7 +280,8 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             icon={<Clock />}
             value={time}
             onChange={(e) => setTime(e.target.value)}
-          />
+            errorMessage={formValidationError.time}
+            />
         </div>
         <Select
           title={"Categoria"}
@@ -249,28 +289,46 @@ export default function ModalTransiction({ data, handleCloseModal }) {
           options={categories}
           value={categorieValue}
           setValue={setCategorieValue}
-        />
+          errorMessage={formValidationError.categorie}
+          />
         <Select
           title={isVoucher ? "Conto1" : "Conto"}
           required={true}
           options={accounts}
           value={accountValue}
           setValue={setAccountValue}
-        />
-         <Input title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"} type="tel" value={amountOne} onChange={(e) => setAmountOne(e.target.value)} />
+          errorMessage={formValidationError.accountOne}
+          />
+        <Input
+          title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"}
+          type="tel"
+          value={amountOne}
+          onChange={(e) => setAmountOne(e.target.value)}
+          errorMessage={formValidationError.amountOne}
+          />
         {isVoucher && (
           <>
             <Select
               title={"Conto2"}
-              required={true}
               options={accountTwo}
-              value={accountsTwoValue}
-              setValue={setAccountsTwoValue}
-            />
-            <Input title={"Importo conto2 (€)"} type="tel" value={amountTwo} onChange={(e) => setAccountTwo(e.target.value)} />
+              value={accountTwoValue}
+              setValue={setaccountTwoValue}
+              />
+            <Input
+              title={"Importo conto2 (€)"}
+              type="tel"
+              value={amountTwo}
+              onChange={(e) => setAmountTwo(e.target.value)}
+              />
           </>
         )}
-        <Input title={"Descrizione"} type="textarea" placeholder={"Inserisci una descrizione"} value={description} onChange={(e) => setAmountTwo(e.target.value)} />
+        <Input
+          title={"Descrizione"}
+          type="textarea"
+          placeholder={"Inserisci una descrizione"}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </CardContent>
 
       <CardFooter className={"mt-3"}>
