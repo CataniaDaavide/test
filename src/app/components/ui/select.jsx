@@ -48,6 +48,45 @@ export function ExampleSelectComponent() {
   );
 }
 
+export function ExampleMultiSelectComponent() {
+  const options = [
+    {
+      label: "ciao1",
+      value: "opzione1",
+      data: { data1: "aaa", data2: "bbb", data3: "ccc" },
+    },
+    {
+      label: "ciao2",
+      value: "opzione2",
+      data: { data1: "ddd", data2: "eee", data3: "fff" },
+    },
+    {
+      label: "ciao3",
+      value: "opzione3",
+      data: { data1: "ggg", data2: "hhh", data3: "iii" },
+    },
+  ];
+
+  const [value, setValue] = useState();
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center gap-3 border p-3">
+      <p>esempio select component</p>
+      <Select
+        title="Titolo"
+        required={true}
+        value={value}
+        setValue={setValue}
+        options={options}
+        search={true}
+      />
+      <p className="text-blue-500 break-words text-center">
+        {JSON.stringify(value)}
+      </p>
+    </div>
+  );
+}
+
 export default function Select({
   title,
   required = false,

@@ -30,12 +30,12 @@ export const menuItems = [
     menu: ["mobile", "desktop"],
   },
   {
-    title: "add transiction",
+    title: "add movement",
     icon: <Plus />,
     action: (setModal) => {
       setModal({
         show: true,
-        type: "transiction",
+        type: "movement",
         data: {
           title: "Creazione transazione",
           description: "Registra una nuova entrata o uscita",

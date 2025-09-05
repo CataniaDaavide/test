@@ -36,7 +36,7 @@ export default function ModalAlert({ data, handleCloseModal }) {
           if (button === "close" || button === "cancel") {
             return (
               <Button key={index} onClick={handleCloseModal}>
-                <span>{button === "close" ? "Chiudi" : "Chiudi"}</span>
+                <span>{button === "close" ? "Chiudi" : "Annulla"}</span>
               </Button>
             );
           }

@@ -5,7 +5,7 @@ import { LogIn, Plus, TriangleAlert } from "lucide-react";
 import Input, { ExampleCheckboxComponent } from "../components/ui/input";
 import { Button, ButtonIcon } from "../components/ui/button";
 import { Card, ExampleCard } from "../components/ui/card";
-import Select, { ExampleSelectComponent } from "../components/ui/select";
+import Select, { ExampleMultiSelectComponent, ExampleSelectComponent } from "../components/ui/select";
 import Tabs, { ExampleTabsComponents } from "../components/ui/tabs";
 import ButtonToggleTheme from "../components/ui/toggle-theme";
 import { useExceptionManager } from "../context/ExceptionManagerContext";
@@ -16,7 +16,7 @@ import ColorPicker from "../components/ui/color-picker";
 import { useRouter } from "next/navigation";
 
 export default function App() {
-  const router = useRouter()
+  const router = useRouter();
   const [tabValue, setTabValue] = useState(1);
   const tabs = [
     {
@@ -45,27 +45,32 @@ export default function App() {
 
   return (
     <div className="w-full h-full max-w-md p-3 pt-5 flex flex-col gap-3 items-center">
-      <ButtonIcon onClick={() => router.push("/login")} icon={<LogIn />} className="absolute top-3 left-3 !rounded-full" color={"trasparent"}/>
-      <ButtonToggleTheme
-        className={"absolute top-3 right-3 !rounded-full"}
+      <ButtonIcon
+        onClick={() => router.push("/login")}
+        icon={<LogIn />}
+        className="absolute top-3 left-3 !rounded-full"
         color={"trasparent"}
       />
+      <ButtonToggleTheme className={"absolute top-3 right-3 !rounded-full"} color={"trasparent"} />
       <div className="text-center">
         <p className="text-2xl font-bold">App page</p>
-        <p className="text-muted-foreground text-sm">
-          Uso questa pagina come test per i componenti
-        </p>
+        <p className="text-muted-foreground text-sm">Uso questa pagina come test per i componenti</p>
       </div>
       <Tabs tabs={tabs} value={tabValue} setValue={setTabValue} />
 
       {tabValue === 1 && <ExampleCard />}
       {tabValue === 2 && <AllButtons />}
       {tabValue === 3 && <ExampleCheckboxComponent />}
-      {tabValue === 4 && <ExampleSelectComponent />}
+      {tabValue === 4 && (
+        <div className="w-full flex flex-col gap-3">
+          <ExampleMultiSelectComponent />
+        </div>
+      )}
       {tabValue === 5 && <TestComponents />}
     </div>
   );
 }
+//<ExampleSelectComponent />
 
 function AllButtons() {
   const { base_exceptionManager } = useExceptionManager();
@@ -77,7 +82,7 @@ function AllButtons() {
         type: "alert",
         data: {
           title: "Errore",
-          icon:<TriangleAlert size={40} className="text-amber-600" />,
+          icon: <TriangleAlert size={40} className="text-amber-600" />,
           message: (
             <p className="text-muted-foreground">
               Sei sicuro di voler eliminare la categoria {"emoji"} - {"name"}?
@@ -87,11 +92,11 @@ function AllButtons() {
               dall’elenco e non sarà più modificabile.
               <br />
               <br />
-              Le transazioni già assegnate a questa categoria resteranno
-              invariate e continueranno a mostrarla normalmente.
+              Le transazioni già assegnate a questa categoria resteranno invariate e continueranno a mostrarla
+              normalmente.
             </p>
           ),
-          buttons:["close"]
+          buttons: ["close"],
         },
       });
     } catch (error) {
@@ -99,10 +104,10 @@ function AllButtons() {
     }
   };
 
-    const showTransictionModalNew = () => {
+  const showTransictionModalNew = () => {
     setModal({
       show: true,
-      type: "transiction",
+      type: "movement",
       data: {},
     });
   };
@@ -110,19 +115,17 @@ function AllButtons() {
   const showTransictionModalEdit = () => {
     setModal({
       show: true,
-      type: "transiction",
+      type: "movement",
       data: {
-        movementData: {
-          _id: "1234567890",
-          date: "2025-12-01T14:54:00.000Z",
-          createAt: "2025-12-01T14:54:00.000Z",
-          categorieId: "68b38561f67de76b78729cb7",
-          accountOneId: "68b5b079208f92fc4e27e4a3",
-          amountOne: 1.2,
-          accountTwoId: "555",
-          amountTwo: 1.2,
-          description: "Ciao come stai, io tutto bene",
-        },
+        _id: "1234567890",
+        date: "2025-12-01T14:54:00.000Z",
+        createAt: "2025-12-01T14:54:00.000Z",
+        categorieId: "68b38561f67de76b78729cb7",
+        accountOneId: "68b5b079208f92fc4e27e4a3",
+        amountOne: 1.2,
+        accountTwoId: "555",
+        amountTwo: 1.2,
+        description: "Ciao come stai, io tutto bene",
       },
     });
   };

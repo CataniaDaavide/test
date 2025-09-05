@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, TriangleAlert } from "lucide-react";
 import {
   CardContent,
   CardDescription,
@@ -11,55 +11,60 @@ import {
 } from "../card";
 import { Button } from "../button";
 import Input from "../input";
-import { useEffect, useRef, useState } from "react";
-import { convertDate, fetchApi } from "@/app/core/baseFunctions";
+import { useContext, useEffect, useRef, useState } from "react";
+import { convertDate, fetchApi, formValidation } from "@/app/core/baseFunctions";
 import Select from "../select";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { AccountsTypeOptions } from "@/app/(pages)/dashboard/accounts/page";
+import { ModalContext } from "@/app/context/ModalContext";
 
 export default function ModalTransiction({ data, handleCloseModal }) {
   const { base_exceptionManager } = useExceptionManager();
-  const { movementData = {} } = data;
+  const { setModal } = useContext(ModalContext);
   const {
     _id,
-    date: previusDate,
+    date: initialDate,
     createAt,
     categorieId,
     accountOneId,
-    amountOne: previusAmountOne,
+    amountOne: initialAmountOne,
     accountTwoId,
-    amountTwo: previusAmountTwo,
-    description: previusDescription,
-  } = movementData;
+    amountTwo: initialAmountTwo,
+    description: initialDescription,
+    accounts: initialAccounts,
+    handleDelete
+  } = data;
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
-  const [date, setDate] = useState(
-    previusDate ? convertDate(previusDate, "yyyy-MM-dd") : convertDate(undefined, "yyyy-MM-dd")
-  );
   const isFirstRender = useRef(true);
   const [formValidationError, setFormValidationError] = useState({
     date: "",
     time: "",
-    categorie: "",
-    accountOne: "",
-    amountOne: "",
-    accountTwo: "",
-    amountTwo: "",
+    categorieValue: "",
+    accountOneValue: "",
+    amountOneValue: "",
+    accountTwoValue: "",
+    amountTwoValue: "",
   });
   const [isVoucher, setIsVoucher] = useState(false);
-  const [time, setTime] = useState(previusDate ? convertDate(previusDate, "HH:mm") : convertDate(undefined, "HH:mm"));
-  const [description, setDescription] = useState(previusDescription || "");
-  
-  const [categories, setCategories] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [date, setDate] = useState(
+    initialDate ? convertDate(initialDate, "yyyy-MM-dd") : convertDate(undefined, "yyyy-MM-dd")
+  );
+  const [time, setTime] = useState(initialDate ? convertDate(initialDate, "HH:mm") : convertDate(undefined, "HH:mm"));
+  const [description, setDescription] = useState(initialDescription || "");
+
+  const [categoriesOptions, setCategoriesOptions] = useState();
   const [categorieValue, setCategorieValue] = useState();
-  
-  const [accounts, setAccounts] = useState();
-  const [accountValue, setAccountValue] = useState();
-  const [amountOne, setAmountOne] = useState(previusAmountOne || 0);
-  
-  const [accountTwo, setAccountTwo] = useState();
-  const [accountTwoValue, setaccountTwoValue] = useState();
-  const [amountTwo, setAmountTwo] = useState(previusAmountTwo || 0);
+
+  const [accountsOptions, setAccountsOptions] = useState();
+  const [accountOneValue, setAccountOneValue] = useState();
+  const [amountOneValue, setAmountOneValue] = useState(initialAmountOne || 0);
+
+  const [accountsTwoOptions, setAccountsTwoOptions] = useState();
+  const [accountTwoValue, setAccountTwoValue] = useState();
+  const [amountTwoValue, setAmountTwoValue] = useState(initialAmountTwo || "");
 
   // recupero categorie
   const loadCategories = async () => {
@@ -80,7 +85,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
           value: name.toLowerCase(),
         });
       });
-      setCategories(arr);
+      setCategoriesOptions(arr);
     });
   };
 
@@ -108,7 +113,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
           type: type,
         });
       });
-      setAccounts(arr);
+      setAccountsOptions(arr);
     });
   };
 
@@ -119,31 +124,61 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         date: {
           value: date,
           validators: {
-            notEmpty: { message: "Data obbligatorio" },
+            notEmpty: { message: "Inserisci una data" },
           },
         },
         time: {
           value: time,
           validators: {
-            notEmpty: { message: "Orario obbligatorio" },
+            notEmpty: { message: "Inserisci un orario" },
           },
         },
         categorieValue: {
           value: categorieValue,
           validators: {
-            notEmpty: { message: "Categoria obbligatoria" },
+            notEmpty: { message: "Seleziona una categoria" },
           },
         },
-        accountOne: {
-          value: accountOne,
+        accountOneValue: {
+          value: accountOneValue,
           validators: {
-            notEmpty: { message: "Conto1 obbligatorio" },
+            notEmpty: { message: "Seleziona un conto" },
           },
         },
-        amount: {
-          value: hexColor,
+        amountOneValue: {
+          value: amountOneValue,
           validators: {
-            notEmpty: { message: "Colore obbligatorio" },
+            notEmpty: { message: "Inserisci l'importo" },
+          },
+        },
+        accountTwoValue: {
+          value: accountTwoValue,
+          validators: {
+            callback: {
+              message: "Se inserisci un importo per il secondo conto, devi selezionarlo",
+              callback: (value) => {
+                const ris = !(accountTwoValue === undefined && amountTwoValue.length > 0);
+                return {
+                  valid: ris,
+                  message: "",
+                };
+              },
+            },
+          },
+        },
+        amountTwoValue: {
+          value: amountTwoValue,
+          validators: {
+            callback: {
+              message: "Se hai selezionato un secondo conto, devi inserire l'importo",
+              callback: (value) => {
+                const ris = !(amountTwoValue.length === 0 && accountTwoValue != undefined);
+                return {
+                  valid: ris,
+                  message: "",
+                };
+              },
+            },
           },
         },
       };
@@ -169,7 +204,16 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     if (hasExistingErrors) {
       formValidationInit();
     }
-  }, [date, time, categorieValue, accountValue, amountOne, accountTwo, amountTwo]);
+  }, [
+    date,
+    time,
+    categorieValue,
+    accountOneValue,
+    amountOneValue,
+    accountsTwoOptions,
+    accountTwoValue,
+    amountTwoValue,
+  ]);
 
   // recupero dati
   useEffect(() => {
@@ -179,22 +223,22 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
   // init value categorie e account
   useEffect(() => {
-    if (categories) {
-      setCategorieValue(categories.find((x) => x._id.toString() === categorieId));
+    if (categoriesOptions) {
+      setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
     }
-    if (accounts) {
-      setAccountValue(accounts.find((x) => x._id.toString() === accountOneId));
+    if (accountsOptions) {
+      setAccountOneValue(accountsOptions.find((x) => x._id.toString() === accountOneId));
     }
-  }, [categories, accounts]);
+  }, [categoriesOptions, accountsOptions]);
 
-  // evento che viene elaborato ad ogni cambiamento di "accountValue" (valore della select "Conto1")
+  // evento che viene elaborato ad ogni cambiamento di "accountOneValue" (valore della select "Conto1")
   useEffect(() => {
     try {
-      if (accountValue && accountValue != {}) {
-        const { type } = accountValue;
+      if (accountOneValue && accountOneValue != {}) {
+        const { type } = accountOneValue;
         if (type && type.toString().trim().toUpperCase() === "V") {
           setIsVoucher(true);
-          setAccountTwo(accounts.filter((x) => x?.type.toString().trim().toUpperCase() != "V"));
+          setAccountsTwoOptions(accountsOptions.filter((x) => x?.type.toString().trim().toUpperCase() != "V"));
         } else {
           setIsVoucher(false);
         }
@@ -202,12 +246,13 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     } catch (error) {
       base_exceptionManager(error);
     }
-  }, [accountValue]);
+  }, [accountOneValue]);
 
   // click sul pulsante modifica o crea
   const handleSubmit = (e) => {
     try {
       e.preventDefault();
+      setIsLoading(true);
 
       const hasError = formValidationInit();
       if (hasError) return exit();
@@ -216,14 +261,14 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         date: new Date(`${date}T${time}`).toISOString(),
         createAt: createAt ?? new Date().toISOString(),
         categorieId: categorieValue._id.toString(),
-        accountOneId: accountValue._id.toString(),
-        amountOne: amountOne,
+        accountOneId: accountOneValue._id.toString(),
+        amountOne: amountOneValue,
       };
       if (_id) {
         requestData._id = _id;
       }
       if (isVoucher) {
-        if (accountTwo && accountTwo != {}) {
+        if (accountTwoValue && accountTwoValue != {}) {
           requestData.accountTwoId = accountTwoValue._id.toString();
           requestData.amountTwo = amountTwo;
         }
@@ -235,22 +280,18 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         requestData.updateAt = new Date().toISOString();
       }
 
+      //TODO: CHIMATA DA FARE
       console.log(requestData);
 
-      // handleCloseModal();
+      exit();
     } catch (error) {
       base_exceptionManager(error);
     }
   };
 
-  // click sul pulsante elimina
-  const handleDelete = (e) => {
-    try {
-      e.preventDefault();
-      handleCloseModal();
-    } catch (error) {
-      base_exceptionManager(error);
-    }
+  // funzione che rimuove il loader in caso di errori o uscita
+  const exit = () => {
+    setIsLoading(false);
   };
 
   return (
@@ -272,7 +313,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             errorMessage={formValidationError.date}
-            />
+          />
           <Input
             title={"Orario"}
             required={true}
@@ -281,45 +322,48 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             value={time}
             onChange={(e) => setTime(e.target.value)}
             errorMessage={formValidationError.time}
-            />
+          />
         </div>
         <Select
           title={"Categoria"}
           required={true}
-          options={categories}
+          options={categoriesOptions}
           value={categorieValue}
           setValue={setCategorieValue}
-          errorMessage={formValidationError.categorie}
-          />
+          errorMessage={formValidationError.categorieValue}
+        />
         <Select
           title={isVoucher ? "Conto1" : "Conto"}
           required={true}
-          options={accounts}
-          value={accountValue}
-          setValue={setAccountValue}
-          errorMessage={formValidationError.accountOne}
-          />
+          options={accountsOptions}
+          value={accountOneValue}
+          setValue={setAccountOneValue}
+          errorMessage={formValidationError.accountOneValue}
+        />
         <Input
           title={isVoucher ? "Importo conto1 (€)" : "Importo (€)"}
+          required={true}
           type="tel"
-          value={amountOne}
-          onChange={(e) => setAmountOne(e.target.value)}
-          errorMessage={formValidationError.amountOne}
-          />
+          value={amountOneValue}
+          onChange={(e) => setAmountOneValue(e.target.value)}
+          errorMessage={formValidationError.amountOneValue}
+        />
         {isVoucher && (
           <>
             <Select
               title={"Conto2"}
-              options={accountTwo}
+              options={accountsTwoOptions}
               value={accountTwoValue}
-              setValue={setaccountTwoValue}
-              />
+              setValue={setAccountTwoValue}
+              errorMessage={formValidationError.accountTwoValue}
+            />
             <Input
               title={"Importo conto2 (€)"}
               type="tel"
-              value={amountTwo}
-              onChange={(e) => setAmountTwo(e.target.value)}
-              />
+              value={amountTwoValue}
+              onChange={(e) => setAmountTwoValue(e.target.value)}
+              errorMessage={formValidationError.amountTwoValue}
+            />
           </>
         )}
         <Input
@@ -329,12 +373,13 @@ export default function ModalTransiction({ data, handleCloseModal }) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       </CardContent>
 
       <CardFooter className={"mt-3"}>
         {_id ? (
           <>
-            <Button onClick={handleSubmit}>
+            <Button onClick={handleSubmit} isLoading={isLoading} disabled={isLoading}>
               <span>Modifica</span>
             </Button>
             <Button onClick={handleDelete} color={"danger"}>
@@ -342,7 +387,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             </Button>
           </>
         ) : (
-          <Button onClick={handleSubmit}>
+          <Button onClick={handleSubmit} isLoading={isLoading} disabled={isLoading}>
             <span>Crea</span>
           </Button>
         )}

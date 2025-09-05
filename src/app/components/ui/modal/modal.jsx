@@ -45,7 +45,7 @@ export default function Modal() {
         );
         break;
 
-      case "transiction":
+      case "movement":
         ModalComponent = (
           <ModalTransiction
             data={data}
