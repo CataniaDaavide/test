@@ -1,5 +1,6 @@
 "use client";
 import Emoji from "@/app/components/emoji";
+import Badge from "@/app/components/ui/badge";
 import { Button, ButtonIcon } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { LoaderIcon } from "@/app/components/ui/loader-full-page";
@@ -84,7 +85,7 @@ export default function MovementsPage() {
   }, [modal]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 px-3">
+    <div className="w-full h-full flex flex-col gap-3 p-3 md:p-5">
       <div className="w-full flex items-center justify-end flex-wrap gap-3">
         <div className="flex gap-3 w-full md:w-fit">
           <ButtonIcon onClick={loadMovements} icon={<RefreshCcw className="hover:animate-spin" />} />
@@ -211,11 +212,15 @@ function MovementsCard({ data, categories = [] }) {
           <p className="text-nowrap">{categorie?.name}</p>
           <p className="text-sm text-gray-500">{convertedDate}</p>
           <p className="text-sm text-gray-500 truncate">{description}</p>
+          
+          {/* <div className="flex gap-1 mt-1">
+            <Badge className={"!text-xs"}>{"Postepay"}</Badge>
+          </div> */}
         </div>
       </div>
       <div className="flex flex-col items-center">
         <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
-          {sign} €{amount.toFixed(2)}
+          {sign} €{amount.toFixed(2).replace(".",",")}
         </p>
         <div className="flex gap-1">
           <ButtonIcon icon={<Edit />} onClick={handleEdit} color={"trasparent"} />

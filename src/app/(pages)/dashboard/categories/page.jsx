@@ -71,7 +71,7 @@ export default function CategoriesPage() {
   }, [modal]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 px-3">
+    <div className="w-full h-full flex flex-col gap-3 p-3 md:p-5">
       <div className="w-full flex items-center justify-between flex-wrap gap-3">
         <Tabs tabs={tabsOptions} value={tab} setValue={setTab} />
         <div className="flex gap-3 w-full md:w-fit">
@@ -191,7 +191,7 @@ function CategorieCard({ data, tabsOptions }) {
           icon: <TriangleAlert size={40} className="text-amber-600" />,
           message: (
             <p className="text-muted-foreground">
-              Sei sicuro di voler eliminare la categoria {emoji} - {name}?
+              Sei sicuro di voler eliminare la categoria <strong className="text-background-inverse">{emoji} - {name}</strong>?
               <br />
               <br />
               Cliccando su

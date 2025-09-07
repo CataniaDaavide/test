@@ -18,7 +18,7 @@ export function ExceptionProvider({ children }) {
         data: {
           title: "Errore",
           icon: <TriangleAlert size={40} className="text-amber-600" />,
-          buttons: ["close"],
+          buttons: ["Sessione non trovata" === message ? "login" : "close"],
           message: (
             <p className="text-muted-foreground">{message}</p>
           ),

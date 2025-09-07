@@ -7,7 +7,7 @@ export function Card({ children, className = "" }) {
     <div
       className={`
         w-full flex flex-col gap-3 justify-center p-5 
-        rounded-xl border shadow-md 
+        rounded-xl border shadow-md
         bg-card border-border-card
         ${className}
         `}

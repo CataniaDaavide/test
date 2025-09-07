@@ -23,7 +23,7 @@ export const AccountsTypeOptions = [
   { label: "💼 Altro", value: "O" }, // O - other
 ];
 
-export default function CategoriesPage() {
+export default function AccountsPage() {
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
   const [isLoader, setIsLoader] = useState(false);
@@ -70,7 +70,7 @@ export default function CategoriesPage() {
   }, [modal]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 px-3">
+    <div className="w-full h-full flex flex-col gap-3 p-3 md:p-5">
       <div className="w-full flex items-center justify-end flex-wrap gap-3">
         <div className="flex gap-3 w-full md:w-fit">
           <ButtonIcon
@@ -186,7 +186,7 @@ function AccountCard({ data }) {
           icon: <TriangleAlert size={40} className="text-amber-600" />,
           message: (
             <p className="text-muted-foreground">
-              Sei sicuro di voler eliminare il conto {name}?
+              Sei sicuro di voler eliminare il conto <strong className="text-background-inverse">{name} - €{amount.toFixed(2).replace(".",",")}</strong>?
               <br />
               <br />
               Cliccando su

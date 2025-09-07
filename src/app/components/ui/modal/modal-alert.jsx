@@ -1,22 +1,12 @@
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardHeaderContent,
-  CardTitle,
-} from "../card";
+import { CardContent, CardDescription, CardFooter, CardHeader, CardHeaderContent, CardTitle } from "../card";
 import { Button } from "../button";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function ModalAlert({ data, handleCloseModal }) {
-  const {
-    title = "undefined",
-    description = "",
-    icon = undefined,
-    message = "",
-    buttons = [],
-  } = data;
+  const router = useRouter()
+  const { title = "undefined", description = "", icon = undefined, message = "", buttons = [] } = data;
+
   return (
     <>
       <CardHeader className="!w-full !flex-col gap-1 !items-center">
@@ -27,9 +17,7 @@ export default function ModalAlert({ data, handleCloseModal }) {
         </CardHeaderContent>
       </CardHeader>
 
-      <CardContent className="min-h-[100px] !max-h-[300px] overflow-y-scroll">
-        {message}
-      </CardContent>
+      <CardContent className="min-h-[100px] !max-h-[300px] overflow-y-scroll">{message}</CardContent>
 
       <CardFooter className={"md:mt-3"}>
         {buttons.map((button, index) => {
@@ -37,6 +25,22 @@ export default function ModalAlert({ data, handleCloseModal }) {
             return (
               <Button key={index} onClick={handleCloseModal}>
                 <span>{button === "close" ? "Chiudi" : "Annulla"}</span>
+              </Button>
+            );
+          }
+
+          if (button === "close" || button === "cancel") {
+            return (
+              <Button key={index} onClick={handleCloseModal}>
+                <span>{button === "close" ? "Chiudi" : "Annulla"}</span>
+              </Button>
+            );
+          }
+
+          if (button === "login") {
+            return (
+              <Button key={index} onClick={() => {router.push("/login"); handleCloseModal()}}>
+                <span>Login</span>
               </Button>
             );
           }

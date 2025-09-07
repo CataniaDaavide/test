@@ -1,10 +1,11 @@
 "use client";
 import { SidebarContext } from "@/app/context/SidebarContext";
 import { usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { ChevronsRight, LogOut, PanelLeft, Wallet } from "lucide-react";
+import { useContext, useState } from "react";
+import { ChevronsRight, Wallet } from "lucide-react";
 import { fetchApi } from "@/app/core/baseFunctions";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
+import Badge from "./badge";
 
 export default function Sidebar({ items }) {
   const router = useRouter();
@@ -19,18 +20,18 @@ export default function Sidebar({ items }) {
     <div
       className={`
         h-full flex flex-col items-center justify-between p-3
-        ${expand ? "w-[250px]" : "w-[60px]"}
-        transition-all duration-300
+        ${expand ? "w-[250px]" : "w-[80px]"}
+        transition-all duration-300 bg-card borderr-r-1 border-border-card
       `}
     >
       <div className="w-full flex flex-col">
-        <div className="relative w-full flex items-center justify-between mb-10">
+        <div className={`relative w-full flex items-center justify-between mb-5 ${!expand && "flex-col"}`}>
           <LogoSidebar expand={expand} />
           <button
             onClick={toggleSidebar}
             className={`
-              ${expand ? "rotate-180" : "absolute -right-10"}
-              p-1 text-muted-foreground hover:text-background-inverse transition-all duration-300
+              ${expand ? "rotate-180" : "hover:bg-background-inverse/10 rounded-lg"}
+              p-1 text-muted-foreground hover:text-background-inverse transition-all duration-300 w-full max-w-14 h-14 flex items-center justify-center
             `}
           >
             <ChevronsRight size={24} />
@@ -59,46 +60,7 @@ export default function Sidebar({ items }) {
             })}
         </ul>
       </div>
-      <ButtonLogoutSidebar expand={expand} router={router} />
     </div>
-  );
-}
-
-function ButtonLogoutSidebar({ expand, router }) {
-  const { base_exceptionManager } = useExceptionManager();
-  const handleLogout = async (e) => {
-    try {
-      e.preventDefault();
-
-      // chimata endpoint /api/auth/login
-      await fetchApi("/api/auth/logout", "POST", {}, async (res) => {
-        const data = await res.json();
-
-        if (!res.ok && data.error != "") {
-          base_exceptionManager({ message: data.error });
-          return;
-        }
-
-        router.push("/login");
-      });
-    } catch (error) {
-      base_exceptionManager(error);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleLogout}
-      className={`
-        flex items-center justify-center gap-3
-        rounded-lg cursor-pointer text-sm font-bold text-red-500 
-        hover:bg-border-card mb-10
-        ${expand ? "w-full h-10 px-4 py-2" : "!h-10 min-w-10"}
-      `}
-    >
-      {expand ? <LogOut size={16} /> : <LogOut />}
-      <p className={expand ? "ml-1" : "hidden"}>Logout</p>
-    </button>
   );
 }
 
@@ -137,11 +99,11 @@ function ItemListSidebar({ expand, item, activeTab, setActiveTab, router }) {
         className={`
             flex items-center gap-3 rounded-lg cursor-pointer text-sm font-bold 
             ${
-              expand ? "w-full h-10 px-4 py-2" : "!h-10 min-w-10 justify-center"
+              expand ? "w-full h-10 px-4 py-2" : "!h-14 min-w-14 justify-center"
             }
             ${
               activeTab.title === title
-                ? "bg-background-inverse text-background"
+                ? "bg-background-inverse/10 text-background-inverse"
                 : "dark:text-background-inverse hover:bg-background-inverse/10"
             }
           `}
@@ -158,7 +120,7 @@ function LogoSidebar({ expand }) {
     <div
       className={`
         w-full flex items-center font-bold
-        transition-all duration-300 h-10 text-nowrap
+        transition-all duration-300 h-14 text-nowrap
         ${expand ? "justify-center" : "justify-center"}
       `}
     >
@@ -174,14 +136,11 @@ function HoverComponent({ title = "undefined" }) {
   return (
     <div
       className={`
-        absolute top-1/2 right-[-100px] -translate-y-1/2
-        flex items-center justify-center
-        bg-card border-border-card border
-        min-w-20 px-3 py-1 
-        rounded-xl text-xs
+        absolute top-1/2 -right-[120px] -translate-y-1/2
+        flex items-start
       `}
     >
-      <p>{title}</p>
+      <Badge className={`bg-border-card text-background-inverse !py-2`}>{title}</Badge>
     </div>
   );
 }

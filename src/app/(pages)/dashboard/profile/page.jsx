@@ -22,7 +22,7 @@ export default function ProfilePage() {
   // if (user === null) return null;
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 items-center justify-center p-3">
+    <div className="w-full h-full flex flex-col gap-3 items-center justify-center p-3 md:p-5">
       <p>Profile page</p>
       {/* <UserInfoTemp /> */}
       <div className="w-full max-w-sm flex flex-col gap-3">

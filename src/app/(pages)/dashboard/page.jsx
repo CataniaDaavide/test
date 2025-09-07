@@ -19,6 +19,7 @@ import { convertDate, fetchApi } from "@/app/core/baseFunctions";
 import { ArrowRight, Calendar, ChartPie, Plus, Target, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 // -----------------------------------------------------------------
 // FUNZIONI HELPER FUORI DAI COMPONENTI
@@ -135,7 +136,7 @@ export default function DashboardPage() {
   if (!movements || !categories || !accounts) return <LoaderFullPage />;
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 p-3 overflow-y-scroll scrollbar-hide">
+    <div className="w-full h-full flex flex-col gap-3 p-3 md:p-5 overflow-y-scroll scrollbar-hide">
       <StatsContainer
         movements={movements}
         accounts={accounts}
@@ -212,13 +213,13 @@ function StatsContainer({ movements, accounts, startOfCurrentMonth, endOfCurrent
   return (
     <div className="w-full grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
       {stats.map((stat, index) => (
-        <ItemListStatsContainer key={index} stat={stat} />
+        <ItemListStatsContainer key={index} stat={stat} index={index} />
       ))}
     </div>
   );
 }
 
-function ItemListStatsContainer({ stat }) {
+function ItemListStatsContainer({ stat, index }) {
   const { title, icon, amount, percentage, type } = stat;
   let percentageColor = "";
 
@@ -229,14 +230,14 @@ function ItemListStatsContainer({ stat }) {
   }
 
   return (
-    <Card>
-      <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
-        <p>{title}</p>
-        {icon}
-      </div>
-      <p className="text-2xl font-bold">€{amount}</p>
-      {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
-    </Card>
+      <Card>
+        <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
+          <p>{title}</p>
+          {icon}
+        </div>
+        <p className="text-2xl font-bold">€{amount}</p>
+        {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
+      </Card>
   );
 }
 
@@ -255,7 +256,9 @@ function RecentMovementsContainer({ movements, categories, startOfCurrentMonth, 
   };
 
   return (
-    <div className="h-full grid col-span-2 mt-5 md:m-0">
+    <div
+      className="h-full grid col-span-2 mt-5 md:m-0"
+     >
       <Card className="w-full !bg-transparent !border-0 !p-0 md:!bg-card md:!border-1 md:!p-5">
         <CardHeader>
           <CardHeaderContent>
@@ -304,7 +307,7 @@ function MovementsCard({ data, categories = [] }) {
       </div>
       <div className="flex flex-col items-center">
         <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
-          {sign} €{amount.toFixed(2)}
+          {sign} €{amount.toFixed(2).replace(".",",")}
         </p>
       </div>
     </Card>

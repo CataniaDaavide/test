@@ -9,11 +9,12 @@ import { X } from "lucide-react";
 import ModalCategorie from "./modal-categorie";
 import ModalAlert from "./modal-alert";
 import ModalAccount from "./modal-account";
+import { motion } from "framer-motion";
 
 export default function Modal() {
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
-  const { show , type, data } = modal
+  const { show, type, data } = modal;
   const handleCloseModal = () => {
     try {
       setModal({
@@ -40,62 +41,59 @@ export default function Modal() {
   if (modal.type?.length) {
     switch (type) {
       case "alert":
-        ModalComponent = (
-          <ModalAlert data={data} handleCloseModal={handleCloseModal} />
-        );
+        ModalComponent = <ModalAlert data={data} handleCloseModal={handleCloseModal} />;
         break;
 
       case "movement":
-        ModalComponent = (
-          <ModalTransiction
-            data={data}
-            handleCloseModal={handleCloseModal}
-          />
-        );
+        ModalComponent = <ModalTransiction data={data} handleCloseModal={handleCloseModal} />;
         break;
 
       case "categorie":
-        ModalComponent = (
-          <ModalCategorie
-            data={data}
-            handleCloseModal={handleCloseModal}
-          />
-        );
+        ModalComponent = <ModalCategorie data={data} handleCloseModal={handleCloseModal} />;
         break;
 
       case "account":
-        ModalComponent = (
-          <ModalAccount
-            data={data}
-            handleCloseModal={handleCloseModal}
-          />
-        );
+        ModalComponent = <ModalAccount data={data} handleCloseModal={handleCloseModal} />;
         break;
 
       default:
-        ModalComponent = (
-          <ModalAlert data={data} handleCloseModal={handleCloseModal} />
-        );
+        ModalComponent = <ModalAlert data={data} handleCloseModal={handleCloseModal} />;
         break;
     }
   }
 
   return (
     <div
-      className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center ${type === "alert" ? "p-3" : "md:p-3"} bg-black/50`}
+      className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center ${
+        type === "alert" ? "p-3" : "md:p-3"
+      } bg-black/50`}
       onClick={handleOverlayClick}
     >
-      <Card className={`relative md:!max-w-md md:!h-auto ${type === "alert" ? "max-w-md" : "h-[100dvh] !rounded-none md:!rounded-xl !border-0 md:!border-1 "}`}>
-        <ButtonIcon
-          onClick={handleCloseModal}
-          icon={<X />}
-          className={`
-              absolute top-3 right-3
-              !rounded-full !text-muted-foreground hover:!text-background-inverse transition-all duration-300`}
-          color={"trasparent"}
-        />
-        {ModalComponent}
-      </Card>
+      {/* <motion.div
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.2 }}
+        className="absolute w-full flex items-center justify-center"
+      > */}
+        <Card
+          className={`absolute
+            ${
+              type === "alert"
+                ? "md:!max-w-md m-3"
+                : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"
+            }`}
+        >
+          <ButtonIcon
+            onClick={handleCloseModal}
+            icon={<X />}
+            className={`
+            absolute top-3 right-3
+            !rounded-full !text-muted-foreground hover:!text-background-inverse transition-all duration-300`}
+            color={"trasparent"}
+          />
+          {ModalComponent}
+        </Card>
+      {/* </motion.div> */}
     </div>
   );
 }

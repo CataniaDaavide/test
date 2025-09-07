@@ -4,7 +4,7 @@
 import { usePathname, useRouter } from "next/navigation";
 
 //icons
-import { Tag, User } from "lucide-react";
+import { LogOut, Tag, User } from "lucide-react";
 
 //components
 import ButtonToggleTheme from "./toggle-theme";
@@ -12,6 +12,8 @@ import { ButtonBack } from "@/app/components/ui/button";
 import { ButtonIcon } from "@/app/components/ui/button";
 import { ButtonLogout } from "@/app/components/ui/button";
 import { menuItems } from "@/app/(pages)/dashboard/layout";
+import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
+import { fetchApi } from "@/app/core/baseFunctions";
 
 export default function Header({}) {
   const pathname = usePathname();
@@ -34,7 +36,7 @@ export default function Header({}) {
         <HeaderDesktop
           title={title}
           description={description}
-          actions={["toggle-theme"]}
+          actions={["toggle-theme", "log-out"]}
         />
       </div>
     </>
@@ -70,7 +72,7 @@ function HeaderDesktop({
     <div
       className={`
         w-full flex items-center justify-between
-        p-3 px-10
+        p-3 px-5
       `}
     >
       <div className="flex flex-col">
@@ -86,6 +88,27 @@ function HeaderDesktop({
 // componente per le azioni in alto a sinistra
 function ActionButtons({ actions = [] }) {
   const router = useRouter();
+  const { base_exceptionManager } = useExceptionManager()
+
+  const handleLogout = async (e) => {
+    try {
+      e.preventDefault();
+
+      // chimata endpoint /api/auth/login
+      await fetchApi("/api/auth/logout", "POST", {}, async (res) => {
+        const data = await res.json();
+
+        if (!res.ok && data.error != "") {
+          base_exceptionManager({ message: data.error });
+          return;
+        }
+
+        router.push("/login");
+      });
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  }
 
   return (
     <div className="flex items-center justify-center gap-1">
@@ -106,6 +129,17 @@ function ActionButtons({ actions = [] }) {
                 key={index}
                 icon={<User />}
                 onClick={() => router.push("/dashboard/profile")}
+                className={"!rounded-full"}
+                color={"trasparent"}
+              />
+            );
+
+          case "log-out":
+            return (
+              <ButtonIcon
+                key={index}
+                icon={<LogOut />}
+                onClick={handleLogout}
                 className={"!rounded-full"}
                 color={"trasparent"}
               />
