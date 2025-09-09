@@ -13,6 +13,12 @@ export function ThemeProvider({ children }) {
     document.documentElement.classList.add(savedTheme);
   }, []);
 
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute("content", theme === "dark" ? "#000000ff" : "#eb3462ff");
+    }
+  }, [theme]);
 
   // Aggiornamento del tema ad ogni variazione della variabile "theme"
   useEffect(() => {

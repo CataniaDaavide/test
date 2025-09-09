@@ -1,11 +1,10 @@
 import "./globals.css";
 
 //hoocks - functions - lib
-import { ThemeContext, ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
 import { ExceptionProvider } from "./context/ExceptionManagerContext";
-import { useContext, useEffect } from "react";
 
 export const metadata = {
   //   title: "Template APP",
@@ -25,15 +24,6 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
-  const { theme } = useContext(ThemeContext);
-
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute("content", theme === "dark" ? "#000000ff" : "#eb3462ff");
-    }
-  }, [theme]);
-
   return (
     <html lang="en" className="w-full h-full overscroll-none">
       {/* <html lang="en"> */}
