@@ -24,20 +24,15 @@ export const viewport = {
   userScalable: false,
 };
 
-const themeColor = "#34cfeb"
-
 export default function RootLayout({ children }) {
-    const { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
-    useEffect(() => {
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) {
-        meta.setAttribute("content", theme === "dark" ? "#000000ff" : "#eb3462ff");
-      }
-    }, [theme]);
-
-    return null;
-  };
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute("content", theme === "dark" ? "#000000ff" : "#eb3462ff");
+    }
+  }, [theme]);
 
   return (
     <html lang="en" className="w-full h-full overscroll-none">
