@@ -64,9 +64,8 @@ export default function Modal() {
 
   return (
     <div
-      className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center ${
-        type === "alert" ? "p-3" : "md:p-3"
-      } bg-black/50`}
+      className={`absolute top-0 left-0 z-[999] w-[100dvw] h-[100dvh] flex items-center justify-center bg-black/50 
+      ${type === "alert" ? "p-3" : "md:p-3"}`}
       onClick={handleOverlayClick}
     >
       {/* <motion.div
@@ -76,10 +75,10 @@ export default function Modal() {
         className="absolute w-full flex items-center justify-center"
       > */}
         <Card
-          className={`absolute
+          className={`
             ${
               type === "alert"
-                ? "md:!max-w-md m-3"
+                ? "w-full"
                 : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"
             }`}
         >

@@ -14,7 +14,7 @@ export default function MenuMobile() {
     <ul
       className={`
             w-full flex gap-3 items-center justify-evenly 
-            border-t-1 border-border-card py-3
+            border-t-1 border-border-card pt-2 pb-5
         `}
     >
       {menuItems
@@ -57,7 +57,7 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
     <li>
       <button
         onClick={handleClick}
-        className={`py-1 pb-4 flex flex-col gap-1 items-center justify-center cursor-pointer`}
+        className={`flex flex-col gap-1 items-center justify-center cursor-pointer`}
       >
         {action && (
           <div className="p-3 flex items-center justify-center rounded-full bg-card active:scale-95">
