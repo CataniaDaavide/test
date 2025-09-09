@@ -129,7 +129,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   background-color: transparent;
 }
 
-/* colore scrollbar in modalità ligth */
+/* colore scrollbar in modalità light */
 ::-webkit-scrollbar-thumb {
   background-color: rgb(173, 173, 173);
   cursor: pointer;

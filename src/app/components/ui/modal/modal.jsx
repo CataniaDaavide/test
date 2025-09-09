@@ -1,5 +1,5 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Card } from "../card";
 import { ModalContext } from "@/app/context/ModalContext";
 import ModalTransiction from "./modal-transiction";
@@ -10,10 +10,12 @@ import ModalCategorie from "./modal-categorie";
 import ModalAlert from "./modal-alert";
 import ModalAccount from "./modal-account";
 import { motion } from "framer-motion";
+import { ThemeContext } from "@/app/context/ThemeContext";
 
 export default function Modal() {
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
+  const { theme, setTheme } = useContext(ThemeContext);
   const { show, type, data } = modal;
   const handleCloseModal = () => {
     try {
@@ -22,6 +24,10 @@ export default function Modal() {
         type: "",
         data: {},
       });
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
+      }
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -35,6 +41,12 @@ export default function Modal() {
   };
 
   if (!modal?.show) return null;
+
+  // cambia il colore del theme_color (barra in alto) per i dispositivi mobile
+  if (type != "alert") {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta.setAttribute("content", theme === "dark" ? "#18181b" : "#fdfdfd");
+  }
 
   // Scegli il componente in base al tipo
   let ModalComponent = null;
@@ -74,24 +86,24 @@ export default function Modal() {
         transition={{ duration: 0.2 }}
         className="absolute w-full flex items-center justify-center"
       > */}
-        <Card
-          className={`
+      <Card
+        className={`
             ${
               type === "alert"
                 ? "w-full"
                 : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"
             }`}
-        >
-          <ButtonIcon
-            onClick={handleCloseModal}
-            icon={<X />}
-            className={`
+      >
+        <ButtonIcon
+          onClick={handleCloseModal}
+          icon={<X />}
+          className={`
             absolute top-3 right-3
             !rounded-full !text-muted-foreground hover:!text-background-inverse transition-all duration-300`}
-            color={"trasparent"}
-          />
-          {ModalComponent}
-        </Card>
+          color={"trasparent"}
+        />
+        {ModalComponent}
+      </Card>
       {/* </motion.div> */}
     </div>
   );

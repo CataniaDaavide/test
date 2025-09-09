@@ -15,9 +15,9 @@ export default function ButtonToggleTheme({ className, color }) {
 
   return (
       <ButtonIcon
-        icon={theme === "ligth" ? <Sun /> : <Moon />}
+        icon={theme === "light" ? <Sun /> : <Moon />}
         onClick={() => {
-          setTheme(theme === "ligth" ? "dark" : "ligth");
+          setTheme(theme === "light" ? "dark" : "light");
         }}
         className={className}
         color={color}

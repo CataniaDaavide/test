@@ -26,21 +26,14 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     date: initialDate,
     createAt,
     categorieId,
-    accountOneId,
-    amountOne: initialAmountOne,
-    accountTwoId,
-    amountTwo: initialAmountTwo,
-    description: initialDescription,
     accounts: initialAccounts,
-    handleDelete
+    description: initialDescription,
+    handleDelete,
   } = data;
-  console.log("initialAccounts:");
-  console.log(initialAccounts[0].accountId, initialAccounts[0].amount);
-  console.log(initialAccounts[1].accountId, initialAccounts[1].amount);
-  
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
   const isFirstRender = useRef(true);
+
   const [formValidationError, setFormValidationError] = useState({
     date: "",
     time: "",
@@ -63,12 +56,12 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const [categorieValue, setCategorieValue] = useState();
 
   const [accountsOptions, setAccountsOptions] = useState();
-  const [accountOneValue, setAccountOneValue] = useState(initialAccounts[0].accountId);
-  const [amountOneValue, setAmountOneValue] = useState(initialAccounts[0].amount || "");
+  const [accountOneValue, setAccountOneValue] = useState();
+  const [amountOneValue, setAmountOneValue] = useState(0);
 
   const [accountsTwoOptions, setAccountsTwoOptions] = useState();
-  const [accountTwoValue, setAccountTwoValue] = useState(initialAccounts[1].accountId);
-  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts[1].amount || "");
+  const [accountTwoValue, setAccountTwoValue] = useState();
+  const [amountTwoValue, setAmountTwoValue] = useState();
 
   // recupero categorie
   const loadCategories = async () => {
@@ -195,8 +188,8 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     }
   }
 
-  // evento che gestice gli errori della
-  // form validator quando i campi vengono compilati
+  // evento che gestice gli errori con la forma validator 
+  // solo dopo il primo rendering 
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -227,15 +220,19 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
   // init value categorie e account
   useEffect(() => {
-    if (categoriesOptions) {
+    if (categoriesOptions && categoriesOptions.length > 0) {
       setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
     }
-    if (accountsOptions) {
-      setAccountOneValue(accountsOptions.find((x) => x._id.toString() === accountOneId));
+    if (accountsOptions && accountsOptions.length > 0) {
+      var accountId = undefined;
+      if (initialAccounts && initialAccounts.length > 0) {
+        accountId = initialAccounts[0].accountId;
+      }
+      setAccountOneValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
     }
   }, [categoriesOptions, accountsOptions]);
 
-  // evento che viene elaborato ad ogni cambiamento di "accountOneValue" (valore della select "Conto1")
+  // evento che gestisce ogni cambiamento del valore del conto1
   useEffect(() => {
     try {
       if (accountOneValue && accountOneValue != {}) {
@@ -251,6 +248,19 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       base_exceptionManager(error);
     }
   }, [accountOneValue]);
+
+
+  // evento che gestisce ogni cambiamento delle opzioni del conto2
+  useEffect(() => {
+    var accountId = undefined;
+    if (accountsTwoOptions) {
+      accountId = undefined;
+      if (initialAccounts && initialAccounts.length >= 1) {
+        accountId = initialAccounts[1].accountId;
+      }
+      setAccountTwoValue(accountsTwoOptions.find((x) => initialAccounts && x._id.toString() === accountId));
+    }
+  }, [accountsTwoOptions]);
 
   // click sul pulsante modifica o crea
   const handleSubmit = (e) => {
