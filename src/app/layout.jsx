@@ -9,6 +9,10 @@ import { ExceptionProvider } from "./context/ExceptionManagerContext";
 export const metadata = {
   //   title: "Template APP",
   description: "Template applicazione web nextjs + tailwindcss",
+  manifest: "/manifest.json",
+  icons: {
+    apple: "/icon.png",
+  },
 };
 
 // Serve per non fare zoommare la pagina da mobile (qundo si fa il doppio click)
