@@ -5,7 +5,6 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
 import { ExceptionProvider } from "./context/ExceptionManagerContext";
-import { Html, Head, Main, NextScript } from "next/document";
 
 export const metadata = {
   //   title: "Template APP",
@@ -28,12 +27,12 @@ const themeColor = "#34cfeb"
 
 export default function RootLayout({ children }) {
   return (
-    <Html lang="en" className="w-full h-full overscroll-none">
+    <html lang="en" className="w-full h-full overscroll-none">
       {/* <html lang="en"> */}
-      <Head>
+      <head>
         <meta name="theme-color" content={themeColor} />
-      </Head>
-      <Main
+      </head>
+      <body
         className={`
           relative antialiased overscroll-none 
           w-full h-full
@@ -49,7 +48,7 @@ export default function RootLayout({ children }) {
             </ThemeProvider>
           </ExceptionProvider>
         </ModalProvider>
-      </Main>
-    </Html>
+      </body>
+    </html>
   );
 }
