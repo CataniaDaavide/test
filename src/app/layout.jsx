@@ -5,6 +5,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
 import { ExceptionProvider } from "./context/ExceptionManagerContext";
+import { Html, Head, Main, NextScript } from "next/document";
 
 export const metadata = {
   //   title: "Template APP",
@@ -13,10 +14,6 @@ export const metadata = {
   icons: {
     apple: "/icon.png",
   },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAFAFA" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090B" },
-  ],
 };
 
 // Serve per non fare zoommare la pagina da mobile (qundo si fa il doppio click)
@@ -27,11 +24,16 @@ export const viewport = {
   userScalable: false,
 };
 
+const themeColor = "#34cfeb"
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="w-full h-full overscroll-none">
+    <Html lang="en" className="w-full h-full overscroll-none">
       {/* <html lang="en"> */}
-      <body
+      <Head>
+        <meta name="theme-color" content={themeColor} />
+      </Head>
+      <Main
         className={`
           relative antialiased overscroll-none 
           w-full h-full
@@ -47,7 +49,7 @@ export default function RootLayout({ children }) {
             </ThemeProvider>
           </ExceptionProvider>
         </ModalProvider>
-      </body>
-    </html>
+      </Main>
+    </Html>
   );
 }
