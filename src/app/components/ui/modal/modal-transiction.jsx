@@ -376,7 +376,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
       </CardContent>
 
-      <CardFooter className={"mt-3"}>
+      <CardFooter className={"mt-3 pb-5 md:pb-0"}>
         {_id ? (
           <>
             <Button onClick={handleSubmit} isLoading={isLoading} disabled={isLoading}>
