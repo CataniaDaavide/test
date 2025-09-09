@@ -14,7 +14,7 @@ export default function MenuMobile() {
     <ul
       className={`
             w-full flex gap-3 items-center justify-evenly 
-            border-t-1 border-border-card pt-2 pb-5
+            border-t-1 border-border-card pt-2 pb-6
         `}
     >
       {menuItems
