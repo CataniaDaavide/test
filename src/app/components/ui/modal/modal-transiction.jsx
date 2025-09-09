@@ -33,7 +33,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
   const isFirstRender = useRef(true);
-
   const [formValidationError, setFormValidationError] = useState({
     date: "",
     time: "",
@@ -57,11 +56,11 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
   const [accountsOptions, setAccountsOptions] = useState();
   const [accountOneValue, setAccountOneValue] = useState();
-  const [amountOneValue, setAmountOneValue] = useState(0);
+  const [amountOneValue, setAmountOneValue] = useState(initialAccounts?.[0]?.amount || 0);
 
   const [accountsTwoOptions, setAccountsTwoOptions] = useState();
   const [accountTwoValue, setAccountTwoValue] = useState();
-  const [amountTwoValue, setAmountTwoValue] = useState();
+  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts?.[1]?.amount);
 
   // recupero categorie
   const loadCategories = async () => {
@@ -178,7 +177,10 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             },
           },
         },
-      };
+      }; 
+
+      console.log(fields);
+      
 
       // Esegui validazione
       const hasError = formValidation(setFormValidationError, fields);
@@ -270,7 +272,9 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
       const hasError = formValidationInit();
       if (hasError) return exit();
-
+      
+      return
+      
       const requestData = {
         date: new Date(`${date}T${time}`).toISOString(),
         createAt: createAt ?? new Date().toISOString(),
