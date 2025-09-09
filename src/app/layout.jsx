@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
           relative antialiased overscroll-none 
           w-full h-full
           flex flex-col items-center justify-center 
-          bg-background text-background-inverse
+          bg-background text-background-inverse transition-all duration-300
         `}
       >
         <ModalProvider>
