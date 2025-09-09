@@ -57,10 +57,10 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
     <li>
       <button
         onClick={handleClick}
-        className={`flex flex-col gap-1 items-center justify-center cursor-pointer`}
+        className={`py-2 flex flex-col gap-1 items-center justify-center cursor-pointer`}
       >
         {action && (
-          <div className="p-2 flex items-center justify-center rounded-full bg-card active:scale-95">
+          <div className="p-3 flex items-center justify-center rounded-full bg-card active:scale-95">
             {icon}
           </div>
         )}
