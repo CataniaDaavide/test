@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       {/* <html lang="en"> */}
       <head>
         {/* theme-color iniziale lato server */}
-        <meta name="theme-color" content="#FBFBFB" />
+        <meta name="theme-color" content="#fafafa" />
       </head>
       <body
         className={`

@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute("content", theme === "dark" ? "#231B25" : "#FBFBFB");
+      meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
     }
   }, [theme]);
 
