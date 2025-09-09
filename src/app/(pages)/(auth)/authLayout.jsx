@@ -20,7 +20,7 @@ export default function AuthLayout({ title, desciption, children }) {
     <div className="w-full max-w-md p-3">
       <ButtonToggleTheme
         className={"absolute top-3 right-3 !rounded-full"}
-        color={"trasparent"}
+        color={"transparent"}
       />
       <Card className="bg-transparent !border-0 shadow-none">
         <CardHeader>

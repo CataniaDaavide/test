@@ -229,7 +229,7 @@ function CategorieCard({ data, tabsOptions }) {
         </div>
       </div>
       <div className="flex gap-1">
-        <ButtonIcon icon={<Edit />} onClick={handleEdit} color={"trasparent"} />
+        <ButtonIcon icon={<Edit />} onClick={handleEdit} color={"transparent"} />
         <ButtonIcon icon={<Trash />} onClick={handleDelete} color={"danger"} />
       </div>
     </Card>

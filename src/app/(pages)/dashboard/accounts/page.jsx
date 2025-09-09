@@ -230,7 +230,7 @@ function AccountCard({ data }) {
           <ButtonIcon
             icon={<Edit />}
             onClick={handleEdit}
-            color={"trasparent"}
+            color={"transparent"}
           />
           <ButtonIcon
             icon={<Trash />}

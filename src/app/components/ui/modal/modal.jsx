@@ -100,7 +100,7 @@ export default function Modal() {
           className={`
             absolute top-3 right-3
             !rounded-full !text-muted-foreground hover:!text-background-inverse transition-all duration-300`}
-          color={"trasparent"}
+          color={"transparent"}
         />
         {ModalComponent}
       </Card>

@@ -47,9 +47,9 @@ export default function App() {
         onClick={() => router.push("/login")}
         icon={<LogIn />}
         className="absolute top-3 left-3 !rounded-full"
-        color={"trasparent"}
+        color={"transparent"}
       />
-      <ButtonToggleTheme className={"absolute top-3 right-3 !rounded-full"} color={"trasparent"} />
+      <ButtonToggleTheme className={"absolute top-3 right-3 !rounded-full"} color={"transparent"} />
       <div className="text-center">
         <p className="text-2xl font-bold">App page</p>
         <p className="text-muted-foreground text-sm">Uso questa pagina come test per i componenti</p>
@@ -158,7 +158,7 @@ function AllButtons() {
       <div className="w-full flex gap-3 items-center justify-center">
         <ButtonIcon icon={<Plus />} color={""} />
         <ButtonIcon icon={<Plus />} color={"outline"} />
-        <ButtonIcon icon={<Plus />} color={"trasparent"} />
+        <ButtonIcon icon={<Plus />} color={"transparent"} />
         <ButtonIcon icon={<Plus />} color={"success"} />
         <ButtonIcon icon={<Plus />} color={"danger"} />
       </div>

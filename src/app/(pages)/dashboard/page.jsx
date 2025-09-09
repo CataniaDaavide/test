@@ -266,7 +266,7 @@ function RecentMovementsContainer({ movements, categories, startOfCurrentMonth, 
             <CardDescription>Ultimi 10 movimenti</CardDescription>
           </CardHeaderContent>
           <CardHeaderActions>
-            <ButtonIcon onClick={handleClick} icon={<ArrowRight />} color={"trasparent"} />
+            <ButtonIcon onClick={handleClick} icon={<ArrowRight />} color={"transparent"} />
           </CardHeaderActions>
         </CardHeader>
 

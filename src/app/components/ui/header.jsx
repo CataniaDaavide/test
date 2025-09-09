@@ -54,7 +54,7 @@ function HeaderMobile({
         <ButtonBack />
         <div className="flex flex-col">
           <p>{title}</p>
-          <p className="text-xs text-muted-foreground">{description}</p>
+          {/* <p className="text-xs text-muted-foreground">{description}</p> */}
         </div>
       </div>
 
@@ -119,7 +119,7 @@ function ActionButtons({ actions = [] }) {
               <ButtonToggleTheme
                 key={index}
                 className={"!rounded-full"}
-                color={"trasparent"}
+                color={"transparent"}
               />
             );
 
@@ -130,7 +130,7 @@ function ActionButtons({ actions = [] }) {
                 icon={<User />}
                 onClick={() => router.push("/dashboard/profile")}
                 className={"!rounded-full"}
-                color={"trasparent"}
+                color={"transparent"}
               />
             );
 
@@ -141,7 +141,7 @@ function ActionButtons({ actions = [] }) {
                 icon={<LogOut />}
                 onClick={handleLogout}
                 className={"!rounded-full"}
-                color={"trasparent"}
+                color={"transparent"}
               />
             );
 

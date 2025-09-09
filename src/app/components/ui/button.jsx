@@ -10,8 +10,8 @@ import { Loader, ChevronLeft, LogOut } from "lucide-react";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext.jsx";
 
 const colorVariants = {
-  trasparent: "bg-trasparent hover:bg-border-card",
-  outline: "border border-background-inverse bg-trasparent",
+  transparent: "bg-transparent hover:bg-border-card",
+  outline: "border border-background-inverse bg-transparent",
   danger: "bg-red-700 hover:bg-red-600/90 text-white",
   success: "bg-green-700 hover:bg-green-600/90 text-white",
   secondary: "bg-border-card",
@@ -56,8 +56,8 @@ export function ButtonIcon({
   // Cloniamo le icone per forzare il size
   const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
   const colorVariants = {
-    trasparent: "bg-trasparent hover:bg-border-card",
-    outline: "border border-background-inverse bg-trasparent",
+    transparent: "bg-transparent hover:bg-border-card",
+    outline: "border border-background-inverse bg-transparent",
     success:
       "hover:bg-green-500/10 text-black dark:text-white hover:text-green-500",
     danger: "hover:bg-red-500/10 text-black dark:text-white hover:text-red-500",

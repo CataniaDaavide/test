@@ -107,7 +107,7 @@ export default function MovementsPage() {
 function MovementsContainer({ movements, categories }) {
   return (
     <>
-      <p className="text-lg md:text-2xl font-bold">Elenco movimenti (number):</p>
+      <p className="text-lg md:text-2xl font-bold">Elenco movimenti ({movements.length}):</p>
       <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3 pb-3">
         {movements.map((movement, index) => {
           return <MovementsCard key={index} data={movement} categories={categories} />;
@@ -182,7 +182,7 @@ function MovementsCard({ data, categories = [] }) {
     }
   };
 
-// click sul pulsante modifica
+  // click sul pulsante modifica
   const handleEdit = (e) => {
     try {
       e.preventDefault();
@@ -205,28 +205,45 @@ function MovementsCard({ data, categories = [] }) {
   if (!categorie) return null;
 
   return (
-    <Card className="!flex-row !items-center !justify-between">
-      <div className="w-full flex items-center gap-3">
+    <Card className="!flex-row items-center w-full gap-3 p-3">
+      {/* SX - Emoji */}
+      <div className="flex-shrink-0">
         <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
-        <div className="max-w-[120px] md:max-w-[300px]">
-          <p className="text-nowrap">{categorie?.name}</p>
-          <p className="text-sm text-gray-500">{convertedDate}</p>
-          <p className="text-sm text-gray-500 truncate">{description}</p>
-          
-          {/* <div className="flex gap-1 mt-1">
-            <Badge className={"!text-xs"}>{"Postepay"}</Badge>
-          </div> */}
-        </div>
       </div>
-      <div className="flex flex-col items-center">
-        <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
-          {sign} €{amount.toFixed(2).replace(".",",")}
+
+      {/* CENTRALE */}
+      <div className="flex-1 min-w-0">
+        <p className="truncate font-medium">{categorie?.name}</p>
+        <p className="text-sm text-gray-500">{convertedDate}</p>
+        <p className="text-sm text-gray-500 truncate">{description}</p>
+      </div>
+
+      {/* DX - Importo e bottoni */}
+      <div className="flex-shrink-0 text-right">
+        <p className={`text-lg font-bold text-nowrap ${colorAmount}`}>
+          {sign} €{amount.toFixed(2).replace(".", ",")}
         </p>
-        <div className="flex gap-1">
-          <ButtonIcon icon={<Edit />} onClick={handleEdit} color={"trasparent"} />
-          <ButtonIcon icon={<Trash />} onClick={handleDelete} color={"danger"} />
+        <div className="flex gap-1 justify-end">
+          <ButtonIcon icon={<Edit />} onClick={handleEdit} color="transparent"  />
+          <ButtonIcon icon={<Trash />} onClick={handleDelete} color="danger" />
         </div>
       </div>
     </Card>
   );
+}
+
+{
+  /* <div className="flex items-center w-full border p-2">
+        <div className="flex-shrink-0 mr-2">
+          <span className="bg-blue-500 text-white px-2 py-1 rounded">SX</span>
+        </div>
+
+        <div className="flex-1 truncate">
+          Questo è un testo molto lungo che dovrebbe troncare con i puntini se non entra nello spazio disponibile
+        </div>
+
+        <div className="flex-shrink-0 ml-2">
+          <span className="bg-green-500 text-white px-2 py-1 rounded">€1000.00</span>
+        </div>
+      </div> */
 }

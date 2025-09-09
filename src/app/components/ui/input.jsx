@@ -15,7 +15,7 @@ import { Check, Eye, EyeOff } from "lucide-react";
 
 const colorVariants = {
   outline:
-    "bg-trasparent border border-border-card focus:border-background-inverse",
+    "bg-transparent border border-border-card focus:border-background-inverse",
   primary: "bg-border-card border-0",
   default: "bg-card border-border-card focus:border-background-inverse",
 };
