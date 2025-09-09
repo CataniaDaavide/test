@@ -13,6 +13,10 @@ export const metadata = {
   icons: {
     apple: "/icon.png",
   },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAFAFA" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090B" },
+  ],
 };
 
 // Serve per non fare zoommare la pagina da mobile (qundo si fa il doppio click)
