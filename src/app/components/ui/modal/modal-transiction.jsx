@@ -34,6 +34,10 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     accounts: initialAccounts,
     handleDelete
   } = data;
+  console.log("initialAccounts:");
+  console.log(initialAccounts[0].accountId, initialAccounts[0].amount);
+  console.log(initialAccounts[1].accountId, initialAccounts[1].amount);
+  
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
   const isFirstRender = useRef(true);
@@ -59,12 +63,12 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const [categorieValue, setCategorieValue] = useState();
 
   const [accountsOptions, setAccountsOptions] = useState();
-  const [accountOneValue, setAccountOneValue] = useState();
-  const [amountOneValue, setAmountOneValue] = useState(initialAmountOne || 0);
+  const [accountOneValue, setAccountOneValue] = useState(initialAccounts[0].accountId);
+  const [amountOneValue, setAmountOneValue] = useState(initialAccounts[0].amount || "");
 
   const [accountsTwoOptions, setAccountsTwoOptions] = useState();
-  const [accountTwoValue, setAccountTwoValue] = useState();
-  const [amountTwoValue, setAmountTwoValue] = useState(initialAmountTwo || "");
+  const [accountTwoValue, setAccountTwoValue] = useState(initialAccounts[1].accountId);
+  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts[1].amount || "");
 
   // recupero categorie
   const loadCategories = async () => {

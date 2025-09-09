@@ -1,35 +1,43 @@
 "use client";
-import { useState, useEffect, createContext } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") || "light";
-    }
-    return "light"; // fallback lato server
-  });
+function setCookie(name, value) {
+  document.cookie = `${name}=${value}; path=/`; // cookie di sessione
+}
 
-  // Recupero tema salvato
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState("light"); // valore iniziale sicuro
+
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.documentElement.classList.add(savedTheme);
+    // legge cookie lato client
+    const cookieTheme = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("theme="))
+      ?.split("=")[1];
+
+    if (cookieTheme) setTheme(cookieTheme);
+
+    // applica classe HTML
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(cookieTheme || "light");
+
+    // aggiorna cookie
+    setCookie("theme", cookieTheme || "light");
   }, []);
 
   useEffect(() => {
+    // aggiorna classe e cookie quando cambia il tema
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(theme);
-    localStorage.setItem("theme", theme);
+    setCookie("theme", theme);
 
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
     }
   }, [theme]);
-
-  if (theme === null) return null;
 
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 }
