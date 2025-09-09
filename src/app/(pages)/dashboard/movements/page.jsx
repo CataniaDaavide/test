@@ -206,20 +206,17 @@ function MovementsCard({ data, categories = [] }) {
 
   return (
     <Card className="!flex-row items-center w-full gap-3 p-3">
-      {/* SX - Emoji */}
       <div className="flex-shrink-0">
         <Emoji emoji={categorie?.emoji} hexColor={categorie?.hexColor} />
       </div>
 
-      {/* CENTRALE */}
       <div className="flex-1 min-w-0">
         <p className="truncate font-medium">{categorie?.name}</p>
         <p className="text-sm text-gray-500">{convertedDate}</p>
         <p className="text-sm text-gray-500 truncate">{description}</p>
       </div>
 
-      {/* DX - Importo e bottoni */}
-      <div className="flex-shrink-0 text-right">
+      <div className="flex-shrink-0 text-center">
         <p className={`text-lg font-bold text-nowrap ${colorAmount}`}>
           {sign} €{amount.toFixed(2).replace(".", ",")}
         </p>
@@ -230,20 +227,4 @@ function MovementsCard({ data, categories = [] }) {
       </div>
     </Card>
   );
-}
-
-{
-  /* <div className="flex items-center w-full border p-2">
-        <div className="flex-shrink-0 mr-2">
-          <span className="bg-blue-500 text-white px-2 py-1 rounded">SX</span>
-        </div>
-
-        <div className="flex-1 truncate">
-          Questo è un testo molto lungo che dovrebbe troncare con i puntini se non entra nello spazio disponibile
-        </div>
-
-        <div className="flex-shrink-0 ml-2">
-          <span className="bg-green-500 text-white px-2 py-1 rounded">€1000.00</span>
-        </div>
-      </div> */
 }
