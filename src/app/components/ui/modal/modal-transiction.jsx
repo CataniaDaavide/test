@@ -30,6 +30,8 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     description: initialDescription,
     handleDelete,
   } = data;
+  console.log(initialAccounts);
+
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
   const isFirstRender = useRef(true);
@@ -51,16 +53,20 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const [time, setTime] = useState(initialDate ? convertDate(initialDate, "HH:mm") : convertDate(undefined, "HH:mm"));
   const [description, setDescription] = useState(initialDescription || "");
 
-  const [categoriesOptions, setCategoriesOptions] = useState();
-  const [categorieValue, setCategorieValue] = useState();
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
+  const [categorieValue, setCategorieValue] = useState(categoriesOptions.find((x) => x._id.toString() === categorieId));
 
-  const [accountsOptions, setAccountsOptions] = useState();
-  const [accountOneValue, setAccountOneValue] = useState();
-  const [amountOneValue, setAmountOneValue] = useState(initialAccounts?.[0]?.amount || 0);
+  const [accountsOptions, setAccountsOptions] = useState([]);
+  const [accountOneValue, setAccountOneValue] = useState(
+    accountsOptions.find((x) => x?.accountId === initialAccounts?.[0]?.accountId) || undefined
+  );
+  const [amountOneValue, setAmountOneValue] = useState(initialAccounts?.[0]?.amount.toString() || "0");
 
-  const [accountsTwoOptions, setAccountsTwoOptions] = useState();
-  const [accountTwoValue, setAccountTwoValue] = useState();
-  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts?.[1]?.amount);
+  const [accountsTwoOptions, setAccountsTwoOptions] = useState([]);
+  const [accountTwoValue, setAccountTwoValue] = useState(
+    accountsTwoOptions.find((x) => x?.accountId === initialAccounts?.[1]?.accountId) || undefined
+  );
+  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts?.[1]?.amount.toString() || "");
 
   // recupero categorie
   const loadCategories = async () => {
@@ -177,10 +183,9 @@ export default function ModalTransiction({ data, handleCloseModal }) {
             },
           },
         },
-      }; 
+      };
 
       console.log(fields);
-      
 
       // Esegui validazione
       const hasError = formValidation(setFormValidationError, fields);
@@ -190,8 +195,8 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     }
   }
 
-  // evento che gestice gli errori con la forma validator 
-  // solo dopo il primo rendering 
+  // evento che gestice gli errori con la forma validator
+  // solo dopo il primo rendering
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -221,18 +226,20 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   }, []);
 
   // init value categorie e account
-  useEffect(() => {
-    if (categoriesOptions && categoriesOptions.length > 0) {
-      setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
-    }
-    if (accountsOptions && accountsOptions.length > 0) {
-      var accountId = undefined;
-      if (initialAccounts && initialAccounts.length > 0) {
-        accountId = initialAccounts[0].accountId;
-      }
-      setAccountOneValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
-    }
-  }, [categoriesOptions, accountsOptions]);
+  // useEffect(() => {
+  //   if (categoriesOptions && categoriesOptions.length > 0) {
+  //     setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
+  //   }
+  //   if (accountsOptions && accountsOptions.length > 0) {
+  //     var accountId = undefined;
+  //     console.log(initialAccounts);
+
+  //     if (initialAccounts && initialAccounts.length > 0) {
+  //       accountId = initialAccounts[0].accountId;
+  //     }
+  //     setAccountOneValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
+  //   }
+  // }, [categoriesOptions, accountsOptions]);
 
   // evento che gestisce ogni cambiamento del valore del conto1
   useEffect(() => {
@@ -250,7 +257,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       base_exceptionManager(error);
     }
   }, [accountOneValue]);
-
 
   // evento che gestisce ogni cambiamento delle opzioni del conto2
   useEffect(() => {
@@ -272,27 +278,29 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
       const hasError = formValidationInit();
       if (hasError) return exit();
-      
-      return
-      
+
       const requestData = {
-        date: new Date(`${date}T${time}`).toISOString(),
         createAt: createAt ?? new Date().toISOString(),
+        date: new Date(`${date}T${time}`).toISOString(),
         categorieId: categorieValue._id.toString(),
-        accountOneId: accountOneValue._id.toString(),
-        amountOne: amountOneValue,
+        accounts: [
+          {
+            accountId: accountOneValue._id.toString(),
+            amount: parseFloat(amountOneValue),
+          },
+        ],
+        description: description,
       };
       if (_id) {
         requestData._id = _id;
       }
       if (isVoucher) {
         if (accountTwoValue && accountTwoValue != {}) {
-          requestData.accountTwoId = accountTwoValue._id.toString();
-          requestData.amountTwo = amountTwo;
+          requestData.accounts.push({
+            accountId: accountTwoValue._id.toString(),
+            amount: parseFloat(amountTwoValue),
+          });
         }
-      }
-      if (description) {
-        requestData.description = description;
       }
       if (createAt) {
         requestData.updateAt = new Date().toISOString();

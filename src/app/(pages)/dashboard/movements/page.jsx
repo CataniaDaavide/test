@@ -91,7 +91,7 @@ export default function MovementsPage() {
           <ButtonIcon onClick={loadMovements} icon={<RefreshCcw className="hover:animate-spin" />} />
           <Button onClick={handleNewMovement}>
             <Plus />
-            <p>Nuova conto</p>
+            <p>Nuova movimento</p>
           </Button>
         </div>
       </div>

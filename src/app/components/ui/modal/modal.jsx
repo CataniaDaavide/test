@@ -87,8 +87,8 @@ export default function Modal() {
         className="absolute w-full flex items-center justify-center"
       > */}
       <Card
-        className={`
-            ${
+        className={`relative
+            ${ 
               type === "alert"
                 ? "w-full"
                 : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"
