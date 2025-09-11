@@ -224,7 +224,7 @@ function AccountCard({ data }) {
       </div>
       <div className="flex flex-col items-center">
         <p className="text-lg font-bold md:pr-3" style={{ color: hexColor }}>
-          €{amount.toFixed(2)}
+          € {amount.toFixed(2)}
         </p>
         <div className="flex gap-1">
           <ButtonIcon

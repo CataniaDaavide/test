@@ -57,16 +57,12 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   const [categorieValue, setCategorieValue] = useState(categoriesOptions.find((x) => x._id.toString() === categorieId));
 
   const [accountsOptions, setAccountsOptions] = useState([]);
-  const [accountOneValue, setAccountOneValue] = useState(
-    accountsOptions.find((x) => x?.accountId === initialAccounts?.[0]?.accountId) || undefined
-  );
-  const [amountOneValue, setAmountOneValue] = useState(initialAccounts?.[0]?.amount.toString() || "0");
+  const [accountOneValue, setAccountOneValue] = useState(undefined);
+  const [amountOneValue, setAmountOneValue] = useState("0");
 
   const [accountsTwoOptions, setAccountsTwoOptions] = useState([]);
-  const [accountTwoValue, setAccountTwoValue] = useState(
-    accountsTwoOptions.find((x) => x?.accountId === initialAccounts?.[1]?.accountId) || undefined
-  );
-  const [amountTwoValue, setAmountTwoValue] = useState(initialAccounts?.[1]?.amount.toString() || "");
+  const [accountTwoValue, setAccountTwoValue] = useState(undefined);
+  const [amountTwoValue, setAmountTwoValue] = useState("");
 
   // recupero categorie
   const loadCategories = async () => {
@@ -226,20 +222,22 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   }, []);
 
   // init value categorie e account
-  // useEffect(() => {
-  //   if (categoriesOptions && categoriesOptions.length > 0) {
-  //     setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
-  //   }
-  //   if (accountsOptions && accountsOptions.length > 0) {
-  //     var accountId = undefined;
-  //     console.log(initialAccounts);
-
-  //     if (initialAccounts && initialAccounts.length > 0) {
-  //       accountId = initialAccounts[0].accountId;
-  //     }
-  //     setAccountOneValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
-  //   }
-  // }, [categoriesOptions, accountsOptions]);
+  useEffect(() => {
+    if (categoriesOptions && categoriesOptions.length > 0) {
+      setCategorieValue(categoriesOptions.find((x) => x._id.toString() === categorieId));
+    }
+    if (initialAccounts && initialAccounts.length > 0) {
+      if (accountsOptions && accountsOptions.length > 0) {
+        if (initialAccounts[0].accountId != undefined) {
+          const accountId = initialAccounts[0].accountId;
+          setAccountOneValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
+        }
+        if (initialAccounts[0].amount != undefined) {
+          setAmountOneValue(initialAccounts[0].amount.toString());
+        }
+      }
+    }
+  }, [categoriesOptions, accountsOptions]);
 
   // evento che gestisce ogni cambiamento del valore del conto1
   useEffect(() => {
@@ -260,13 +258,16 @@ export default function ModalTransiction({ data, handleCloseModal }) {
 
   // evento che gestisce ogni cambiamento delle opzioni del conto2
   useEffect(() => {
-    var accountId = undefined;
-    if (accountsTwoOptions) {
-      accountId = undefined;
-      if (initialAccounts && initialAccounts.length >= 1) {
-        accountId = initialAccounts[1].accountId;
+    if (initialAccounts && initialAccounts.length > 0) {
+      if (accountsTwoOptions && accountsTwoOptions.length > 0) {
+        if (initialAccounts[1].accountId != undefined) {
+          const accountId = initialAccounts[1].accountId;
+          setAccountTwoValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
+        }
+        if (initialAccounts[1].amount != undefined) {
+          setAmountTwoValue(initialAccounts[1].amount.toString());
+        }
       }
-      setAccountTwoValue(accountsTwoOptions.find((x) => initialAccounts && x._id.toString() === accountId));
     }
   }, [accountsTwoOptions]);
 

@@ -235,7 +235,7 @@ function ItemListStatsContainer({ stat, index }) {
           <p>{title}</p>
           {icon}
         </div>
-        <p className="text-2xl font-bold">€{amount}</p>
+        <p className="text-2xl font-bold">€ {amount}</p>
         {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
       </Card>
   );
@@ -307,7 +307,7 @@ function MovementsCard({ data, categories = [] }) {
       </div>
       <div className="flex flex-col items-center">
         <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
-          {sign} €{amount.toFixed(2).replace(".",",")}
+          {sign} € {amount.toFixed(2).replace(".",",")}
         </p>
       </div>
     </Card>
@@ -449,12 +449,15 @@ function MonthlyIncomeExpenseComparison({ movements }) {
 
 function ItemListMonthlyIncomeExpenseComparison({ monthName, totalIncome, totalExpanse }) {
   const color = totalIncome - totalExpanse > 0 ? "text-green-600" : "text-red-600";
-
+  const netBalance = totalIncome - totalExpanse; //.toFixed(2).replace(".", ",")
+  const netBalanceStr = netBalance.toFixed(2).replace(".", ",");
+  console.log(netBalanceStr);
+  
   return (
     <div className="flex flex-col gap-1 text-sm font-medium">
       <div className="flex justify-between">
         <p>{monthName}</p>
-        <p className={`font-bold ${color}`}>{`€ ${(totalIncome - totalExpanse).toFixed(2).replace(".", ",")}`}</p>
+        <p className={`font-bold ${color}`}>{netBalance >= 0 ? `€ ${netBalanceStr}` : `- € ${netBalanceStr.slice(1)}`}</p>
       </div>
       <div className="flex justify-between">
         <p className="text-xs text-muted-foreground">Entrate: €{totalIncome.toFixed(2).replace(".", ",")}</p>

@@ -218,7 +218,7 @@ function MovementsCard({ data, categories = [] }) {
 
       <div className="flex-shrink-0 text-center">
         <p className={`text-lg font-bold text-nowrap ${colorAmount}`}>
-          {sign} €{amount.toFixed(2).replace(".", ",")}
+          {sign} € {amount.toFixed(2).replace(".", ",")}
         </p>
         <div className="flex gap-1 justify-end">
           <ButtonIcon icon={<Edit />} onClick={handleEdit} color="transparent"  />
