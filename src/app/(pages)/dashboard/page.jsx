@@ -451,8 +451,6 @@ function ItemListMonthlyIncomeExpenseComparison({ monthName, totalIncome, totalE
   const color = totalIncome - totalExpanse > 0 ? "text-green-600" : "text-red-600";
   const netBalance = totalIncome - totalExpanse; //.toFixed(2).replace(".", ",")
   const netBalanceStr = netBalance.toFixed(2).replace(".", ",");
-  console.log(netBalanceStr);
-  
   return (
     <div className="flex flex-col gap-1 text-sm font-medium">
       <div className="flex justify-between">

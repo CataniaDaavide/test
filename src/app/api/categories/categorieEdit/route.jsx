@@ -66,14 +66,15 @@ export async function POST(req) {
       //edit
       const filter = { _id: categorieId, userId: _id };
       const update = {
-        _id: categorieId,
-        name: name,
-        type: type,
-        hexColor: hexColor,
-        emoji: emoji,
-        status: status,
-        userId: _id,
+        $set: {
+          name: name,
+          type: type,
+          hexColor: hexColor,
+          emoji: emoji,
+          status: status
+        }
       };
+      
       categorie = await categoriesModel.updateOne(filter, update);
     } else {
       //create

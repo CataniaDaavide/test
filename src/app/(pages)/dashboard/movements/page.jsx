@@ -1,14 +1,16 @@
 "use client";
 import Emoji from "@/app/components/emoji";
-import Badge from "@/app/components/ui/badge";
+import { motion } from "framer-motion";
 import { Button, ButtonIcon } from "@/app/components/ui/button";
-import { Card } from "@/app/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/app/components/ui/card";
+import Input from "@/app/components/ui/input";
 import { LoaderIcon } from "@/app/components/ui/loader-full-page";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
-import { Edit, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
+import { Calendar, Edit, Funnel, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
+import { EDGE_UNSUPPORTED_NODE_APIS } from "next/dist/shared/lib/constants";
 
 export default function MovementsPage() {
   const { base_exceptionManager } = useExceptionManager();
@@ -17,6 +19,9 @@ export default function MovementsPage() {
   const [movements, setMovements] = useState([]);
   const [categories, setCategories] = useState([]);
   const [accounts, setAccounts] = useState([]);
+
+  const [filterIsOpen, setFilterIsOpen] = useState(false);
+  const [filter, setFilter] = useState({});
 
   // recupero categorie
   const loadCategories = async () => {
@@ -43,9 +48,9 @@ export default function MovementsPage() {
   };
 
   // recupero movimenti
-  const loadMovements = async () => {
+  const loadMovements = async (requestData = {}) => {
     setIsLoader(true);
-    await fetchApi("/api/movements/movementsGet", "POST", {}, async (res) => {
+    await fetchApi("/api/movements/movementsGet", "POST", requestData, async (res) => {
       const data = await res.json();
 
       if (!res.ok && data.error != "") {
@@ -78,7 +83,7 @@ export default function MovementsPage() {
   useEffect(() => {
     if (modal && modal.show === false) {
       // funzione per recupero le categorie
-      loadMovements();
+      loadMovements({});
       loadCategories();
       loadAccounts();
     }
@@ -88,18 +93,139 @@ export default function MovementsPage() {
     <div className="w-full h-full flex flex-col gap-3 p-3 md:p-5">
       <div className="w-full flex items-center justify-end flex-wrap gap-3">
         <div className="flex gap-3 w-full md:w-fit">
-          <ButtonIcon onClick={loadMovements} icon={<RefreshCcw className="hover:animate-spin" />} />
+          <ButtonIcon
+            onClick={() => {
+              setFilterIsOpen(false);
+              loadMovements({});
+            }}
+            icon={<RefreshCcw className="hover:animate-spin" />}
+          />
+          <ButtonIcon
+            onClick={() => {
+              setFilterIsOpen(!filterIsOpen);
+            }}
+            icon={<Funnel />}
+          />
           <Button onClick={handleNewMovement}>
             <Plus />
             <p>Nuova movimento</p>
           </Button>
         </div>
       </div>
+      <MovementFilter isOpen={filterIsOpen} loadMovements={loadMovements} />
       {isLoader ? (
         <LoaderIcon className={"mt-3"} />
       ) : (
         <MovementsContainer movements={movements} categories={categories} />
       )}
+    </div>
+  );
+}
+
+function MovementFilter({ isOpen = false, loadMovements }) {
+  const { base_exceptionManager } = useExceptionManager();
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+  const [startDate, setStartDate] = useState(convertDate(threeMonthsAgo, "yyyy-MM-dd"));
+  const [endDate, setEndDate] = useState(convertDate(new Date(), "yyyy-MM-dd"));
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClearFilter = (e) => {
+    try {
+      e.preventDefault();
+      setStartDate(convertDate(threeMonthsAgo, "yyyy-MM-dd"));
+      setEndDate(convertDate(new Date(), "yyyy-MM-dd"));
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
+  const handleSearch = (e) => {
+    try {
+      e.preventDefault();
+      const filter = {
+        startDate: startDate,
+        endDate: endDate,
+      };
+      setIsLoading(true);
+      loadMovements(filter);
+      setIsLoading(false);
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
+  const handleChangeDate = (e) => {
+    try {
+      const { name, value } = e.target;
+
+      let start = startDate;
+      let end = endDate;
+
+      if (name === "start") {
+        start = value;
+        setStartDate(value);
+
+        // Se la data di partenza è dopo la data di fine, sincronizziamo
+        if (start > end) {
+          setEndDate(value);
+        }
+      }
+
+      if (name === "end") {
+        end = value;
+        setEndDate(value);
+
+        // Se la data di fine è prima della data di partenza, sincronizziamo
+        if (end < start) {
+          setStartDate(value);
+        }
+      }
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
+  return (
+    <div
+      className={`${
+        isOpen ? "!max-h-[3000px]" : "!max-h-0 !overflow-hidden !p-0 !border-0"
+      } w-full transition-all duration-500`}
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtri</CardTitle>
+        </CardHeader>
+        <CardContent className="!flex-col md:!flex-row">
+          <Input
+            type="date"
+            name="start"
+            title={"Data inizio"}
+            icon={<Calendar />}
+            value={startDate}
+            onChange={handleChangeDate}
+            disabled={isLoading}
+          />
+          <Input
+            type="date"
+            name="end"
+            title={"Data fine"}
+            icon={<Calendar />}
+            value={endDate}
+            onChange={handleChangeDate}
+            disabled={isLoading}
+          />
+        </CardContent>
+        <CardFooter className="!w-full md:!w-fit">
+          <Button onClick={handleSearch} disabled={isLoading}>
+            Cerca
+          </Button>
+          <Button onClick={handleClearFilter} disabled={isLoading}>
+            Annulla
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
@@ -221,7 +347,7 @@ function MovementsCard({ data, categories = [] }) {
           {sign} € {amount.toFixed(2).replace(".", ",")}
         </p>
         <div className="flex gap-1 justify-end">
-          <ButtonIcon icon={<Edit />} onClick={handleEdit} color="transparent"  />
+          <ButtonIcon icon={<Edit />} onClick={handleEdit} color="transparent" />
           <ButtonIcon icon={<Trash />} onClick={handleDelete} color="danger" />
         </div>
       </div>

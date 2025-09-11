@@ -147,7 +147,10 @@ export async function fetchApi(
             callBackFn(res);
         }
     } catch (error) {
-        base_exceptionManager(error);
+        console.log(error);
+        
+        //TODO: DA SISTEMARE ho dovuto commentare perchè dava errore perchè non è definito
+        // base_exceptionManager(error);
     }
 }
 

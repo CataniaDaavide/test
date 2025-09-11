@@ -11,7 +11,7 @@ export async function POST(req) {
   const dataResponse = {};
 
   try {
-    const { dateStart, dateEnd } = await req.json();
+    const { startDate, endDate } = await req.json();
     const cookieStore = await cookies();
 
     //controllo esistenza della sessione
@@ -30,15 +30,16 @@ export async function POST(req) {
 
     // //recupero dei movimenti
     const filter = { userId: _id };
-    if (dateStart || dateEnd) {
+    if (startDate || endDate) {
       filter.date = {};
-      if (dateStart) {
-        filter.date.$gte = new Date(dateStart);
+      if (startDate) {
+        filter.date.$gte = new Date(startDate);
       }
-      if (dateEnd) {
-        filter.date.$lte = new Date(dateEnd);
+      if (endDate) {
+        filter.date.$lte = new Date(endDate);
       }
     }
+    
     const movements = await movementsModel.find(filter).sort({date: -1});
 
     // dataResponse.result = true;

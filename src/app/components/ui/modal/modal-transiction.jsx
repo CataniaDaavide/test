@@ -30,7 +30,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
     description: initialDescription,
     handleDelete,
   } = data;
-  console.log(initialAccounts);
 
   const title = _id ? "Modifica movimento" : "Creazione movimento";
   const modalDescription = "Registra una nuova entrata o uscita";
@@ -181,8 +180,6 @@ export default function ModalTransiction({ data, handleCloseModal }) {
         },
       };
 
-      console.log(fields);
-
       // Esegui validazione
       const hasError = formValidation(setFormValidationError, fields);
       return hasError;
@@ -272,7 +269,7 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   }, [accountsTwoOptions]);
 
   // click sul pulsante modifica o crea
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
@@ -306,9 +303,21 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       if (createAt) {
         requestData.updateAt = new Date().toISOString();
       }
+       await fetchApi(
+        "/api/movements/movementEdit",
+        "POST",
+        requestData,
+        async (res) => {
+          const data = await res.json();
 
+          if (!res.ok && data.error != "") {
+            setError(data.error);
+          } else {
+            handleCloseModal();
+          }
+        }
+      );
       //TODO: CHIMATA DA FARE
-      console.log(requestData);
 
       exit();
     } catch (error) {

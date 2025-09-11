@@ -29,8 +29,6 @@ export function ExceptionProvider({ children }) {
   }
 
   const base_exceptionManager = (error) => {
-    console.log(error);
-
     try {
       const { name, message, stack } = error;
       const location = getErrorLocation(stack);
