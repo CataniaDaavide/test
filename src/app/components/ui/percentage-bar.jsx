@@ -2,11 +2,11 @@
 import { useState } from "react";
 import TitleComponents from "./title-components";
 
-export default function PercentageBar({ titleSx, titleDx, percentage, color }) {
+export default function PercentageBar({ titleSx, titleDx, percentage, className, color }) {
   const [showPercentage, setShowPercentage] = useState();
   return (
     <div
-      className="relative w-full flex flex-col"
+      className={`relative w-full flex flex-col ${className}`}
       onMouseEnter={() => {
         setShowPercentage(true);
       }}

@@ -230,7 +230,7 @@ function ItemListStatsContainer({ stat, index }) {
   }
 
   return (
-    <Card>
+    <Card className="flex justify-start">
       <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
         <p>{title}</p>
         {icon}
@@ -383,7 +383,7 @@ function ItemListExpensesByCategory({ data, totalExpense }) {
   const percentage = totalExpense > 0 ? ((totalAmount / totalExpense) * 100).toFixed(2) : 0;
 
   return (
-    <PercentageBar
+    <PercentageBar className={"select-none"}
       titleSx={name}
       titleDx={`€ ${totalAmount.toFixed(2).replace(".", ",")}`}
       percentage={totalAmount === 0 ? totalAmount : percentage}
