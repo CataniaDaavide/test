@@ -18,15 +18,16 @@ export default function Modal() {
   const { theme, systemTheme } = useTheme();
   const { setThemeColor } = useThemeColor();
   const { show, type, data } = modal;
+
   const handleCloseModal = () => {
     try {
+      const current = theme === "system" ? systemTheme : theme;
+      const color = current === "dark" ? "#09090b" : "#fafafa";
       setModal({
         show: false,
         type: "",
         data: {},
       });
-      const current = theme === "system" ? systemTheme : theme;
-      const color = current === "dark" ? "#09090b" : "#fafafa";
       setThemeColor(color);
     } catch (error) {
       base_exceptionManager(error);
@@ -40,13 +41,10 @@ export default function Modal() {
     }
   };
 
-  if (!show) return null;
-  if (!theme) return null;
-
   // cambia il colore del theme_color (barra in alto) per i dispositivi mobile
-  if (type != "alert") {
+  if (type != "" && type != "alert") {
     const current = theme === "system" ? systemTheme : theme;
-    const color = current === "dark" ? "#18181b" : "#fdfdfd";
+    const color = current === "dark" ? "#18181b" : "#f4f4f5";
     setThemeColor(color);
   }
 
@@ -75,6 +73,9 @@ export default function Modal() {
         break;
     }
   }
+
+  if (!show) return null;
+  if (!theme) return null;
 
   return (
     <div
