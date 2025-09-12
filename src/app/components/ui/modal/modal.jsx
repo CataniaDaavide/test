@@ -9,13 +9,14 @@ import { X } from "lucide-react";
 import ModalCategorie from "./modal-categorie";
 import ModalAlert from "./modal-alert";
 import ModalAccount from "./modal-account";
-import { motion } from "framer-motion";
-import { ThemeContext } from "@/app/context/ThemeContext";
+import { useThemeColor } from "../ThemeColorMeta";
+import { useTheme } from "next-themes";
 
 export default function Modal() {
   const { base_exceptionManager } = useExceptionManager();
   const { modal, setModal } = useContext(ModalContext);
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme, systemTheme } = useTheme();
+  const { setThemeColor } = useThemeColor();
   const { show, type, data } = modal;
   const handleCloseModal = () => {
     try {
@@ -24,10 +25,9 @@ export default function Modal() {
         type: "",
         data: {},
       });
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) {
-        meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
-      }
+      const current = theme === "system" ? systemTheme : theme;
+      const color = current === "dark" ? "#09090b" : "#fafafa";
+      setThemeColor(color);
     } catch (error) {
       base_exceptionManager(error);
     }
@@ -40,12 +40,14 @@ export default function Modal() {
     }
   };
 
-  if (!modal?.show) return null;
+  if (!show) return null;
+  if (!theme) return null;
 
   // cambia il colore del theme_color (barra in alto) per i dispositivi mobile
   if (type != "alert") {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    meta.setAttribute("content", theme === "dark" ? "#18181b" : "#fdfdfd");
+    const current = theme === "system" ? systemTheme : theme;
+    const color = current === "dark" ? "#18181b" : "#fdfdfd";
+    setThemeColor(color);
   }
 
   // Scegli il componente in base al tipo
@@ -88,7 +90,7 @@ export default function Modal() {
       > */}
       <Card
         className={`relative
-            ${ 
+            ${
               type === "alert"
                 ? "w-full"
                 : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"

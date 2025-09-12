@@ -1,10 +1,12 @@
 import "./globals.css";
 
 //hoocks - functions - lib
-import { ThemeProvider } from "./context/ThemeContext";
+
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
 import { ExceptionProvider } from "./context/ExceptionManagerContext";
+import ThemeColorMeta from "./components/ui/ThemeColorMeta";
+import { ThemeProvider } from "next-themes";
 
 export const metadata = {
   //   title: "Template APP",
@@ -25,7 +27,7 @@ export const viewport = {
 
 export default async function RootLayout({ children }) {
   return (
-    <html lang="en" className={`w-full h-full overscroll-none`}>
+    <html lang="en" className={`w-full h-full overscroll-none`} suppressHydrationWarning>
       <head>
         {/* theme-color iniziale lato server */}
         <meta name="theme-color" content={"#fafafa"} />
@@ -40,7 +42,8 @@ export default async function RootLayout({ children }) {
       >
         <ModalProvider>
           <ExceptionProvider>
-            <ThemeProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <ThemeColorMeta />
               <Modal />
               {children}
             </ThemeProvider>
