@@ -78,8 +78,8 @@ export default function AccountsPage() {
             icon={<RefreshCcw className="hover:animate-spin" />}
           />
           <Button onClick={handleNewAccount}>
-            <Plus />
-            <p>Nuova conto</p>
+            <Plus size={18}/>
+            <p>Nuovo conto</p>
           </Button>
         </div>
       </div>
@@ -224,7 +224,7 @@ function AccountCard({ data }) {
       </div>
       <div className="flex flex-col items-center">
         <p className="text-lg font-bold md:pr-3" style={{ color: hexColor }}>
-          € {amount.toFixed(2)}
+          €{amount.toFixed(2).replace(".", ",")}
         </p>
         <div className="flex gap-1">
           <ButtonIcon

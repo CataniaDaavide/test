@@ -77,7 +77,7 @@ function HeaderDesktop({
     >
       <div className="flex flex-col">
         <p className="font-bold text-2xl">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        {/* <p className="text-sm text-muted-foreground">{description}</p> */}
       </div>
 
       <ActionButtons actions={actions} />

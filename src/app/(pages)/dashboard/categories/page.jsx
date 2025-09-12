@@ -80,7 +80,7 @@ export default function CategoriesPage() {
             icon={<RefreshCcw className="hover:animate-spin" />}
           />
           <Button onClick={handleNewCategorie}>
-            <Plus />
+            <Plus size={18}/>
             <p>Nuova categoria</p>
           </Button>
         </div>

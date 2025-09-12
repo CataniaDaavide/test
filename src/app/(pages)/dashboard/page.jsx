@@ -194,14 +194,14 @@ function StatsContainer({ movements, accounts, startOfCurrentMonth, endOfCurrent
   const stats = [
     {
       title: "Entrate del mese",
-      amount: currentTotaleIncome.toString().replace(".", ","),
+      amount: currentTotaleIncome.toFixed(2).replace(".", ","),
       icon: <TrendingUp size={16} />,
       type: "E",
       percentage: calculatePercentChange(currentTotaleIncome, previusTotaleIncome),
     },
     {
       title: "Uscite del mese",
-      amount: currentTotaleExpense.toString().replace(".", ","),
+      amount: currentTotaleExpense.toFixed(2).replace(".", ","),
       icon: <TrendingDown size={16} />,
       type: "U",
       percentage: calculatePercentChange(currentTotaleExpense, previusTotaleExpense),
@@ -230,14 +230,14 @@ function ItemListStatsContainer({ stat, index }) {
   }
 
   return (
-      <Card>
-        <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
-          <p>{title}</p>
-          {icon}
-        </div>
-        <p className="text-2xl font-bold">€ {amount}</p>
-        {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
-      </Card>
+    <Card>
+      <div className="w-full flex items-center justify-between text-sm font-medium text-muted-foreground">
+        <p>{title}</p>
+        {icon}
+      </div>
+      <p className="text-2xl font-bold">€{amount}</p>
+      {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
+    </Card>
   );
 }
 
@@ -256,9 +256,7 @@ function RecentMovementsContainer({ movements, categories, startOfCurrentMonth, 
   };
 
   return (
-    <div
-      className="h-full grid col-span-2 mt-5 md:m-0"
-     >
+    <div className="h-full grid col-span-2 mt-5 md:m-0">
       <Card className="w-full !bg-transparent !border-0 !p-0 md:!bg-card md:!border-1 md:!p-5">
         <CardHeader>
           <CardHeaderContent>
@@ -272,7 +270,7 @@ function RecentMovementsContainer({ movements, categories, startOfCurrentMonth, 
 
         <CardContent>
           {filteredMovements.map((movement, index) => (
-            <MovementsCard key={index} data={movement} categories={categories} />
+            <MovementCard key={index} data={movement} categories={categories} />
           ))}
         </CardContent>
       </Card>
@@ -280,7 +278,7 @@ function RecentMovementsContainer({ movements, categories, startOfCurrentMonth, 
   );
 }
 
-function MovementsCard({ data, categories = [] }) {
+function MovementCard({ data, categories = [] }) {
   const { type, description, date, categorieId, accounts } = data;
   const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
   const [categorie, setCategorie] = useState(null);
@@ -307,7 +305,7 @@ function MovementsCard({ data, categories = [] }) {
       </div>
       <div className="flex flex-col items-center">
         <p className={`text-lg font-bold md:pr-3 text-nowrap ${colorAmount}`}>
-          {sign} € {amount.toFixed(2).replace(".",",")}
+          {sign} €{amount.toFixed(2).replace(".", ",")}
         </p>
       </div>
     </Card>
@@ -360,8 +358,10 @@ function ExpensesByCategory({ movements, categories }) {
           </CardTitle>
         </CardHeaderContent>
       </CardHeader>
-      <CardContent className="min-h-20 flex flex-col gap-3 items-center justify-center">
-        {categoriesArray.length ? (
+      <CardContent
+        className={`min-h-20 flex flex-col gap-3 items-center ${categoriesArray.length === 0 && "justify-center"}`}
+      >
+        {categoriesArray.length > 0 ? (
           <>
             {categoriesArray.map(
               (item, index) =>
@@ -455,7 +455,9 @@ function ItemListMonthlyIncomeExpenseComparison({ monthName, totalIncome, totalE
     <div className="flex flex-col gap-1 text-sm font-medium">
       <div className="flex justify-between">
         <p>{monthName}</p>
-        <p className={`font-bold ${color}`}>{netBalance >= 0 ? `€ ${netBalanceStr}` : `- € ${netBalanceStr.slice(1)}`}</p>
+        <p className={`font-bold ${color}`}>
+          {netBalance >= 0 ? `€ ${netBalanceStr}` : `- € ${netBalanceStr.slice(1)}`}
+        </p>
       </div>
       <div className="flex justify-between">
         <p className="text-xs text-muted-foreground">Entrate: €{totalIncome.toFixed(2).replace(".", ",")}</p>

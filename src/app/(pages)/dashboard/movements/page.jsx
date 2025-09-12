@@ -1,6 +1,5 @@
 "use client";
 import Emoji from "@/app/components/emoji";
-import { motion } from "framer-motion";
 import { Button, ButtonIcon } from "@/app/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/app/components/ui/card";
 import Input from "@/app/components/ui/input";
@@ -10,7 +9,6 @@ import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
 import { Calendar, Edit, Funnel, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
-import { EDGE_UNSUPPORTED_NODE_APIS } from "next/dist/shared/lib/constants";
 
 export default function MovementsPage() {
   const { base_exceptionManager } = useExceptionManager();
@@ -107,8 +105,8 @@ export default function MovementsPage() {
             icon={<Funnel />}
           />
           <Button onClick={handleNewMovement}>
-            <Plus />
-            <p>Nuova movimento</p>
+            <Plus size={18}/>
+            <p>Nuovo movimento</p>
           </Button>
         </div>
       </div>
@@ -149,7 +147,7 @@ function MovementFilter({ isOpen = false, loadMovements }) {
         endDate: endDate,
       };
       setIsLoading(true);
-      loadMovements(filter);
+      loadMovements(filter)
       setIsLoading(false);
     } catch (error) {
       base_exceptionManager(error);
@@ -188,12 +186,7 @@ function MovementFilter({ isOpen = false, loadMovements }) {
   };
 
   return (
-    <div
-      className={`${
-        isOpen ? "!max-h-[3000px]" : "!max-h-0 !overflow-hidden !p-0 !border-0"
-      } w-full transition-all duration-500`}
-    >
-      <Card>
+      <Card className={!isOpen && "hidden"}>
         <CardHeader>
           <CardTitle>Filtri</CardTitle>
         </CardHeader>
@@ -226,15 +219,14 @@ function MovementFilter({ isOpen = false, loadMovements }) {
           </Button>
         </CardFooter>
       </Card>
-    </div>
   );
 }
 
 function MovementsContainer({ movements, categories }) {
   return (
     <>
-      <p className="text-lg md:text-2xl font-bold">Elenco movimenti ({movements.length}):</p>
-      <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-scroll scrollbar-hide gap-3 pb-3">
+      <p className="text-md md:text-lg font-bold">Elenco movimenti ({movements.length})</p>
+      <div className="max-h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 overflow-y-scroll scrollbar-hide gap-3 pb-3">
         {movements.map((movement, index) => {
           return <MovementsCard key={index} data={movement} categories={categories} />;
         })}
@@ -344,7 +336,7 @@ function MovementsCard({ data, categories = [] }) {
 
       <div className="flex-shrink-0 text-center">
         <p className={`text-lg font-bold text-nowrap ${colorAmount}`}>
-          {sign} € {amount.toFixed(2).replace(".", ",")}
+          {sign} €{amount.toFixed(2).replace(".", ",")}
         </p>
         <div className="flex gap-1 justify-end">
           <ButtonIcon icon={<Edit />} onClick={handleEdit} color="transparent" />

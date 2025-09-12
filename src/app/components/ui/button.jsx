@@ -34,7 +34,7 @@ export function Button({
       className={`
         flex gap-1 items-center justify-center px-4 py-2 w-full h-10 
         transition-all duration-300 
-        text-sm font-semibold text-nowrap rounded-lg 
+        text-sm font-medium text-nowrap rounded-lg 
         cursor-pointer disabled:cursor-not-allowed disabled:opacity-90 active:scale-95 disabled:active:scale-100
         ${colorVariants[color] || colorVariants["default"]}
         ${className}
@@ -54,7 +54,7 @@ export function ButtonIcon({
   disabled = false,
 }) {
   // Cloniamo le icone per forzare il size
-  const iconLeft = isValidElement(icon) && cloneElement(icon, { size: 16 });
+  const resizedIcon = isValidElement(icon) && cloneElement(icon, { size: 16 });
   const colorVariants = {
     transparent: "bg-transparent hover:bg-border-card",
     outline: "border border-background-inverse bg-transparent",
@@ -78,7 +78,7 @@ export function ButtonIcon({
         ${colorVariants[color] || colorVariants["default"]} ${className}
       `}
     >
-      {iconLeft}
+      {resizedIcon}
     </button>
   );
 }
