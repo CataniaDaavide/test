@@ -34,7 +34,7 @@ export function Button({
       className={`
         flex gap-1 items-center justify-center px-4 py-2 w-full h-10 
         transition-all duration-300 
-        text-sm font-medium text-nowrap rounded-lg 
+        text-sm text-nowrap rounded-lg 
         cursor-pointer disabled:cursor-not-allowed disabled:opacity-90 active:scale-95 disabled:active:scale-100
         ${colorVariants[color] || colorVariants["default"]}
         ${className}
@@ -135,17 +135,3 @@ export function ButtonLogout({ color, className = "", showText = true }) {
     </Button>
   );
 }
-
-// const colorVariants = {
-//   primary:
-//     "hover:bg-blue-500/10 text-black dark:text-white hover:text-green-500",
-//   secondary: "bg-gray-600 hover:bg-gray-600/90 border-gray-500 text-white",
-//   success:
-//     "hover:bg-green-500/10 text-black dark:text-white hover:text-green-500",
-//   danger: "hover:bg-red-500/10 text-black dark:text-white hover:text-red-500",
-//   start: "hover:bg-white hover:dark:bg-zinc-800",
-//   default_due:
-//     "bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 hover:dark:bg-zinc-800/80 text-black dark:text-white",
-//   default: "bg-card rounded-lg border-border-card shadow-md",
-//   //   "bg-zinc-900 hover:bg-zinc-900/90 dark:bg-zinc-50 hover:dark:bg-zinc-50/90 text-zinc-50 dark:text-zinc-950",
-// };

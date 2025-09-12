@@ -7,7 +7,7 @@ import { LoaderIcon } from "@/app/components/ui/loader-full-page";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
-import { Calendar, Edit, Funnel, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
+import { Calendar, Edit, Funnel, FunnelPlus, FunnelX, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 
 export default function MovementsPage() {
@@ -19,7 +19,6 @@ export default function MovementsPage() {
   const [accounts, setAccounts] = useState([]);
 
   const [filterIsOpen, setFilterIsOpen] = useState(false);
-  const [filter, setFilter] = useState({});
 
   // recupero categorie
   const loadCategories = async () => {
@@ -102,10 +101,10 @@ export default function MovementsPage() {
             onClick={() => {
               setFilterIsOpen(!filterIsOpen);
             }}
-            icon={<Funnel />}
+            icon={filterIsOpen ? <FunnelX /> : <FunnelPlus />}
           />
           <Button onClick={handleNewMovement}>
-            <Plus size={18}/>
+            <Plus size={18} />
             <p>Nuovo movimento</p>
           </Button>
         </div>
@@ -147,7 +146,7 @@ function MovementFilter({ isOpen = false, loadMovements }) {
         endDate: endDate,
       };
       setIsLoading(true);
-      loadMovements(filter)
+      loadMovements(filter);
       setIsLoading(false);
     } catch (error) {
       base_exceptionManager(error);
@@ -186,39 +185,42 @@ function MovementFilter({ isOpen = false, loadMovements }) {
   };
 
   return (
-      <Card className={!isOpen && "hidden"}>
-        <CardHeader>
-          <CardTitle>Filtri</CardTitle>
-        </CardHeader>
-        <CardContent className="!flex-col md:!flex-row">
-          <Input
-            type="date"
-            name="start"
-            title={"Data inizio"}
-            icon={<Calendar />}
-            value={startDate}
-            onChange={handleChangeDate}
-            disabled={isLoading}
-          />
-          <Input
-            type="date"
-            name="end"
-            title={"Data fine"}
-            icon={<Calendar />}
-            value={endDate}
-            onChange={handleChangeDate}
-            disabled={isLoading}
-          />
-        </CardContent>
-        <CardFooter className="!w-full md:!w-fit">
-          <Button onClick={handleSearch} disabled={isLoading}>
-            Cerca
-          </Button>
-          <Button onClick={handleClearFilter} disabled={isLoading}>
-            Annulla
-          </Button>
-        </CardFooter>
-      </Card>
+    <Card className={!isOpen && "hidden"}>
+      <CardHeader>
+        <CardTitle>
+          <Funnel />
+          Filtri
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="!flex-col md:!flex-row">
+        <Input
+          type="date"
+          name="start"
+          title={"Data inizio"}
+          icon={<Calendar />}
+          value={startDate}
+          onChange={handleChangeDate}
+          disabled={isLoading}
+        />
+        <Input
+          type="date"
+          name="end"
+          title={"Data fine"}
+          icon={<Calendar />}
+          value={endDate}
+          onChange={handleChangeDate}
+          disabled={isLoading}
+        />
+      </CardContent>
+      <CardFooter className="!w-full md:!w-fit">
+        <Button onClick={handleSearch} disabled={isLoading}>
+          Cerca
+        </Button>
+        <Button onClick={handleClearFilter} disabled={isLoading}>
+          Annulla
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 
