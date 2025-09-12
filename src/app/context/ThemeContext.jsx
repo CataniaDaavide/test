@@ -3,41 +3,40 @@ import { createContext, useState, useEffect } from "react";
 
 export const ThemeContext = createContext();
 
-function setCookie(name, value) {
-  document.cookie = `${name}=${value}; path=/`; // cookie di sessione
+function setThemeColor(theme) {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
+  }
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light"); // valore iniziale sicuro
+  const [theme, setTheme] = useState(null);
 
   useEffect(() => {
-    // legge cookie lato client
-    const cookieTheme = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("theme="))
-      ?.split("=")[1];
-
-    if (cookieTheme) setTheme(cookieTheme);
-
-    // applica classe HTML
+    const storedTheme = localStorage.getItem("theme") || "light";
     document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(cookieTheme || "light");
-
-    // aggiorna cookie
-    setCookie("theme", cookieTheme || "light");
+    document.documentElement.classList.add(storedTheme);
+    setThemeColor(storedTheme);
+    setTheme(storedTheme);
   }, []);
 
   useEffect(() => {
-    // aggiorna classe e cookie quando cambia il tema
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(theme);
-    setCookie("theme", theme);
-
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
+    if (theme === "dark" || theme === "light") {
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+      localStorage.setItem("theme", theme);
+      setThemeColor(theme);
     }
   }, [theme]);
 
+  if (!theme) return null;
+
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
+}
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
+  return ctx;
 }

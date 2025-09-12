@@ -5,8 +5,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Modal from "./components/ui/modal/modal";
 import { ModalProvider } from "./context/ModalContext";
 import { ExceptionProvider } from "./context/ExceptionManagerContext";
-import Script from "next/script";
-import { cookies } from "next/headers";
+
 export const metadata = {
   //   title: "Template APP",
   description: "Template applicazione web nextjs + tailwindcss",
@@ -25,14 +24,11 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }) {
-  const theme = (await cookies()).get("theme")?.value || "light"
-
   return (
-    <html lang="en" className={`w-full h-full overscroll-none ${theme}`}>
-      {/* <html lang="en"> */}
+    <html lang="en" className={`w-full h-full overscroll-none`}>
       <head>
         {/* theme-color iniziale lato server */}
-        <meta name="theme-color" content={theme === "dark" ? "#09090b" : "#fafafa"} />
+        <meta name="theme-color" content={"#fafafa"} />
       </head>
       <body
         className={`
