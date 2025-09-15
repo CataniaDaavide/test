@@ -19,7 +19,7 @@ export default function MovementsPage() {
   const [accounts, setAccounts] = useState([]);
 
   const [filterIsOpen, setFilterIsOpen] = useState(false);
-
+  
   // recupero categorie
   const loadCategories = async () => {
     await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {

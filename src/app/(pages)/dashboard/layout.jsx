@@ -36,10 +36,7 @@ export const menuItems = [
       setModal({
         show: true,
         type: "movement",
-        data: {
-          title: "Creazione transazione",
-          description: "Registra una nuova entrata o uscita",
-        },
+        data: {},
       });
     },
     menu: ["mobile"],

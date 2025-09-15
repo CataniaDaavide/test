@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export default function MenuMobile() {
-  const { base_exceptionManager } = useExceptionManager()
+  const { base_exceptionManager } = useExceptionManager();
   const { activeTab, setActiveTab } = useContext(SidebarContext);
 
   return (
@@ -20,20 +20,14 @@ export default function MenuMobile() {
       {menuItems
         .filter((item) => item.menu.includes("mobile"))
         .map((item, index) => {
-          return (
-            <ItemListMenuMobile
-              key={index}
-              item={item}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-          );
+          return <ItemListMenuMobile key={index} item={item} activeTab={activeTab} setActiveTab={setActiveTab} />;
         })}
     </ul>
   );
 }
 
 function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
+  const { base_exceptionManager } = useExceptionManager();
   const router = useRouter();
   const { title, icon, link, action } = item;
   const { setModal } = useContext(ModalContext);
@@ -55,22 +49,11 @@ function ItemListMenuMobile({ item, activeTab, setActiveTab }) {
 
   return (
     <li>
-      <button
-        onClick={handleClick}
-        className={`flex flex-col gap-1 items-center justify-center cursor-pointer`}
-      >
+      <button onClick={handleClick} className={`flex flex-col gap-1 items-center justify-center cursor-pointer`}>
         {action && (
-          <div className="p-3 flex items-center justify-center rounded-full bg-card active:scale-95">
-            {icon}
-          </div>
+          <div className="p-3 flex items-center justify-center rounded-full bg-card active:scale-95">{icon}</div>
         )}
-        {link && (
-          <div
-            className={`${activeTab.title != title && "text-muted-foreground"} p-2`}
-          >
-            {icon}
-          </div>
-        )}
+        {link && <div className={`${activeTab.title != title && "text-muted-foreground"} p-2`}>{icon}</div>}
 
         {/* {link && <p className="text-xs">{title}</p>} */}
       </button>

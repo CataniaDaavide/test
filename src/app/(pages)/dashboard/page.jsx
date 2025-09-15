@@ -16,10 +16,23 @@ import PercentageBar from "@/app/components/ui/percentage-bar";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
 import { ModalContext } from "@/app/context/ModalContext";
 import { convertDate, fetchApi } from "@/app/core/baseFunctions";
-import { ArrowRight, Calendar, ChartPie, Plus, Target, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  ChartPie,
+  Eye,
+  EyeClosed,
+  EyeOff,
+  Plus,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import TitleComponents from "@/app/components/ui/title-components";
 
 // -----------------------------------------------------------------
 // FUNZIONI HELPER FUORI DAI COMPONENTI
@@ -168,6 +181,7 @@ export default function DashboardPage() {
 function StatsContainer({ movements, accounts, startOfCurrentMonth, endOfCurrentMonth }) {
   const { base_exceptionManager } = useExceptionManager();
   const [totalAccounts, setTotalAccounts] = useState(0);
+  const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
     if (accounts.length > 0) {
@@ -210,16 +224,39 @@ function StatsContainer({ movements, accounts, startOfCurrentMonth, endOfCurrent
     // { title: "Obiettivi ???", amount: 0, icon: <Target size={16} /> },
   ];
 
+  useEffect(() => {
+    setShowStats(localStorage.getItem("show-stats") === "true");
+  }, []);
+
+  const handleShowStats = (e) => {
+    e.preventDefault();
+    try {
+      setShowStats((prev) => {
+        const newValue = !prev;
+        localStorage.setItem("show-stats", newValue);
+        return newValue;
+      });
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
+
   return (
-    <div className="w-full grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat, index) => (
-        <ItemListStatsContainer key={index} stat={stat} index={index} />
-      ))}
+    <div className="w-full flex flex-col gap-3">
+      <div className="flex justify-between">
+        <CardTitle>Statistiche</CardTitle>
+        <ButtonIcon icon={showStats ? <Eye /> : <EyeClosed />} onClick={handleShowStats} />
+      </div>
+      <div className="w-full grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat, index) => (
+          <ItemListStatsContainer key={index} stat={stat} showStats={showStats} />
+        ))}
+      </div>
     </div>
   );
 }
 
-function ItemListStatsContainer({ stat, index }) {
+function ItemListStatsContainer({ stat, showStats }) {
   const { title, icon, amount, percentage, type } = stat;
   let percentageColor = "";
 
@@ -235,8 +272,10 @@ function ItemListStatsContainer({ stat, index }) {
         <p>{title}</p>
         {icon}
       </div>
-      <p className="text-2xl font-bold">€{amount}</p>
-      {percentage !== undefined && <p className={`text-sm ${percentageColor}`}>{percentage}% dal mese scorso</p>}
+      <p className="text-2xl font-bold">{showStats ? `€${amount}` : `•••`}</p>
+      {percentage !== undefined && (
+        <p className={`text-sm h-5 ${percentageColor}`}>{showStats ? `${percentage}% dal mese scorso` : ``}</p>
+      )}
     </Card>
   );
 }
@@ -383,7 +422,8 @@ function ItemListExpensesByCategory({ data, totalExpense }) {
   const percentage = totalExpense > 0 ? ((totalAmount / totalExpense) * 100).toFixed(2) : 0;
 
   return (
-    <PercentageBar className={"select-none"}
+    <PercentageBar
+      className={"select-none"}
       titleSx={name}
       titleDx={`€ ${totalAmount.toFixed(2).replace(".", ",")}`}
       percentage={totalAmount === 0 ? totalAmount : percentage}
