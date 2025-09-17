@@ -21,7 +21,6 @@ import {
   Calendar,
   ChartPie,
   Eye,
-  EyeClosed,
   EyeOff,
   Plus,
   Target,
@@ -245,7 +244,7 @@ function StatsContainer({ movements, accounts, startOfCurrentMonth, endOfCurrent
     <div className="w-full flex flex-col gap-3">
       <div className="flex justify-between">
         <CardTitle>Statistiche</CardTitle>
-        <ButtonIcon icon={showStats ? <Eye /> : <EyeClosed />} onClick={handleShowStats} />
+        <ButtonIcon icon={showStats ? <Eye /> : <EyeOff />} onClick={handleShowStats} />
       </div>
       <div className="w-full grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat, index) => (

@@ -1,6 +1,6 @@
 "use client";
 import { ButtonIcon } from "@/app/components/ui/button";
-import { Edit, Eye, EyeClosed, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
+import { Edit, Eye, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";
@@ -86,7 +86,7 @@ export default function AccountsPage() {
       <div className="w-full flex items-center justify-end flex-wrap gap-3">
         <div className="flex gap-3 w-full md:w-fit">
           <ButtonIcon onClick={loadAccounts} icon={<RefreshCcw className="hover:animate-spin" />} />
-          <ButtonIcon icon={showStats ? <Eye /> : <EyeClosed />} onClick={handleShowStats} />
+          <ButtonIcon icon={showStats ? <Eye /> : <EyeOff />} onClick={handleShowStats} />
           <Button onClick={handleNewAccount}>
             <Plus size={18} />
             <p>Nuovo conto</p>
