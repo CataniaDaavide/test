@@ -53,6 +53,15 @@ function calculateTotalIncomeAndExpenses(dateStart, dateEnd, movements) {
 
   return filtered.reduce(
     (acc, item) => {
+      /*
+        TODO: questa condizione serve solo a me per gestirmi i trasferimenti da un conto ad un altro
+        senza incidere sulle statistiche, quando farò un update e fix dell'app devo cercare un modo 
+        per fare nativamente questa logica per tutti
+      */
+      if (item.categoryId === "68cd1da133cc864275b2f79c" || item.categorieId === "68cd1d9833cc864275b2f799") {
+        return acc;
+      }
+
       if (item.type === "E") {
         acc.income.push(item);
         acc.totalIncome += item.accounts.reduce((sum, accItem) => sum + accItem.amount, 0);
@@ -401,12 +410,22 @@ function ExpensesByCategory({ movements, categories }) {
       >
         {categoriesArray.length > 0 ? (
           <>
-            {categoriesArray.map(
-              (item, index) =>
-                item.totalAmount !== 0 && (
-                  <ItemListExpensesByCategory key={index} data={item} totalExpense={totalExpense} />
-                )
-            )}
+            {categoriesArray.map((item, index) => {
+              /*
+                TODO: questa condizione serve solo a me per gestirmi i trasferimenti da un conto ad un altro
+                senza incidere sulle statistiche, quando farò un update e fix dell'app devo cercare un modo 
+                per fare nativamente questa logica per tutti
+              */
+             console.log(item);
+             
+              if (item._id === "68cd1da133cc864275b2f79c" || item._id === "68cd1d9833cc864275b2f799") {
+                return null;
+              }
+
+              if (item.totalAmount !== 0) {
+                return <ItemListExpensesByCategory key={index} data={item} totalExpense={totalExpense} />;
+              }
+            })}
           </>
         ) : (
           <p className="text-muted-foreground">Nessun movimento trovato</p>
