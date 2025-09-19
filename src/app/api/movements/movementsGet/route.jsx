@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { categoriesModel } from "@/app/models/categoriesModel";
 import connectDB from "@/app/core/mongodbFunctions";
 import { movementsModel } from "@/app/models/movementModel";
 

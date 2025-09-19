@@ -1,6 +1,6 @@
 "use client";
 import { ButtonIcon } from "@/app/components/ui/button";
-import { Edit, Eye, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
+import { Edit, Eye, EyeOff, Plus, RefreshCcw, Trash, TriangleAlert } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { useExceptionManager } from "@/app/context/ExceptionManagerContext";

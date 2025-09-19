@@ -93,7 +93,7 @@ export default function Modal() {
         className={`relative
             ${
               type === "alert"
-                ? "w-full"
+                ? "w-full md:w-md"
                 : "w-screen h-[100dvh] md:!max-w-md md:!h-auto !rounded-none md:!rounded-xl border-0 md:!border-1"
             }`}
       >

@@ -257,11 +257,11 @@ export default function ModalTransiction({ data, handleCloseModal }) {
   useEffect(() => {
     if (initialAccounts && initialAccounts.length > 0) {
       if (accountsTwoOptions && accountsTwoOptions.length > 0) {
-        if (initialAccounts[1].accountId != undefined) {
+        if (initialAccounts[1]?.accountId != undefined) {
           const accountId = initialAccounts[1].accountId;
           setAccountTwoValue(accountsOptions.find((x) => initialAccounts && x._id.toString() === accountId));
         }
-        if (initialAccounts[1].amount != undefined) {
+        if (initialAccounts[1]?.amount != undefined) {
           setAmountTwoValue(initialAccounts[1].amount.toString());
         }
       }
@@ -277,46 +277,45 @@ export default function ModalTransiction({ data, handleCloseModal }) {
       const hasError = formValidationInit();
       if (hasError) return exit();
 
+      let reqAccounts = [
+        {
+          accountId: accountOneValue._id.toString(),
+          amount: parseFloat(amountOneValue),
+        },
+      ];
+
+      if (isVoucher && accountTwoValue && Object.keys(accountTwoValue).length > 0) {
+        reqAccounts.push({
+          accountId: accountTwoValue._id.toString(),
+          amount: parseFloat(amountTwoValue),
+        });
+      }
+
       const requestData = {
-        createAt: createAt ?? new Date().toISOString(),
+        // createAt: createAt ?? new Date().toISOString(),
         date: new Date(`${date}T${time}`).toISOString(),
-        categorieId: categorieValue._id.toString(),
-        accounts: [
-          {
-            accountId: accountOneValue._id.toString(),
-            amount: parseFloat(amountOneValue),
-          },
-        ],
         description: description,
+        categorieId: categorieValue._id.toString(),
+        accounts: [...reqAccounts], 
       };
+
       if (_id) {
         requestData._id = _id;
       }
-      if (isVoucher) {
-        if (accountTwoValue && accountTwoValue != {}) {
-          requestData.accounts.push({
-            accountId: accountTwoValue._id.toString(),
-            amount: parseFloat(amountTwoValue),
-          });
-        }
-      }
-      if (createAt) {
-        requestData.updateAt = new Date().toISOString();
-      }
-       await fetchApi(
-        "/api/movements/movementEdit",
-        "POST",
-        requestData,
-        async (res) => {
-          const data = await res.json();
 
-          if (!res.ok && data.error != "") {
-            setError(data.error);
-          } else {
-            handleCloseModal();
-          }
+      // if (createAt) {
+      //   requestData.updateAt = new Date().toISOString();
+      // }
+
+      await fetchApi("/api/movements/movementEdit", "POST", requestData, async (res) => {
+        const data = await res.json();
+
+        if (!res.ok && data.error != "") {
+          setError(data.error);
+        } else {
+          handleCloseModal();
         }
-      );
+      });
       //TODO: CHIMATA DA FARE
 
       exit();

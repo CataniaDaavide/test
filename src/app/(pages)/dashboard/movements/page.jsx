@@ -19,7 +19,7 @@ export default function MovementsPage() {
   const [accounts, setAccounts] = useState([]);
 
   const [filterIsOpen, setFilterIsOpen] = useState(false);
-  
+
   // recupero categorie
   const loadCategories = async () => {
     await fetchApi("/api/categories/categoriesGet", "POST", {}, async (res) => {
@@ -240,12 +240,24 @@ function MovementsContainer({ movements, categories }) {
 function MovementsCard({ data, categories = [] }) {
   const { base_exceptionManager } = useExceptionManager();
   const { setModal } = useContext(ModalContext);
-  const { type, description, date, categorieId, accounts } = data;
+  const { _id, type, description, date, categorieId, accounts } = data;
   const amount = accounts.reduce((acc, x) => acc + x.amount, 0);
   const [categorie, setCategorie] = useState(null);
   const convertedDate = convertDate(date, "dd/MM/yyyy HH:mm");
   const colorAmount = type === "E" ? "text-green-600" : "text-red-600";
   const sign = type === "E" ? "+" : "-";
+
+  const handleCloseModal = () => {
+    try {
+      setModal({
+        show: false,
+        type: "",
+        data: undefined,
+      });
+    } catch (error) {
+      base_exceptionManager(error);
+    }
+  };
 
   //click sul pulsante conferma eliminazione
   const handleConfirmDelete = async (e) => {
