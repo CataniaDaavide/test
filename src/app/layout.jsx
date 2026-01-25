@@ -19,9 +19,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark w-full h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} w-screen h-screen flex antialiased overscroll-none overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} w-full h-full flex antialiased overscroll-none overflow-hidden`}
       >
         <Sidebar/>
         <div className="flex flex-1 flex-col">
