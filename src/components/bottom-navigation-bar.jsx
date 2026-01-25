@@ -7,7 +7,7 @@ import { useLoader } from "@/context/LoaderContext";
 
 export function BottomNavigationBar() {
   return (
-    <div className="w-full flex md:hidden gap-3 items-center justify-evenly border-t h-20">
+    <div className="w-full flex md:hidden gap-3 items-center justify-evenly border-t pt-2 pb-6">
       {menuItems
         .filter((item) => item.menu.includes("mobile"))
         .map((item, index) => (
