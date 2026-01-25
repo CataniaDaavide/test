@@ -3,6 +3,8 @@ import "./globals.css";
 import { LoaderProvider } from "@/context/LoaderContext";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import Loader from "@/components/Loader";
+import { ErrorProvider } from "@/context/ErrorContext";
+import ErrorDialog from "@/components/error-dialog";
 
 const poppins = Poppins({
   subsets: ["latin"], // set di caratteri da caricare
@@ -29,8 +31,11 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <LoaderProvider>
-            {children}
-            <Loader />
+            <ErrorProvider>
+              {children}
+              <ErrorDialog />
+              <Loader />
+            </ErrorProvider>
           </LoaderProvider>
         </ThemeProvider>
       </body>

@@ -9,17 +9,17 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { FadeUp } from "@/components/fade-up";
+import { Button } from "@/components/ui/button";
+import { useError } from "@/context/ErrorContext";
+import { ApiClient } from "@/lib/api-client";
 
 export default function TestPage() {
   return (
     <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
       <FadeUp className="flex flex-col gap-3">
         <ChartPieDonutText />
-        <Test />
-        <Test />
-        <Test />
-        <Test />
-        <Test />
+        <TestApiGet />
+        <TestApiPost />
       </FadeUp>
     </ScrollArea>
   );
@@ -120,12 +120,67 @@ export function ChartPieDonutText() {
   );
 }
 
+function TestApiGet() {
+  const { setError } = useError();
 
+  const handleClick = async (e) => {
+    try {
+      e.preventDefault();
 
-function Test() {
-  return (
-    // <AnimateClassic>
-    <div className="w-full h-32 bg-zinc-800 border-10 border-zin-900" />
-    // </AnimateClassic>
-  );
+      const api = new ApiClient();
+      const response = await api.get(
+        "https://jsonplaceholder.typicode.com/users",
+        3000,
+      );
+
+      setError({
+        title: "Chiamata API ok",
+        status: "success",
+        description: JSON.stringify(response),
+      });
+    } catch (e) {
+      setError({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
+    }
+  };
+
+  return <Button onClick={handleClick}>Click api get</Button>;
+}
+function TestApiPost() {
+  const { setError } = useError();
+
+  const handleClick = async (e) => {
+    try {
+      e.preventDefault();
+
+      const api = new ApiClient();
+      const response = await api.post(
+        "https://jsonplaceholder.typicode.com/users",
+        {
+          name: "Luca Bianchi",
+          username: "lbianchi",
+          email: "luca@test.com",
+          address: { city: "Milan" },
+        },
+        3000,
+      );
+
+      setError({
+        title: "Chiamata API ok",
+        status: "success",
+        description: JSON.stringify(response),
+      });
+    } catch (e) {
+      setError({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
+    }
+  };
+
+  return <Button onClick={handleClick}>Click api get</Button>;
 }

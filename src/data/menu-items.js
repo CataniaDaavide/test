@@ -29,8 +29,7 @@ export const menuItems = [
         title: "Movimenti",
         description: "Gestisci tutte le tue entrate e uscite",
         icon: ArrowUpDown,
-        link: "/test",
-        // link: "/movements",
+        link: "/movements",
         menu: ["mobile", "desktop"],
     },
     {

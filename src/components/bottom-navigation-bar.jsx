@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { menuItems } from "@/data/menu-items";
 import { useLoader } from "@/context/LoaderContext";
+import { useError } from "@/context/ErrorContext";
+import { Description } from "@radix-ui/react-dialog";
 
 export function BottomNavigationBar() {
   return (
@@ -19,13 +21,19 @@ export function BottomNavigationBar() {
 
 function BottomNavigationBarItem({ item }) {
   const { setLoader } = useLoader();
+  const { setError } = useError();
   const { title, icon: Icon, link, action } = item;
 
   if (action) {
     return (
       <button
-        className="p-3 bg-card rounded-full cursor-pointer"
-        onClick={() => action(setLoader)}
+        className="p-3 bg-zinc-200 dark:bg-card rounded-full cursor-pointer"
+        onClick={async () => {
+          await action(setLoader);
+          setError(
+            {title:"Errore test", description:"Lorem Ipsum is a placeholder text commonly used in the design and publishing industry.", status:"info"},
+          );
+        }}
       >
         <Icon />
       </button>
