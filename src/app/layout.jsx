@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ArrowUpDown, CreditCard, Folder, House, Plus } from "lucide-react";
+import { Sidebar } from "@/components/sidebar";
+import { BottomNavigationBar } from "@/components/bottom-navigation-bar";
+import { Navbar } from "@/components/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,29 +36,5 @@ export default function RootLayout({ children }) {
   );
 }
 
-function Navbar() {
-  return (
-    <div className="sticky w-full p-3 flex items-center justify-center border-b">
-      <p>SIDEBAR</p>
-    </div>
-  );
-}
 
-function Sidebar(){
-  return(
-    <div className="hidden md:flex w-[350px] h-screen border-r" />
-  )
-}
-function BottomNavigationBar() {
-  return (
-    <div className="min-h-[100px] w-full  flex md:hidden items-center justify-evenly border-t">
-      <House/>
-      <Folder/>
-      <div className="bg-zinc-800 p-3 rounded-full">
-        <Plus/>
-        </div>
-      <ArrowUpDown/>
-      <CreditCard/>
-    </div>
-  );
-}
+
