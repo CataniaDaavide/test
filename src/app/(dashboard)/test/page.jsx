@@ -1,7 +1,6 @@
 "use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as React from "react";
-import { motion } from "motion/react";
 import { Label, Pie, PieChart } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -9,6 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { FadeUp } from "@/components/fade-up";
 
 export default function TestPage() {
   return (
@@ -120,18 +120,7 @@ export function ChartPieDonutText() {
   );
 }
 
-function FadeUp({ children, className }) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ y: 50, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+
 
 function Test() {
   return (
