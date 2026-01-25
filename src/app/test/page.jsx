@@ -1,36 +1,29 @@
-
-"use client"
+"use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as React from "react";
-import { TrendingUp } from "lucide-react";
+import { motion } from "motion/react";
 import { Label, Pie, PieChart } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-
-
-
 export default function TestPage() {
   return (
-    <ScrollArea className="flex-1 min-h-0 w-full p-6" noScrollbar>
-      <ChartPieDonutText />
+    <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
+      <FadeUp className="flex flex-col gap-3">
+        <ChartPieDonutText />
+        <Test />
+        <Test />
+        <Test />
+        <Test />
+        <Test />
+      </FadeUp>
     </ScrollArea>
   );
 }
-
-
-
 
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -127,16 +120,23 @@ export function ChartPieDonutText() {
   );
 }
 
+function FadeUp({ children, className }) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ y: 50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+function Test() {
+  return (
+    // <AnimateClassic>
+    <div className="w-full h-32 bg-zinc-800 border-10 border-zin-900" />
+    // </AnimateClassic>
+  );
+}

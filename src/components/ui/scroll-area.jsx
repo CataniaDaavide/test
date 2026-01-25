@@ -5,7 +5,7 @@ import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
 import { cn } from "@/lib/utils";
 
-function ScrollArea({ className, children, noScrollbar = false, ...props }) {
+function ScrollArea({ className, children, noscrollbar = false, ...props }) {
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
@@ -18,12 +18,12 @@ function ScrollArea({ className, children, noScrollbar = false, ...props }) {
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
-      {!noScrollbar ? (
+      {!noscrollbar ? (
         <ScrollBar />
       ) : (
         <ScrollBar className="opacity-0 pointer-events-none" />
       )}
-      {!noScrollbar ? (
+      {!noscrollbar ? (
         <ScrollAreaPrimitive.Corner />
       ) : (
         <ScrollAreaPrimitive.Corner className="hidden" />
