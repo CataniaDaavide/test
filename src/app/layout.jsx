@@ -1,11 +1,14 @@
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
+import { LoaderProvider } from "@/context/LoaderContext";
+import { ThemeProvider } from "@/context/ThemeProvider";
+import Loader from "@/components/Loader";
 
 const poppins = Poppins({
-  subsets: ['latin'], // set di caratteri da caricare
-  weight: ['400', '500', '700'], // pesi che ti servono
-  style: ['normal'], // puoi aggiungere 'italic' se vuoi
-  variable: '--font-poppins', // opzionale, se vuoi usarlo come CSS variable
+  subsets: ["latin"], // set di caratteri da caricare
+  weight: ["400", "500", "700"], // pesi che ti servono
+  style: ["normal"], // puoi aggiungere 'italic' se vuoi
+  variable: "--font-poppins", // opzionale, se vuoi usarlo come CSS variable
 });
 
 export const metadata = {
@@ -15,15 +18,22 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark w-full h-full">
+    <html lang="en" className="w-full h-full" suppressHydrationWarning>
       <body
         className={`${poppins.className} w-full h-full flex antialiased overscroll-none overflow-hidden`}
       >
-{children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LoaderProvider>
+            {children}
+            <Loader />
+          </LoaderProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-
-
-
