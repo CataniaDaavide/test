@@ -13,9 +13,21 @@ const poppins = Poppins({
   variable: "--font-poppins", // opzionale, se vuoi usarlo come CSS variable
 });
 
+// Serve per non fare zoommare la pagina da mobile (qundo si fa il doppio click)
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata = {
   title: "ExpensiveTracker",
   description: "Gestore economico by DavideCatania",
+  manifest: "/manifest.json",
+  icons: {
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
