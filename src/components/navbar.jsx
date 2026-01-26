@@ -1,10 +1,11 @@
 "use client";
-import { ChevronLeft, LogOut } from "lucide-react";
+import {  LogOut } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { menuItems } from "@/data/menu-items";
 import { useError } from "@/context/ErrorContext";
+import { ButtonBack } from "./button-back";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ export function Navbar() {
   return (
     <div className="sticky w-full p-3 flex items-center justify-between">
       <div className="flex items-center justify-center">
-        <ButtonBack />
+        <ButtonBack className={"p-2"} />
         <div className="flex flex-col">
           <p>{title}</p>
         </div>
@@ -25,26 +26,6 @@ export function Navbar() {
         <Logout />
       </div>
     </div>
-  );
-}
-
-//pulsante per tornare alla pagina precedente
-function ButtonBack({ className }) {
-  const router = useRouter();
-
-  // click sul pulsante per tornare alla pagina precedente
-  const handleReturnBack = (e) => {
-    e.preventDefault();
-    router.back();
-  };
-
-  return (
-    <button
-      onClick={handleReturnBack}
-      className={`p-2 cursor-pointer ${className}`}
-    >
-      <ChevronLeft />
-    </button>
   );
 }
 

@@ -7,10 +7,10 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <ScrollArea className="flex-1 min-h-0 w-full p-6 pt-0" noscrollbar>
-      <FadeUp className={"w-full flex flex-col gap-10"}>
+     <ScrollArea className="flex flex-1 min-h-0 w-full p-6 pt-0" noscrollbar>
+      <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
         <Statistics />
-        <div className="grid grid-cols-1 xl:grid-cols-4 xl:gap-3">
+        <div className="h-full w-full grid grid-cols-1 xl:grid-cols-4 xl:gap-3">
           <div className="col-span-3">
             <RecentMovements />
           </div>
@@ -26,7 +26,7 @@ export default function Home() {
 
 function Statistics() {
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="flex flex-1 w-full flex-col gap-1">
       <div className="flex items-center justify-between">
         <p className="font-semibold">Statistiche</p>
         <Button variant="ghost" size="icon">
@@ -45,7 +45,7 @@ function Statistics() {
 
 function RecentMovements() {
   return (
-    <Card className="w-full flex flex-col gap-1 p-0! xl:px-4! bg-transparent! border-0! xl:border! xl:bg-card!">
+    <Card className="w-full flex flex-col gap-2 p-0! xl:p-4! bg-transparent! border-0! xl:border! xl:bg-card!">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <p className="font-semibold">Movimenti recenti</p>
@@ -57,12 +57,13 @@ function RecentMovements() {
           </Button>
         </Link>
       </div>
-      <div className="grid gap-3">
-        <Card className={"w-full h-32"} />
-        <Card className={"w-full h-32"} />
-        <Card className={"w-full h-32"} />
-        <Card className={"w-full h-32"} />
-      </div>
+      <ScrollArea className={"h-72"} noscrollbar>
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 10 }).map((_, index) => {
+            return <Card key={index} className={"w-full h-16"} />;
+          })}
+        </div>
+      </ScrollArea>
     </Card>
   );
 }

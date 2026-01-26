@@ -123,3 +123,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* rimuove icona password input type "password"*/
+/* Chrome, Edge, Safari */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+}
+/* Firefox */
+input[type="password"] {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+
+/* rimuove icona (SOLO DA DESKTOP) calendario input type "date"*/
+@media (min-width: 768px) {
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+}
