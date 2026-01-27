@@ -14,6 +14,7 @@ import { useError } from "@/context/ErrorContext";
 import { ApiClient } from "@/lib/api-client";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { Input } from "@/components/ui/input";
+import { SelectCustom } from "@/components/select-custom";
 
 export default function TestPage() {
   const { setDialog } = useDialogCustom();
@@ -34,10 +35,25 @@ export default function TestPage() {
                   <Input label={"Data"} required type="date" />
                   <Input label={"Orario"} required type="time" />
                   <div className="grid col-span-2">
-                    <Input label={"Categoria"} required />
+                    <SelectCustom
+                      label={"Categoria"}
+                      required
+                      options={Array.from({ length: 5 }, (_, i) => ({
+                        value: "value" + i,
+                        label: "label" + i,
+                      }))}
+                    />
                   </div>
                   <div className="grid col-span-2">
-                    <Input label={"Conto"} required />
+                    <SelectCustom
+                      label={"Conto"}
+                      required
+                      search
+                      options={Array.from({ length: 5 }, (_, i) => ({
+                        value: "value" + i,
+                        label: "label" + i,
+                      }))}
+                    />
                   </div>
                   <div className="grid col-span-2">
                     <Input label={"Importo (€)"} />
@@ -49,7 +65,11 @@ export default function TestPage() {
               ),
               actions: (
                 <div className="grid col-span-2">
-                  <Button variant="outline" onClick={() => setDialog(null)}>
+                  <Button
+                    variant="outline"
+                    className={"bg-card! border-0!"}
+                    onClick={() => setDialog(null)}
+                  >
                     Crea
                   </Button>
                 </div>
@@ -84,10 +104,16 @@ export default function TestPage() {
               ),
               actions: (
                 <>
-                  <Button variant="outline" onClick={() => setDialog(null)}>
+                  <Button
+                    variant="outline"
+                    className={"bg-card! border-0!"}
+                    onClick={() => setDialog(null)}
+                  >
                     Modifica
                   </Button>
-                  <Button variant="destructive">Elimina</Button>
+                  <Button variant="destructive" className={"bg-red-500!"}>
+                    Elimina
+                  </Button>
                 </>
               ),
             });
