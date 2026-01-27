@@ -26,7 +26,12 @@ export default function DialogCustom() {
         if (!open) setDialog(null);
       }}
     >
-      <DialogContent className="min-w-full h-full sm:min-w-lg sm:max-w-lg sm:max-h-[80vh] flex flex-col overflow-hidden">
+      <DialogContent className={cn(
+        "flex flex-col overflow-hidden",
+        "min-w-full sm:min-w-lg sm:max-w-lg",
+        "h-full sm:max-h-[80vh]",
+        "border-0 sm:border! rounded-none! sm:rounded-md!",
+      )}>
         {/* Header fisso */}
         <DialogHeader className="text-start">
           {dialog.title && <DialogTitle>{dialog.title}</DialogTitle>}
