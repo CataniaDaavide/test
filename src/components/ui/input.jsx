@@ -52,7 +52,7 @@ function Input({
               ? "border-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive"
               : "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             // modifiche
-              "border-0! text-sm ring-0!",
+              "text-sm ring-0!",
               className,
           )}
           aria-invalid={!!error}

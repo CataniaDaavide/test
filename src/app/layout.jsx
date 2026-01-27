@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import Loader from "@/components/Loader";
 import { ErrorProvider } from "@/context/ErrorContext";
 import ErrorDialog from "@/components/error-dialog";
+import DialogCustom from "@/components/dialog-custom";
+import { DialogCustomProvider } from "@/context/DialogCustomContext";
 
 const poppins = Poppins({
   subsets: ["latin"], // set di caratteri da caricare
@@ -44,9 +46,12 @@ export default function RootLayout({ children }) {
         >
           <LoaderProvider>
             <ErrorProvider>
-              {children}
-              <ErrorDialog />
-              <Loader />
+              <DialogCustomProvider>
+                {children}
+                <DialogCustom />
+                <ErrorDialog />
+                <Loader />
+              </DialogCustomProvider>
             </ErrorProvider>
           </LoaderProvider>
         </ThemeProvider>

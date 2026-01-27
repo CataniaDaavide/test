@@ -12,14 +12,89 @@ import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
 import { useError } from "@/context/ErrorContext";
 import { ApiClient } from "@/lib/api-client";
+import { useDialogCustom } from "@/context/DialogCustomContext";
+import { Input } from "@/components/ui/input";
 
 export default function TestPage() {
+  const { setDialog } = useDialogCustom();
+
   return (
     <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
       <FadeUp className="flex flex-col gap-3">
         <ChartPieDonutText />
         <TestApiGet />
         <TestApiPost />
+        <Button
+          onClick={() => {
+            setDialog({
+              title: "Conferma azione",
+              description: "Questa operazione è irreversibile",
+              content: (
+                <div className="grid grid-cols-2 gap-3">
+                  <Input label={"Data"} required type="date" />
+                  <Input label={"Orario"} required type="time" />
+                  <div className="grid col-span-2">
+                    <Input label={"Categoria"} required />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Conto"} required />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Importo (€)"} />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Descrizione"} />
+                  </div>
+                </div>
+              ),
+              actions: (
+                <div className="grid col-span-2">
+                  <Button variant="outline" onClick={() => setDialog(null)}>
+                    Crea
+                  </Button>
+                </div>
+              ),
+            });
+          }}
+        >
+          DIALOG NEW
+        </Button>
+        <Button
+          onClick={() => {
+            setDialog({
+              title: "Conferma azione",
+              description: "Questa operazione è irreversibile",
+              content: (
+                <div className="grid grid-cols-2 gap-3">
+                  <Input label={"Data"} required type="date" />
+                  <Input label={"Orario"} required type="time" />
+                  <div className="grid col-span-2">
+                    <Input label={"Categoria"} required />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Conto"} required />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Importo (€)"} />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input label={"Descrizione"} />
+                  </div>
+                </div>
+              ),
+              actions: (
+                <>
+                  <Button variant="outline" onClick={() => setDialog(null)}>
+                    Modifica
+                  </Button>
+                  <Button variant="destructive">Elimina</Button>
+                </>
+              ),
+            });
+          }}
+        >
+          DIALOG EDIT
+        </Button>
       </FadeUp>
     </ScrollArea>
   );

@@ -36,7 +36,8 @@ export default function ErrorDialog() {
     >
       <DialogContent
         className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5"
-        showCloseButton={false}
+        showCloseButton={false} // disattiva x per chiudere il dialog in alto a destra
+        onInteractOutside={(e) => e.preventDefault()} //disabilita click fuori dal dialog
       >
         {/* Contenuto scrollabile */}
         {/* Icona */}
