@@ -22,14 +22,7 @@ export const DialogCustomProvider = ({ children }) => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
 
-    const currentTheme =
-      document.documentElement.classList.contains("dark") ? "dark" : "light";
-
-    const color = dialog.show
-      ? "#000000" // colore quando dialog aperto (puoi scegliere overlay-like)
-      : currentTheme === "dark"
-      ? "#09090b"
-      : "#fafafa";
+    const color = dialog.show ? "#ef4444" : "#f97316";
 
     meta.setAttribute("content", color);
   }, [dialog.show]);
