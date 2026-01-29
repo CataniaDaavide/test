@@ -26,7 +26,7 @@ const inputVariants = cva(
         error: "border-destructive text-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive",
       },
       size: {
-        default: "h-9 py-2",
+        default: "py-2",
         sm: "h-8 py-1.5 text-sm",
         lg: "h-10 py-3 text-base",
         textarea: "py-3 text-sm",
