@@ -1,6 +1,6 @@
 "use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label, Pie, PieChart } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -15,8 +15,7 @@ import { ApiClient } from "@/lib/api-client";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { Input } from "@/components/ui/input";
 import { SelectCustom } from "@/components/select-custom";
-import { Calendar, Clock, Euro } from "lucide-react";
-import { useState } from "react";
+import { Calendar, Clock } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import {
   Dialog,
@@ -26,6 +25,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useLoader } from "@/context/LoaderContext";
+import { mockupCategories } from "@/data/temp-data";
 
 export default function TestPage() {
   const { setDialog } = useDialogCustom();
@@ -40,14 +41,36 @@ export default function TestPage() {
             setDialog({
               show: true,
               type: "movement",
+              data: {},
+            })
+          }
+        >
+          NEW MOVEMENT
+        </Button>
+        <Button
+          onClick={() =>
+            setDialog({
+              show: true,
+              type: "movement",
               data: {
-                date: "2025-01-01",
-                time: "18:42",
+                id: "684aa945bbfb7d771580dc71",
+                userId: "682e280409285bb856379161",
+                date: "2025-06-12T10:16:00.000Z",
+                description:
+                  "Vestiti fazione uomo e donna per Martini Andrea lellod 367737053355442176",
+                categoryId: "683c3a5aaed32a11ec7e005f",
+                type: "U",
+                accounts: [
+                  {
+                    accountId: "683c3ad0aed32a11ec7e0068",
+                    amount: 20,
+                  },
+                ],
               },
             })
           }
         >
-          Apri dialog movement
+          EDIT MOVEMENT
         </Button>
       </FadeUp>
     </ScrollArea>
@@ -89,7 +112,7 @@ const chartConfig = {
 };
 
 export function ChartPieDonutText() {
-  const totalVisitors = React.useMemo(() => {
+  const totalVisitors = useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
   }, []);
 
@@ -216,32 +239,65 @@ function TestApiPost() {
 
 export function DialogCreateOrEditMovement() {
   const { dialog, setDialog } = useDialogCustom();
-  // const data = {
-  //   date: "2025-01-01",
-  //   time: "",
-  //   category: "",
-  //   accountOne: "",
-  //   amountOne: "",
-  //   accountTwo: "",
-  //   amountTwo: "",
-  // };
+  const { setLoader } = useLoader();
 
-  const [date, setDate] = useState(formatDate(dialog.data?.date, "yyyy-MM-dd"));
-  const [time, setTime] = useState(formatDate(dialog.data?.time, "HH:mm"));
+  const {
+    id,
+    userId,
+    date: movementDate,
+    description: movementDesc,
+    categoryId,
+    type,
+    accounts,
+  } = dialog.data;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoader(true);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const tempCategory = [];
+        mockupCategories.map((c) => {
+          const categoryOption = {
+            label: `${c.emoji} ${c.name} - ${c.type === "E" ? "entrata" : "uscite"}`,
+            value: c.id,
+          };
+
+          if (categoryId && c.id === categoryId) {
+            setCategory(categoryOption);
+          }
+
+          tempCategory.push(categoryOption);
+        });
+
+        setCategories(tempCategory);
+      } finally {
+        setLoader(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [categories, setCategories] = useState([]);
+
+  const [date, setDate] = useState(formatDate(movementDate, "yyyy-MM-dd"));
+  const [time, setTime] = useState(formatDate(movementDate, "HH:mm"));
 
   const [category, setCategory] = useState();
+
   // variabili conto1 e importo1
   const [accountOne, setAccountOne] = useState();
   const [amountOne, setAmountOne] = useState("");
 
   // variabile per gestire se account1 è un buono
-  const [isVoucher, setIsVoucher] = useState(true);
+  const [isVoucher, setIsVoucher] = useState(false);
 
   // variabili conto2 e importo2
   const [accountTwo, setAccountTwo] = useState();
   const [amountTwo, setAmountTwo] = useState("");
 
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(movementDesc ?? "");
 
   return (
     <Dialog
@@ -268,10 +324,10 @@ export function DialogCreateOrEditMovement() {
         {/* Header fisso */}
         <DialogHeader className="text-start">
           <DialogTitle>
-            {true != undefined ? "Modifica movimento" : "Creazione movimento"}
+            {id ? "Modifica movimento" : "Creazione movimento"}
           </DialogTitle>
           <DialogDescription>
-            {true
+            {id
               ? "Modifica i dettagli del movimento selezionato"
               : "Inserisci i dettagli per registrare un nuovo movimento"}
           </DialogDescription>
@@ -289,8 +345,9 @@ export function DialogCreateOrEditMovement() {
                 iconLeft={<Calendar />}
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                variant="secondary"
-                className="border-0!"
+                // variant="secondary"
+                // className="border-0!"
+                variant="outline"
               />
               <Input
                 id="time"
@@ -300,8 +357,9 @@ export function DialogCreateOrEditMovement() {
                 iconLeft={<Clock />}
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                variant="secondary"
-                className="border-0!"
+                // variant="secondary"
+                // className="border-0!"
+                variant="outline"
               />
               <div className="grid col-span-2">
                 <SelectCustom
@@ -309,34 +367,31 @@ export function DialogCreateOrEditMovement() {
                   required
                   value={category}
                   setValue={setCategory}
-                  options={Array.from({ length: 5 }, (_, i) => ({
-                    value: "value" + i,
-                    label: "label" + i,
-                  }))}
+                  classNameTrigger={"border-1! bg-transparent! hover:bg-transparent!"}
                 />
               </div>
               <div className="grid col-span-2">
                 <SelectCustom
                   label={"Conto"}
                   required
-                  search
                   value={accountOne}
                   setValue={setAccountOne}
                   options={Array.from({ length: 5 }, (_, i) => ({
                     value: "value" + i,
                     label: "label" + i,
                   }))}
+                  classNameTrigger={"border-1! bg-transparent! hover:bg-transparent!"}
                 />
               </div>
               <div className="grid col-span-2">
                 <Input
                   label={"Importo"}
-                  iconLeft={<Euro />}
                   value={amountOne}
                   onChange={(e) => setAmountOne(e.target.value)}
                   placeholder="0,00"
-                  variant="secondary"
-                  className="border-0!"
+                  // variant="secondary"
+                  // className="border-0!"
+                  variant="outline"
                 />
               </div>
               {isVoucher && (
@@ -357,9 +412,8 @@ export function DialogCreateOrEditMovement() {
                   <div className="grid col-span-2">
                     <Input
                       label={"Importo2"}
-                      iconLeft={<Euro />}
                       value={amountTwo}
-                      onChange={(e) => setAccountTwo(e.target.value)}
+                      onChange={(e) => setAmountTwo(e.target.value)}
                       placeholder="0,00"
                       variant="secondary"
                       className="border-0!"
@@ -371,10 +425,12 @@ export function DialogCreateOrEditMovement() {
                 <Input
                   label={"Descrizione"}
                   type="textarea"
+                  placeholder="Inserisci descrizione"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  variant="secondary"
-                  className="border-0!"
+                  // variant="secondary"
+                  // className="border-0!"
+                  variant="outline"
                 />
               </div>
             </div>
@@ -382,18 +438,26 @@ export function DialogCreateOrEditMovement() {
         </div>
 
         {/* Footer fisso */}
-        <DialogFooter className={"grid grid-cols-2 gap-3"}>
-          <Button
-            variant="outline"
-            size="lg"
-            className={"bg-secondary! border-0!"}
-            onClick={() => setDialog(null)}
-          >
-            Modifica
-          </Button>
-          <Button variant="destructive" size="lg" className={"bg-red-500!"}>
-            Elimina
-          </Button>
+        <DialogFooter className={cn(id ? "grid grid-cols-2 gap-3" : "w-full")}>
+          {id ? (
+            <>
+              <Button
+                variant="outline"
+                size="lg"
+                className={"bg-secondary! border-0!"}
+                onClick={() => setDialog(null)}
+              >
+                Modifica
+              </Button>
+              <Button variant="destructive" size="lg" className={"bg-red-500!"}>
+                Elimina
+              </Button>
+            </>
+          ) : (
+            <Button className="w-full" variant="secondary" size="lg">
+              Crea
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

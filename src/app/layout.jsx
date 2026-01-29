@@ -48,9 +48,9 @@ export default function RootLayout({ children }) {
             <ErrorProvider>
               <DialogCustomProvider>
                 {children}
-                <DialogCustom />
-                <ErrorDialog />
                 <Loader />
+                <ErrorDialog />
+                <DialogCustom />
               </DialogCustomProvider>
             </ErrorProvider>
           </LoaderProvider>

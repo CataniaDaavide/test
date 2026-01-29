@@ -121,7 +121,7 @@ export function SelectCustom({
                 "text-sm",
               )}
             >
-              {value ? value.label : placeholder || "Select..."}
+              {value ? value.label : placeholder || "Seleziona"}
             </span>
 
             <ChevronDown
@@ -149,13 +149,16 @@ export function SelectCustom({
                 className="text-sm h-10"
               />
             )}
-            <ScrollArea className="h-32 pr-1">
+            <ScrollArea className="h-32 pr-2">
               <CommandGroup>
                 {filteredOptions.map((option) => (
                   <CommandItem
                     key={option.value}
                     onSelect={() => handleSelect(option)}
-                    className="justify-between cursor-pointer"
+                    className={cn(
+                      "justify-between cursor-pointer",
+                      value?.value === option.value && "bg-secondary!"
+                    )}
                   >
                     {option.label}
                     <Check
@@ -252,7 +255,7 @@ function MultiSelect({
                 })
               ) : (
                 <span className="text-sm text-muted-foreground">
-                  {placeholder || "Select..."}
+                  {placeholder || "Seleziona"}
                 </span>
               )}
             </div>
