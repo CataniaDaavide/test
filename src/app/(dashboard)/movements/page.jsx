@@ -342,11 +342,9 @@ export function DialogCreateOrEditMovement() {
                 label={"Data"}
                 required
                 type="date"
-                // iconLeft={<Calendar />}
+                iconLeft={<Calendar />}
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                // variant="secondary"
-                // className="border-0!"
                 variant="outline"
               />
               <Input
@@ -357,8 +355,6 @@ export function DialogCreateOrEditMovement() {
                 iconLeft={<Clock />}
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                // variant="secondary"
-                // className="border-0!"
                 variant="outline"
               />
               <div className="grid col-span-2">
@@ -389,8 +385,6 @@ export function DialogCreateOrEditMovement() {
                   value={amountOne}
                   onChange={(e) => setAmountOne(e.target.value)}
                   placeholder="0,00"
-                  // variant="secondary"
-                  // className="border-0!"
                   variant="outline"
                 />
               </div>
@@ -428,8 +422,6 @@ export function DialogCreateOrEditMovement() {
                   placeholder="Inserisci descrizione"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  // variant="secondary"
-                  // className="border-0!"
                   variant="outline"
                 />
               </div>
