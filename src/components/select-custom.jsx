@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { InputLabel } from "./ui/input";
+import { ScrollArea } from "./ui/scroll-area";
+ScrollArea;
 //#endregion
 
 /**
@@ -46,6 +48,8 @@ export function SelectCustom({
   setValue,
   placeholder,
   allowDeselect = false,
+  classNameTrigger,
+  classNameContent,
 }) {
   if (multiSelect) {
     return (
@@ -103,11 +107,12 @@ export function SelectCustom({
         <PopoverTrigger asChild>
           <Button
             ref={triggerRef}
-            variant="outline"
+            variant="secondary"
             role="combobox"
             className={cn(
-              "w-full justify-between font-normal px-3 bg-transparent hover:bg-transparent h-10",
-              className,
+              "w-full justify-between font-normal px-3 h-10",
+              //modifiche
+              classNameTrigger,
             )}
           >
             <span
@@ -131,9 +136,11 @@ export function SelectCustom({
 
         <PopoverContent
           style={{ width }}
-          className="p-0 bg-background border border-border rounded-md shadow-md"
+          className={cn(
+            "p-0 bg-background border border-border rounded-md shadow-md",
+          )}
         >
-          <Command>
+          <Command className={classNameContent}>
             {search && (
               <CommandInput
                 value={filter}
@@ -142,26 +149,27 @@ export function SelectCustom({
                 className="text-sm h-10"
               />
             )}
-
-            <CommandGroup>
-              {filteredOptions.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  onSelect={() => handleSelect(option)}
-                  className="justify-between cursor-pointer"
-                >
-                  {option.label}
-                  <Check
-                    className={cn(
-                      "h-4 w-4",
-                      value?.value === option.value
-                        ? "opacity-100"
-                        : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <ScrollArea className="h-32 pr-1">
+              <CommandGroup>
+                {filteredOptions.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    onSelect={() => handleSelect(option)}
+                    className="justify-between cursor-pointer"
+                  >
+                    {option.label}
+                    <Check
+                      className={cn(
+                        "h-4 w-4",
+                        value?.value === option.value
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </ScrollArea>
           </Command>
         </PopoverContent>
       </Popover>
@@ -223,6 +231,8 @@ function MultiSelect({
             role="combobox"
             className={cn(
               "w-full justify-between font-normal bg-transparent hover:bg-transparent h-auto! min-h-10! px-3! py-1!",
+              // modifiche
+              "border-0!",
               className,
             )}
           >
@@ -266,31 +276,33 @@ function MultiSelect({
               <CommandInput placeholder="Cerca..." className="text-sm h-10" />
             )}
 
-            <CommandGroup>
-              {options.map((option) => {
-                const isSelected = value.includes(option.value);
-                const disabled = !isSelected && value.length >= maxSelected;
+            <ScrollArea className="h-32 pr-1">
+              <CommandGroup>
+                {options.map((option) => {
+                  const isSelected = value.includes(option.value);
+                  const disabled = !isSelected && value.length >= maxSelected;
 
-                return (
-                  <CommandItem
-                    key={option.value}
-                    onSelect={() => !disabled && toggleSelect(option.value)}
-                    className={cn(
-                      "justify-between cursor-pointer",
-                      disabled && "opacity-50 pointer-events-none",
-                    )}
-                  >
-                    {option.label}
-                    <Check
+                  return (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => !disabled && toggleSelect(option.value)}
                       className={cn(
-                        "h-4 w-4",
-                        isSelected ? "opacity-100" : "opacity-0",
+                        "justify-between cursor-pointer",
+                        disabled && "opacity-50 pointer-events-none",
                       )}
-                    />
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
+                    >
+                      {option.label}
+                      <Check
+                        className={cn(
+                          "h-4 w-4",
+                          isSelected ? "opacity-100" : "opacity-0",
+                        )}
+                      />
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            </ScrollArea>
           </Command>
         </PopoverContent>
       </Popover>

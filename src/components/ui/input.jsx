@@ -1,83 +1,149 @@
 "use client";
 
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Asterisk, CalendarIcon, Eye, EyeOff } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Calendar } from "@/components/ui/calendar";
 
-function Input({
-  type = "text",
-  iconLeft,
-  label,
-  id,
-  value,
-  onChange,
-  required,
-  error,
-  className,
-  action,
-  ...props
-}) {
-  const [showPassword, setShowPassword] = React.useState(false);
+// Variants e size, stile coerente con Button
+const inputVariants = cva(
+  "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground border w-full min-w-0 rounded-md px-3 text-sm shadow-xs transition-all outline-none disabled:pointer-events-none disabled:opacity-50 [&>svg]:pointer-events-none",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring/50 focus-visible:border-ring",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "bg-transparent! border border-input shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 focus-visible:ring-ring/50 focus-visible:border-ring",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-ring/50 focus-visible:border-ring",
+        ghost: "bg-transparent hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 focus-visible:ring-ring/50 focus-visible:border-ring",
+        link: "bg-transparent text-primary underline-offset-4 hover:underline focus-visible:ring-ring/50 focus-visible:border-ring",
+        error: "border-destructive text-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive",
+      },
+      size: {
+        default: "h-9 py-2",
+        sm: "h-8 py-1.5 text-sm",
+        lg: "h-10 py-3 text-base",
+        textarea: "py-3 text-sm",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
 
-  const inputType =
-    type === "password" ? (showPassword ? "text" : "password") : type;
+const Input = React.forwardRef(
+  (
+    {
+      type = "text",
+      iconLeft,
+      label,
+      id,
+      value,
+      onChange,
+      required,
+      rows = 3,
+      minRows,
+      maxRows,
+      error,
+      className,
+      action,
+      variant,
+      size,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
+    const [showPassword, setShowPassword] = React.useState(false);
 
-  return (
-    <div className="w-full flex flex-col">
-      {/* label */}
-      {label && <InputLabel id={id} label={label} required={required} />}
+    const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
+    const Comp = asChild ? Slot : "input";
 
-      <div className="relative w-full flex items-center">
-        {/* icona sx */}
-        {iconLeft && <IconLeft icon={iconLeft} />}
-      
-        <input
-          id={id}
-          type={inputType}
-          data-slot="input"
-          value={value}
-          onChange={onChange}
-          className={cn(
-            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            iconLeft && "pl-11",
-            type === "password" ? "pr-11" : "",
-            error
-              ? "border-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive"
-              : "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-            // modifiche
-              "text-sm ring-0!",
-              className,
+    return (
+      <div className="w-full flex flex-col">
+        {/* Label */}
+        {label && <InputLabel id={id} label={label} required={required} />}
+
+        <div className="relative w-full flex items-center">
+          {/* Icon Left */}
+          {iconLeft && <IconLeft icon={iconLeft} />}
+
+          {/* Input / Textarea */}
+          {type === "textarea" ? (
+            <textarea
+              id={id}
+              ref={ref}
+              rows={rows}
+              value={value}
+              onChange={onChange}
+              style={{
+                minHeight: minRows ? `${minRows * 1.5}em` : undefined,
+                maxHeight: maxRows ? `${maxRows * 1.5}em` : undefined,
+                overflowY: maxRows ? "auto" : "hidden",
+              }}
+              className={cn(
+                inputVariants({
+                  variant: error ? "error" : variant || "default",
+                  size: "textarea",
+                }),
+                iconLeft && "pl-11",
+                className
+              )}
+              aria-invalid={!!error}
+              {...props}
+            />
+          ) : (
+            <Comp
+              id={id}
+              ref={ref}
+              type={inputType}
+              value={value}
+              onChange={onChange}
+              data-slot="input"
+              className={cn(
+                inputVariants({
+                  variant: error ? "error" : variant || "default",
+                  size: size || "default",
+                }),
+                iconLeft && "pl-11",
+                type === "password" ? "pr-11" : "",
+                className
+              )}
+              aria-invalid={!!error}
+              {...props}
+            />
           )}
-          aria-invalid={!!error}
-          {...props}
-        />
 
-        {type === "password" && (
-          <PasswordAction
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-          />
-        )}
+          {/* Password Toggle */}
+          {type === "password" && (
+            <PasswordAction showPassword={showPassword} setShowPassword={setShowPassword} />
+          )}
 
-        {type === "date" && <DateAction value={value} onChange={onChange} />}
+          {/* Date Picker */}
+          {type === "date" && <DateAction value={value} onChange={onChange} />}
 
-        {!["password", "date"].includes(type) && action}
+          {/* Azione custom */}
+          {!["password", "date"].includes(type) && action}
+        </div>
+
+        {/* Errore */}
+        {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
       </div>
+    );
+  }
+);
 
-      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
-    </div>
-  );
-}
+Input.displayName = "Input";
 
-export { Input };
-
+// Label
 export function InputLabel({ id, label, required }) {
   return (
     <Label
@@ -89,19 +155,13 @@ export function InputLabel({ id, label, required }) {
   );
 }
 
+// Icon Left
 function IconLeft({ icon }) {
-  const renderIconLeft = icon
-    ? React.cloneElement(icon, { className: "w-5 h-5" })
-    : null;
-
-  return (
-    <span className="absolute left-3 flex items-center text-zinc-400">
-      {renderIconLeft}
-    </span>
-  );
+  const renderIconLeft = icon ? React.cloneElement(icon, { className: "w-5 h-5" }) : null;
+  return <span className="absolute left-3 flex items-center text-zinc-400">{renderIconLeft}</span>;
 }
 
-// PASSWORD TOGGLE
+// Password Toggle
 function PasswordAction({ showPassword, setShowPassword }) {
   return (
     <button
@@ -114,7 +174,7 @@ function PasswordAction({ showPassword, setShowPassword }) {
   );
 }
 
-// CALENDAR POPUP
+// Date Picker
 function DateAction({ value, onChange }) {
   const [open, setOpen] = React.useState(false);
 
@@ -127,7 +187,7 @@ function DateAction({ value, onChange }) {
             "absolute right-3 cursor-pointer items-center justify-center",
             open
               ? "text-zinc-600 dark:text-zinc-200"
-              : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200",
+              : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
           )}
         >
           <CalendarIcon size={20} />
@@ -141,11 +201,11 @@ function DateAction({ value, onChange }) {
         sideOffset={10}
       >
         <Calendar
-          className={"bg-card"}
+          className="bg-card"
           mode="single"
           captionLayout="dropdown"
-          fromDate={new Date(1900, 1, 1)} // 1 gennaio 1900
-          toDate={new Date(2100, 12, 31)} // 31 Dicembre 2100
+          fromDate={new Date(1900, 0, 1)}
+          toDate={new Date(2100, 11, 31)}
           selected={value ? new Date(value) : new Date()}
           onSelect={(date) => {
             if (!date) return;
@@ -156,7 +216,6 @@ function DateAction({ value, onChange }) {
               String(d.getMonth() + 1).padStart(2, "0") +
               "-" +
               String(d.getDate()).padStart(2, "0");
-            console.log(date, formatted);
             onChange({ target: { value: formatted } });
             setOpen(false);
           }}
@@ -165,3 +224,5 @@ function DateAction({ value, onChange }) {
     </Popover>
   );
 }
+
+export { Input };

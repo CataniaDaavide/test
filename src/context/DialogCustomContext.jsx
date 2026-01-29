@@ -8,7 +8,11 @@ const DialogCustomContext = createContext({
 });
 
 export const DialogCustomProvider = ({ children }) => {
-  const [dialog, setDialogState] = useState(null);
+  const [dialog, setDialogState] = useState({
+    show: false,
+    type: "",
+    data: {},
+  });
 
   const setDialog = (value) => {
     setDialogState(value);

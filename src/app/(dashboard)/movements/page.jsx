@@ -15,10 +15,20 @@ import { ApiClient } from "@/lib/api-client";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { Input } from "@/components/ui/input";
 import { SelectCustom } from "@/components/select-custom";
+import { Calendar, Clock, Euro } from "lucide-react";
+import { useState } from "react";
+import { cn, formatDate } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function TestPage() {
   const { setDialog } = useDialogCustom();
-
   return (
     <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
       <FadeUp className="flex flex-col gap-3">
@@ -26,100 +36,18 @@ export default function TestPage() {
         <TestApiGet />
         <TestApiPost />
         <Button
-          onClick={() => {
+          onClick={() =>
             setDialog({
-              title: "Conferma azione",
-              description: "Questa operazione è irreversibile",
-              content: (
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label={"Data"} required type="date" />
-                  <Input label={"Orario"} required type="time" />
-                  <div className="grid col-span-2">
-                    <SelectCustom
-                      label={"Categoria"}
-                      required
-                      options={Array.from({ length: 5 }, (_, i) => ({
-                        value: "value" + i,
-                        label: "label" + i,
-                      }))}
-                    />
-                  </div>
-                  <div className="grid col-span-2">
-                    <SelectCustom
-                      label={"Conto"}
-                      required
-                      search
-                      options={Array.from({ length: 5 }, (_, i) => ({
-                        value: "value" + i,
-                        label: "label" + i,
-                      }))}
-                    />
-                  </div>
-                  <div className="grid col-span-2">
-                    <Input label={"Importo (€)"} />
-                  </div>
-                  <div className="grid col-span-2">
-                    <Input label={"Descrizione"} />
-                  </div>
-                </div>
-              ),
-              actions: (
-                <div className="grid col-span-2">
-                  <Button
-                    variant="outline"
-                    className={"bg-card! border-0!"}
-                    onClick={() => setDialog(null)}
-                  >
-                    Crea
-                  </Button>
-                </div>
-              ),
-            });
-          }}
+              show: true,
+              type: "movement",
+              data: {
+                date: "2025-01-01",
+                time: "18:42",
+              },
+            })
+          }
         >
-          DIALOG NEW
-        </Button>
-        <Button
-          onClick={() => {
-            setDialog({
-              title: "Conferma azione",
-              description: "Questa operazione è irreversibile",
-              content: (
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label={"Data"} required type="date" />
-                  <Input label={"Orario"} required type="time" />
-                  <div className="grid col-span-2">
-                    <Input label={"Categoria"} required />
-                  </div>
-                  <div className="grid col-span-2">
-                    <Input label={"Conto"} required />
-                  </div>
-                  <div className="grid col-span-2">
-                    <Input label={"Importo (€)"} />
-                  </div>
-                  <div className="grid col-span-2">
-                    <Input label={"Descrizione"} />
-                  </div>
-                </div>
-              ),
-              actions: (
-                <>
-                  <Button
-                    variant="outline"
-                    className={"bg-card! border-0!"}
-                    onClick={() => setDialog(null)}
-                  >
-                    Modifica
-                  </Button>
-                  <Button variant="destructive" className={"bg-red-500!"}>
-                    Elimina
-                  </Button>
-                </>
-              ),
-            });
-          }}
-        >
-          DIALOG EDIT
+          Apri dialog movement
         </Button>
       </FadeUp>
     </ScrollArea>
@@ -284,4 +212,190 @@ function TestApiPost() {
   };
 
   return <Button onClick={handleClick}>Click api get</Button>;
+}
+
+export function DialogCreateOrEditMovement() {
+  const { dialog, setDialog } = useDialogCustom();
+  // const data = {
+  //   date: "2025-01-01",
+  //   time: "",
+  //   category: "",
+  //   accountOne: "",
+  //   amountOne: "",
+  //   accountTwo: "",
+  //   amountTwo: "",
+  // };
+
+  const [date, setDate] = useState(formatDate(dialog.data?.date, "yyyy-MM-dd"));
+  const [time, setTime] = useState(formatDate(dialog.data?.time, "HH:mm"));
+
+  const [category, setCategory] = useState();
+  // variabili conto1 e importo1
+  const [accountOne, setAccountOne] = useState();
+  const [amountOne, setAmountOne] = useState("");
+
+  // variabile per gestire se account1 è un buono
+  const [isVoucher, setIsVoucher] = useState(true);
+
+  // variabili conto2 e importo2
+  const [accountTwo, setAccountTwo] = useState();
+  const [amountTwo, setAmountTwo] = useState("");
+
+  const [description, setDescription] = useState("");
+
+  return (
+    <Dialog
+      open={dialog.show}
+      onOpenChange={(open) => {
+        if (!open)
+          setDialog({
+            show: false,
+            type: "",
+            data: {},
+          });
+      }}
+    >
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className={cn(
+          "flex flex-col overflow-hidden",
+          "min-w-full sm:min-w-lg sm:max-w-lg",
+          "h-full sm:max-h-[80vh]",
+          "border-0 sm:border! rounded-none! sm:rounded-md!",
+          "bg-card",
+        )}
+      >
+        {/* Header fisso */}
+        <DialogHeader className="text-start">
+          <DialogTitle>
+            {true != undefined ? "Modifica movimento" : "Creazione movimento"}
+          </DialogTitle>
+          <DialogDescription>
+            {true
+              ? "Modifica i dettagli del movimento selezionato"
+              : "Inserisci i dettagli per registrare un nuovo movimento"}
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Contenuto scrollabile */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <ScrollArea className="h-full overflow-y-auto pr-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                id="date"
+                label={"Data"}
+                required
+                type="date"
+                iconLeft={<Calendar />}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                variant="secondary"
+                className="border-0!"
+              />
+              <Input
+                id="time"
+                label={"Orario"}
+                required
+                type="time"
+                iconLeft={<Clock />}
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                variant="secondary"
+                className="border-0!"
+              />
+              <div className="grid col-span-2">
+                <SelectCustom
+                  label={"Categoria"}
+                  required
+                  value={category}
+                  setValue={setCategory}
+                  options={Array.from({ length: 5 }, (_, i) => ({
+                    value: "value" + i,
+                    label: "label" + i,
+                  }))}
+                />
+              </div>
+              <div className="grid col-span-2">
+                <SelectCustom
+                  label={"Conto"}
+                  required
+                  search
+                  value={accountOne}
+                  setValue={setAccountOne}
+                  options={Array.from({ length: 5 }, (_, i) => ({
+                    value: "value" + i,
+                    label: "label" + i,
+                  }))}
+                />
+              </div>
+              <div className="grid col-span-2">
+                <Input
+                  label={"Importo"}
+                  iconLeft={<Euro />}
+                  value={amountOne}
+                  onChange={(e) => setAmountOne(e.target.value)}
+                  placeholder="0,00"
+                  variant="secondary"
+                  className="border-0!"
+                />
+              </div>
+              {isVoucher && (
+                <>
+                  <div className="grid col-span-2">
+                    <SelectCustom
+                      label={"Conto2"}
+                      required
+                      search
+                      value={accountTwo}
+                      setValue={setAccountTwo}
+                      options={Array.from({ length: 5 }, (_, i) => ({
+                        value: "value" + i,
+                        label: "label" + i,
+                      }))}
+                    />
+                  </div>
+                  <div className="grid col-span-2">
+                    <Input
+                      label={"Importo2"}
+                      iconLeft={<Euro />}
+                      value={amountTwo}
+                      onChange={(e) => setAccountTwo(e.target.value)}
+                      placeholder="0,00"
+                      variant="secondary"
+                      className="border-0!"
+                    />
+                  </div>
+                </>
+              )}
+              <div className="grid col-span-2">
+                <Input
+                  label={"Descrizione"}
+                  type="textarea"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  variant="secondary"
+                  className="border-0!"
+                />
+              </div>
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Footer fisso */}
+        <DialogFooter className={"grid grid-cols-2 gap-3"}>
+          <Button
+            variant="outline"
+            size="lg"
+            className={"bg-secondary! border-0!"}
+            onClick={() => setDialog(null)}
+          >
+            Modifica
+          </Button>
+          <Button variant="destructive" size="lg" className={"bg-red-500!"}>
+            Elimina
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
