@@ -18,10 +18,12 @@ export const menuItems = [
     {
         title: "add movement",
         icon: Plus,
-        action: async (setLoader) => {
-            setLoader(true)
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setLoader(false)
+        action: (setDialog) => {
+            setDialog({
+                show: true,
+                type: "movement",
+                data: {},
+            })
         },
         menu: ["mobile"],
     },

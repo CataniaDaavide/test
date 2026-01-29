@@ -15,7 +15,7 @@ import { ApiClient } from "@/lib/api-client";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { Input } from "@/components/ui/input";
 import { SelectCustom } from "@/components/select-custom";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, ListFilter, Plus, RefreshCcw } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import {
   Dialog,
@@ -28,52 +28,65 @@ import {
 import { useLoader } from "@/context/LoaderContext";
 import { mockupCategories } from "@/data/temp-data";
 
-export default function TestPage() {
+export default function MovementPage() {
   const { setDialog } = useDialogCustom();
   return (
-    <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
-      <FadeUp className="flex flex-col gap-3">
-        <ChartPieDonutText />
-        <TestApiGet />
-        <TestApiPost />
-        <Button
-          onClick={() =>
-            setDialog({
-              show: true,
-              type: "movement",
-              data: {},
-            })
-          }
-        >
-          NEW MOVEMENT
+    <>
+      <div className={"w-full flex justify-end gap-3 px-6"}>
+        <Button variant="secondary" size="icon">
+          <RefreshCcw />
         </Button>
-        <Button
-          onClick={() =>
-            setDialog({
-              show: true,
-              type: "movement",
-              data: {
-                id: "684aa945bbfb7d771580dc71",
-                userId: "682e280409285bb856379161",
-                date: "2025-06-12T10:16:00.000Z",
-                description:
-                  "Vestiti fazione uomo e donna per Martini Andrea lellod 367737053355442176",
-                categoryId: "683c3a5aaed32a11ec7e005f",
-                type: "U",
-                accounts: [
-                  {
-                    accountId: "683c3ad0aed32a11ec7e0068",
-                    amount: 20,
-                  },
-                ],
-              },
-            })
-          }
-        >
-          EDIT MOVEMENT
+        <Button variant="secondary" size="icon">
+          <ListFilter />
         </Button>
-      </FadeUp>
-    </ScrollArea>
+        <Button variant="secondary" >
+          <Plus /> Movimento
+        </Button>
+      </div>
+      <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
+        <FadeUp className="flex flex-col gap-3">
+          <ChartPieDonutText />
+          <TestApiGet />
+          <TestApiPost />
+          <Button
+            onClick={() =>
+              setDialog({
+                show: true,
+                type: "movement",
+                data: {},
+              })
+            }
+          >
+            NEW MOVEMENT
+          </Button>
+          <Button
+            onClick={() =>
+              setDialog({
+                show: true,
+                type: "movement",
+                data: {
+                  id: "684aa945bbfb7d771580dc71",
+                  userId: "682e280409285bb856379161",
+                  date: "2025-06-12T10:16:00.000Z",
+                  description:
+                    "Vestiti fazione uomo e donna per Martini Andrea lellod 367737053355442176",
+                  categoryId: "683c3a5aaed32a11ec7e005f",
+                  type: "U",
+                  accounts: [
+                    {
+                      accountId: "683c3ad0aed32a11ec7e0068",
+                      amount: 20,
+                    },
+                  ],
+                },
+              })
+            }
+          >
+            EDIT MOVEMENT
+          </Button>
+        </FadeUp>
+      </ScrollArea>
+    </>
   );
 }
 
@@ -363,7 +376,10 @@ export function DialogCreateOrEditMovement() {
                   required
                   value={category}
                   setValue={setCategory}
-                  classNameTrigger={"border-1! bg-transparent! hover:bg-transparent!"}
+                  options={categories}
+                  classNameTrigger={
+                    "border-1! bg-transparent! hover:bg-transparent!"
+                  }
                 />
               </div>
               <div className="grid col-span-2">
@@ -376,12 +392,15 @@ export function DialogCreateOrEditMovement() {
                     value: "value" + i,
                     label: "label" + i,
                   }))}
-                  classNameTrigger={"border-1! bg-transparent! hover:bg-transparent!"}
+                  classNameTrigger={
+                    "border-1! bg-transparent! hover:bg-transparent!"
+                  }
                 />
               </div>
               <div className="grid col-span-2">
                 <Input
                   label={"Importo"}
+                  required
                   value={amountOne}
                   onChange={(e) => setAmountOne(e.target.value)}
                   placeholder="0,00"
@@ -393,7 +412,6 @@ export function DialogCreateOrEditMovement() {
                   <div className="grid col-span-2">
                     <SelectCustom
                       label={"Conto2"}
-                      required
                       search
                       value={accountTwo}
                       setValue={setAccountTwo}
@@ -437,7 +455,13 @@ export function DialogCreateOrEditMovement() {
                 variant="outline"
                 size="lg"
                 className={"bg-secondary! border-0!"}
-                onClick={() => setDialog(null)}
+                onClick={() =>
+                  setDialog({
+                    show: false,
+                    type: "",
+                    data: "",
+                  })
+                }
               >
                 Modifica
               </Button>
@@ -446,7 +470,18 @@ export function DialogCreateOrEditMovement() {
               </Button>
             </>
           ) : (
-            <Button className="w-full" variant="secondary" size="lg">
+            <Button
+              className="w-full"
+              variant="secondary"
+              size="lg"
+              onClick={() =>
+                setDialog({
+                  show: false,
+                  type: "",
+                  data: "",
+                })
+              }
+            >
               Crea
             </Button>
           )}

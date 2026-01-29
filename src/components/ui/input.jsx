@@ -15,7 +15,7 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring/50 focus-visible:border-ring",
+        default: "bg-card text-primary hover:bg-card/90 focus-visible:ring-ring/50 focus-visible:border-ring",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
@@ -26,7 +26,7 @@ const inputVariants = cva(
         error: "border-destructive text-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive",
       },
       size: {
-        default: "h-9 max-h-9! py-2",
+        default: "h-9 py-2",
         sm: "h-8 py-1.5 text-sm",
         lg: "h-10 py-3 text-base",
         textarea: "py-3 text-sm",
@@ -148,9 +148,9 @@ export function InputLabel({ id, label, required }) {
   return (
     <Label
       htmlFor={id}
-      className="mb-1 gap-0 items-center text-sm text-zinc-700 dark:text-zinc-300"
+      className="mb-1 gap-1 items-center text-sm text-zinc-700 dark:text-zinc-300"
     >
-      {label} {required && <Asterisk className="w-3 h-3" />}
+      {label} {required && <Asterisk className="w-3 h-3 text-red-500" />}
     </Label>
   );
 }

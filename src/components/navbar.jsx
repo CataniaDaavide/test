@@ -1,11 +1,12 @@
 "use client";
-import {  LogOut } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { menuItems } from "@/data/menu-items";
 import { useError } from "@/context/ErrorContext";
 import { ButtonBack } from "./button-back";
+import Link from "next/link";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -24,6 +25,11 @@ export function Navbar() {
       <div className="flex gap-1">
         <ModeToggle />
         <Logout />
+        <Link href={"/profile"}>
+          <Button variant="ghost" className={"hover:bg-transparent!"}>
+            <UserRound />
+          </Button>
+        </Link>
       </div>
     </div>
   );

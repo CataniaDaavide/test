@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { AtSign, Lock, UserRound } from "lucide-react";
 import { AuthLayout } from "../auth-layout";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ export default function RegiterPage() {
         placeholder={"•••••••"}
       />
       <Button>Crea account</Button>
-      <p className="text-sm text-muted-foreground self-center">
+      <p className="text-sm text-muted-foreground self-center flex gap-1">
         Hai già un account?
         <Link href={"/login"} className="font-bold underline text-primary">
           Accedi

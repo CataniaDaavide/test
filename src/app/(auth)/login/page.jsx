@@ -67,9 +67,8 @@ export default function LoginPage() {
         </div>
       )}
       <Button onClick={handleLogin}>Accedi</Button>
-      <Button variant="secondary">Credenziali demo</Button>
-      <p className="text-sm text-muted-foreground self-center">
-        Non hai un account?{" "}
+      <p className="text-sm text-muted-foreground self-center flex gap-1">
+        Non hai un account?
         <Link href={"/register"} className="font-bold underline text-primary">
           Registrati
         </Link>
