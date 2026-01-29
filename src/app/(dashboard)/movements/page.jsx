@@ -342,7 +342,7 @@ export function DialogCreateOrEditMovement() {
                 label={"Data"}
                 required
                 type="date"
-                iconLeft={<Calendar />}
+                // iconLeft={<Calendar />}
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 // variant="secondary"

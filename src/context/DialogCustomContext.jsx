@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const DialogCustomContext = createContext({
   dialog: null,
@@ -17,12 +17,6 @@ export const DialogCustomProvider = ({ children }) => {
   const setDialog = (value) => {
     setDialogState(value);
   };
-
-  useEffect(() => {
-    const color = dialog.show ? "#ef4444" : "#f97316";
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", color);
-  }, [dialog.show]);
 
   return (
     <DialogCustomContext.Provider value={{ dialog, setDialog }}>
