@@ -19,12 +19,9 @@ export const DialogCustomProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) return;
-
     const color = dialog.show ? "#ef4444" : "#f97316";
-
-    meta.setAttribute("content", color);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", color);
   }, [dialog.show]);
 
   return (
