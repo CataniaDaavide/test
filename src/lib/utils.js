@@ -37,3 +37,79 @@ export function formatDate(
     (token) => map[token],
   );
 }
+
+// ==============================
+//        FORM FUNCTIONS
+// ==============================
+
+/**
+ * Applica una serie di regole di input mask ad un campo del form
+ *
+ * @param {string} fieldName - nome del campo (es: "amount", "phone", "date")
+ * @param {string} value - valore inserito dall'utente
+ * @param {Object} formMask - oggetto che contiene le regole di mask per campo
+ *
+ * Struttura attesa:
+ * {
+ *   fieldName: [
+ *     { mask: (value) => string },
+ *     ...
+ *   ]
+ * }
+ *
+ * @returns {string} valore mascherato/formattato
+ */
+export function applyMaskField(fieldName, value, formMask) {
+  const rules = formMask[fieldName] || [];
+  let maskedValue = value;
+
+  // applica tutte le regole in sequenza
+  for (let rule of rules) {
+    maskedValue = rule.mask(maskedValue);
+  }
+
+  return maskedValue;
+}
+
+/**
+ * Valida un campo del form in base alle regole definite
+ *
+ * @param {string} fieldName - nome del campo (es: "amount", "email", "name")
+ * @param {string} value - valore del campo da validare
+ * @param {Object} formValidator - oggetto con le regole di validazione per campo
+ *
+ * Struttura attesa:
+ * {
+ *   fieldName: [
+ *     {
+ *       validate: (value) => boolean,
+ *       message: "messaggio errore"
+ *     },
+ *     ...
+ *   ]
+ * }
+ *
+ * @returns {string} messaggio di errore oppure stringa vuota se valido
+ */
+export function validateField(fieldName, value, formValidator) {
+  const rules = formValidator[fieldName] || [];
+
+  // esegue le regole in ordine e ritorna il primo errore trovato
+  for (let rule of rules) {
+    if (!rule.validate(value)) {
+      return rule.message;
+    }
+  }
+
+  return ""; // nessun errore
+}
+
+
+export function base_checkEmail(email) {
+  /*
+  - email: stringa da controllare se è un email corretta
+  */
+
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}

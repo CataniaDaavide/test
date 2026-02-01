@@ -1,5 +1,5 @@
 export class ApiClient {
-    constructor(defaultTimeout = 5000) {
+    constructor(defaultTimeout = 15000) {
         this.defaultTimeout = defaultTimeout;
     }
 

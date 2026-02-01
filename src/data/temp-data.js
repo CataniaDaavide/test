@@ -1,10 +1,62 @@
+import { Home, Folder, ArrowUpDown, CreditCard, Plus, UserRound } from "lucide-react";
+
+export const menuItems = [
+    {
+        title: "Dashboard",
+        description: "Panoramica delle tue finanze personali",
+        icon: Home,
+        link: "/",
+        menu: ["mobile", "desktop"],
+    },
+    {
+        title: "Categorie",
+        description: "Gestisci le categorie per entrate e uscite",
+        icon: Folder,
+        link: "/categories",
+        menu: ["mobile", "desktop"],
+    },
+    {
+        title: "add movement",
+        icon: Plus,
+        action: (setDialog) => {
+            setDialog({
+                show: true,
+                type: "movement",
+                data: {},
+            })
+        },
+        menu: ["mobile"],
+    },
+    {
+        title: "Movimenti",
+        description: "Gestisci tutte le tue entrate e uscite",
+        icon: ArrowUpDown,
+        link: "/movements",
+        menu: ["mobile", "desktop"],
+    },
+    {
+        title: "Conti",
+        description: "Gestisci le tue fonti di denaro",
+        icon: CreditCard,
+        link: "/accounts",
+        menu: ["mobile", "desktop"],
+    },
+    {
+        title: "Profilo",
+        description: "Gestisci i tuoi obiettivi di risparmio",
+        icon: UserRound,
+        link: "/profile",
+        menu: ["desktop"],
+    },
+];
+
 export const mockupCategories = [
   {
     id: "683c3a5aaed32a11ec7e005f",
     userId: "682e280409285bb856379161",
     name: "Abbonamenti",
     emoji: "🔗",
-    type: "U",
+    type: "E",
     hexColor: "#B197FC",
     status: "A",
     __v: 0,
@@ -46,6 +98,59 @@ export const mockupCategories = [
     emoji: "💊",
     type: "U",
     hexColor: "#6FCF97",
+    status: "A",
+    __v: 0,
+  },
+];
+
+export const mockupAccounts = [
+  {
+    id: "acc1",
+    userId: "682e280409285bb856379161",
+    name: "Bancomat",
+    emoji: "🏧",
+    type: "U",
+    hexColor: "#4D96FF",
+    status: "A",
+    __v: 0,
+  },
+  {
+    id: "acc2",
+    userId: "682e280409285bb856379161",
+    name: "Postepay",
+    emoji: "💳",
+    type: "U",
+    hexColor: "#FFB347",
+    status: "A",
+    __v: 0,
+  },
+  {
+    id: "acc3",
+    userId: "682e280409285bb856379161",
+    name: "Buono Pasto",
+    emoji: "🍽️",
+    type: "U",
+    hexColor: "#6FCF97",
+    status: "A",
+    __v: 0,
+  },
+  {
+    id: "acc4",
+    userId: "682e280409285bb856379161",
+    name: "PayPal",
+    emoji: "🅿️",
+    type: "U",
+    hexColor: "#003087",
+    status: "A",
+    __v: 0,
+  },
+  {
+    id: "acc5",
+    userId: "682e280409285bb856379161",
+    name: "Contante",
+    emoji: "💵",
+    type: "U",
+    hexColor: "#FFD700",
     status: "A",
     __v: 0,
   },

@@ -3,10 +3,10 @@ import "./globals.css";
 import { LoaderProvider } from "@/context/LoaderContext";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import Loader from "@/components/Loader";
-import { ErrorProvider } from "@/context/ErrorContext";
-import ErrorDialog from "@/components/error-dialog";
+import { MessageProvider } from "@/context/MessageContext";
 import DialogCustom from "@/components/dialog-custom";
 import { DialogCustomProvider } from "@/context/DialogCustomContext";
+import MessageDialog from "@/components/message-dialog";
 
 const poppins = Poppins({
   subsets: ["latin"], // set di caratteri da caricare
@@ -45,14 +45,14 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <LoaderProvider>
-            <ErrorProvider>
+            <MessageProvider>
               <DialogCustomProvider>
                 {children}
                 <Loader />
-                <ErrorDialog />
+                <MessageDialog />
                 <DialogCustom />
               </DialogCustomProvider>
-            </ErrorProvider>
+            </MessageProvider>
           </LoaderProvider>
         </ThemeProvider>
       </body>

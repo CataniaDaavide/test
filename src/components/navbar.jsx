@@ -3,10 +3,10 @@ import { LogOut, UserRound } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { menuItems } from "@/data/menu-items";
-import { useError } from "@/context/ErrorContext";
+import { useMessage } from "@/context/MessageContext";
 import { ButtonBack } from "./button-back";
 import Link from "next/link";
+import { menuItems } from "@/data/temp-data";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -37,7 +37,7 @@ export function Navbar() {
 
 //pulsante per fare il logout dell'account
 function Logout() {
-  const { setError } = useError();
+  const { setError } = useMessage();
   const router = useRouter();
   const handleLogout = (e) => {
     try {

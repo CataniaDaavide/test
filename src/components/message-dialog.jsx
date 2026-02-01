@@ -1,6 +1,6 @@
 "use client";
 
-import { useError } from "@/context/ErrorContext";
+import { useMessage } from "@/context/MessageContext";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,53 +14,54 @@ import {
 import { CheckCircle, TriangleAlert, Info } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export default function ErrorDialog() {
-  const { error, setError } = useError();
+export default function MessageDialog() {
+  const { message, setMessage } = useMessage();
 
-  if (!error) return null;
-
-  /*
-  {
-    status: info | success | error | warning
-    title: ""
-    description: ""
-  }
-  */
+  if (!message) return null;
 
   return (
     <Dialog
-      open={!!error}
+      open={!!message}
       onOpenChange={(open) => {
-        if (!open) setError(null);
+        if (!open) setMessage(null);
       }}
     >
       <DialogContent
         className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5"
-        showCloseButton={false} // disattiva x per chiudere il dialog in alto a destra
-        onInteractOutside={(e) => e.preventDefault()} //disabilita click fuori dal dialog
+        showCloseButton={false}
+        onInteractOutside={(e) => e.preventDefault()}
       >
-        {/* Contenuto scrollabile */}
         {/* Icona */}
         <div className="w-full flex justify-center">
-          <ErrorDialogIcon status={error.status} />
+          <MessageDialogIcon status={message.status} />
         </div>
+
         {/* Titolo */}
         <div className="w-full flex justify-center">
-          <DialogTitle>{error.title}</DialogTitle>
+          <DialogTitle>{message.title}</DialogTitle>
         </div>
 
         {/* Descrizione scrollabile */}
         <ScrollArea className="flex flex-col gap-4 overflow-y-auto pr-3">
           <DialogDescription className={"text-wrap break-all pr-1"}>
-            {error.description}
+            {message.description}
           </DialogDescription>
         </ScrollArea>
 
-        {/* Footer fisso */}
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Chiudi</Button>
-          </DialogClose>
+        {/* Footer fisso con azioni */}
+        <DialogFooter className="flex flex-wrap gap-2">
+          {message.actions?.map((action, index) => (
+            <DialogClose asChild key={index}>
+              {action}
+            </DialogClose>
+          ))}
+
+          {/* Pulsante chiudi di default se non ci sono azioni */}
+          {!message.actions?.length && (
+            <DialogClose asChild>
+              <Button variant="outline">Chiudi</Button>
+            </DialogClose>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -68,7 +69,7 @@ export default function ErrorDialog() {
 }
 
 // Funzione per scegliere icona e colori in base allo status
-function ErrorDialogIcon({ status }) {
+function MessageDialogIcon({ status }) {
   switch (status) {
     case "info":
       return (

@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/chart";
 import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
-import { useError } from "@/context/ErrorContext";
+import { useMessage } from "@/context/MessageContext";
 import { ApiClient } from "@/lib/api-client";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { Input } from "@/components/ui/input";
 import { SelectCustom } from "@/components/select-custom";
 import { Calendar, Clock, ListFilter, Plus, RefreshCcw } from "lucide-react";
-import { cn, formatDate } from "@/lib/utils";
+import { applyMaskField, cn, formatDate, validateField } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLoader } from "@/context/LoaderContext";
-import { mockupCategories } from "@/data/temp-data";
+import { mockupAccounts, mockupCategories } from "@/data/temp-data";
 
 export default function MovementPage() {
   const { setDialog } = useDialogCustom();
@@ -39,7 +39,7 @@ export default function MovementPage() {
         <Button variant="secondary" size="icon">
           <ListFilter />
         </Button>
-        <Button variant="secondary" >
+        <Button variant="secondary">
           <Plus /> Movimento
         </Button>
       </div>
@@ -186,7 +186,7 @@ export function ChartPieDonutText() {
 }
 
 function TestApiGet() {
-  const { setError } = useError();
+  const { setError } = useMessage();
 
   const handleClick = async (e) => {
     try {
@@ -215,7 +215,7 @@ function TestApiGet() {
   return <Button onClick={handleClick}>Click api get</Button>;
 }
 function TestApiPost() {
-  const { setError } = useError();
+  const { setError } = useMessage();
 
   const handleClick = async (e) => {
     try {
@@ -250,6 +250,7 @@ function TestApiPost() {
   return <Button onClick={handleClick}>Click api get</Button>;
 }
 
+// modale per creare e modificare movimenti (entrate, uscite, trasferimenti di denaro)
 export function DialogCreateOrEditMovement() {
   const { dialog, setDialog } = useDialogCustom();
   const { setLoader } = useLoader();
@@ -258,32 +259,62 @@ export function DialogCreateOrEditMovement() {
     id,
     userId,
     date: movementDate,
-    description: movementDesc,
+    description: movementDescription,
     categoryId,
     type,
-    accounts,
+    accounts: movementAccounts,
   } = dialog.data;
+
+  const [categories, setCategories] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [accountsFiltered, setAccountsFiltered] = useState([]);
+
+  const [category, setCategory] = useState(null);
+  const [accountOne, setAccountOne] = useState(null);
+  const [accountTwo, setccountTwo] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoader(true);
+
+        // Simula delay
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const tempCategory = [];
-        mockupCategories.map((c) => {
-          const categoryOption = {
-            label: `${c.emoji} ${c.name} - ${c.type === "E" ? "entrata" : "uscite"}`,
-            value: c.id,
+
+        // Carica le categorie disponibili
+        const categoriesOptions = mockupCategories.map((category) => {
+          const option = {
+            label: `${category.emoji} ${category.name} - ${category.type === "E" ? "Entrata" : "Uscita"}`,
+            value: category.id,
+            type: category.type,
           };
 
-          if (categoryId && c.id === categoryId) {
-            setCategory(categoryOption);
+          // Se esiste un categoryId selezionato, impostalo come default
+          if (categoryId && category.id === categoryId) {
+            setCategory(option);
           }
 
-          tempCategory.push(categoryOption);
+          return option;
         });
 
-        setCategories(tempCategory);
+        // Carica gli account disponibili
+        const accountsOptions = mockupAccounts.map((account) => {
+          const option = {
+            label: `${account.emoji} ${account.name}`,
+            value: account.id,
+            type: account.type,
+          };
+
+          // Se esiste un account selezionato, impostalo come default
+          if (accountOne && account.id === accountOne) {
+            setAccountOne(option);
+          }
+
+          return option;
+        });
+
+        setCategories(categoriesOptions);
+        setAccounts(accountsOptions);
       } finally {
         setLoader(false);
       }
@@ -292,25 +323,108 @@ export function DialogCreateOrEditMovement() {
     fetchData();
   }, []);
 
-  const [categories, setCategories] = useState([]);
+  const defaultFormValues = {
+    date: formatDate(movementDate, "yyyy-MM-dd"),
+    time: formatDate(movementDate, "HH:mm"),
+    category: "",
+    amountOne: "",
+    isVoucher: false,
+    amountTwo: "",
+    description: movementDescription ?? "",
+  };
+  const [formValues, setFormValues] = useState(defaultFormValues);
 
-  const [date, setDate] = useState(formatDate(movementDate, "yyyy-MM-dd"));
-  const [time, setTime] = useState(formatDate(movementDate, "HH:mm"));
+  const defaultFormErrors = Object.fromEntries(
+    Object.keys(defaultFormValues).map((key) => [key, ""]),
+  );
+  const [formErrors, setFormErrors] = useState(defaultFormErrors);
 
-  const [category, setCategory] = useState();
+  // INPUT MASK
+  const formMask = {
+    amountOne: [
+      { mask: (value) => value.replace(".", ",") },
+      { mask: (value) => value.replace(/[^0-9,]/g, "") },
+      {
+        mask: (value) => {
+          if (value.startsWith(",")) value = "0" + value; // aggiunge 0 se inizia con ,
+          const parts = value.split(",");
+          if (parts.length > 2) return parts[0];
+          const integerPart = parts[0].slice(0, 10);
+          const decimalPart = parts[1]?.slice(0, 2);
+          return decimalPart !== undefined
+            ? `${integerPart},${decimalPart}`
+            : integerPart;
+        },
+      },
+    ],
+    amountTwo: [
+      { mask: (value) => value.replace(".", ",") },
+      { mask: (value) => value.replace(/[^0-9,]/g, "") },
+      {
+        mask: (value) => {
+          if (value.startsWith(",")) value = "0" + value;
+          const parts = value.split(",");
+          if (parts.length > 2) return parts[0];
+          const integerPart = parts[0].slice(0, 10);
+          const decimalPart = parts[1]?.slice(0, 2);
+          return decimalPart !== undefined
+            ? `${integerPart},${decimalPart}`
+            : integerPart;
+        },
+      },
+    ],
+  };
 
-  // variabili conto1 e importo1
-  const [accountOne, setAccountOne] = useState();
-  const [amountOne, setAmountOne] = useState("");
+  // FORM VALIDATOR
+  const formValidator = {
+    amountOne: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Importo obbligatorio",
+      },
+      {
+        validate: (value) => /^\d{1,10}(,\d{1,2})?$/.test(value),
+        message: "Formato non valido",
+      },
+    ],
+    amountTwo: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Importo obbligatorio",
+      },
+      {
+        validate: (value) => /^\d{1,10}(,\d{1,2})?$/.test(value),
+        message: "Formato non valido",
+      },
+    ],
+    category: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Categoria obbligatoria",
+      },
+    ],
+  };
 
-  // variabile per gestire se account1 è un buono
-  const [isVoucher, setIsVoucher] = useState(false);
+  // HANDLER GENERICO
+  const handleChange = (field, value) => {
+    const maskedValue = formMask[field]
+      ? applyMaskField(field, value, formMask)
+      : value;
 
-  // variabili conto2 e importo2
-  const [accountTwo, setAccountTwo] = useState();
-  const [amountTwo, setAmountTwo] = useState("");
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: maskedValue,
+    }));
 
-  const [description, setDescription] = useState(movementDesc ?? "");
+    const error = formValidator[field]
+      ? validateField(field, maskedValue, formValidator)
+      : "";
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [field]: error,
+    }));
+  };
 
   return (
     <Dialog
@@ -356,8 +470,8 @@ export function DialogCreateOrEditMovement() {
                 required
                 type="date"
                 iconLeft={<Calendar />}
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                value={formValues.date}
+                onChange={(e) => handleChange("date", e.target.value)}
                 variant="outline"
               />
               <Input
@@ -366,8 +480,8 @@ export function DialogCreateOrEditMovement() {
                 required
                 type="time"
                 iconLeft={<Clock />}
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
+                value={formValues.time}
+                onChange={(e) => handleChange("time", e.target.value)}
                 variant="outline"
               />
               <div className="grid col-span-2">
@@ -375,8 +489,8 @@ export function DialogCreateOrEditMovement() {
                   label={"Categoria"}
                   required
                   value={category}
-                  setValue={setCategory}
                   options={categories}
+                  setValue={setCategory}
                   classNameTrigger={
                     "border-1! bg-transparent! hover:bg-transparent!"
                   }
@@ -388,10 +502,7 @@ export function DialogCreateOrEditMovement() {
                   required
                   value={accountOne}
                   setValue={setAccountOne}
-                  options={Array.from({ length: 5 }, (_, i) => ({
-                    value: "value" + i,
-                    label: "label" + i,
-                  }))}
+                  options={accounts}
                   classNameTrigger={
                     "border-1! bg-transparent! hover:bg-transparent!"
                   }
@@ -401,13 +512,13 @@ export function DialogCreateOrEditMovement() {
                 <Input
                   label={"Importo"}
                   required
-                  value={amountOne}
-                  onChange={(e) => setAmountOne(e.target.value)}
+                  value={formValues.amountOne}
+                  onChange={(e) => handleChange("amountOne", e.target.value)}
                   placeholder="0,00"
                   variant="outline"
                 />
               </div>
-              {isVoucher && (
+              {formValues.isVoucher && (
                 <>
                   <div className="grid col-span-2">
                     <SelectCustom
@@ -424,8 +535,10 @@ export function DialogCreateOrEditMovement() {
                   <div className="grid col-span-2">
                     <Input
                       label={"Importo2"}
-                      value={amountTwo}
-                      onChange={(e) => setAmountTwo(e.target.value)}
+                      value={formValues.amountTwo}
+                      onChange={(e) =>
+                        handleChange("amountTwo", e.target.value)
+                      }
                       placeholder="0,00"
                       variant="secondary"
                       className="border-0!"
@@ -438,8 +551,8 @@ export function DialogCreateOrEditMovement() {
                   label={"Descrizione"}
                   type="textarea"
                   placeholder="Inserisci descrizione"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={formValues.description}
+                  onChange={(e) => handleChange("description", e.target.value)}
                   variant="outline"
                 />
               </div>
@@ -465,7 +578,14 @@ export function DialogCreateOrEditMovement() {
               >
                 Modifica
               </Button>
-              <Button variant="destructive" size="lg" className={"bg-red-500!"}>
+              <Button
+                variant="destructive"
+                size="lg"
+                className={"bg-red-500!"}
+                onClick={() => {
+                  console.log(formValues);
+                }}
+              >
                 Elimina
               </Button>
             </>

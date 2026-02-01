@@ -1,7 +1,7 @@
 "use client";
 
 import { useDialogCustom } from "@/context/DialogCustomContext";
-import { DialogCreateOrEditMovement } from "@/app/(dashboard)/movements/page";
+import { DialogCreateOrEditMovement } from "@/app/(pages)/(dashboard)/movements/page";
 
 export default function DialogCustom() {
   const { dialog } = useDialogCustom();
@@ -10,9 +10,9 @@ export default function DialogCustom() {
   if (!dialog.show || !dialog.type || !dialog.data) return;
   switch (dialog.type) {
     case "movement":
-      return <DialogCreateOrEditMovement/>;
-      
-      default:
-      return <DialogCreateOrEditMovement/>;
+      return <DialogCreateOrEditMovement />;
+
+    default:
+      return <DialogCreateOrEditMovement />;
   }
 }

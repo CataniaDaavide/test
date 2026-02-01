@@ -149,11 +149,11 @@ export function SelectCustom({
                 className="text-sm h-10"
               />
             )}
-            <ScrollArea className="h-32 pr-2">
+            <ScrollArea className="h-32">
               <CommandGroup>
-                {filteredOptions.map((option) => (
+                {filteredOptions.map((option, index) => (
                   <CommandItem
-                    key={option.value}
+                    key={index}
                     onSelect={() => handleSelect(option)}
                     className={cn(
                       "justify-between cursor-pointer",
@@ -279,15 +279,15 @@ function MultiSelect({
               <CommandInput placeholder="Cerca..." className="text-sm h-10" />
             )}
 
-            <ScrollArea className="h-32 pr-1">
+            <ScrollArea className="h-32">
               <CommandGroup>
-                {options.map((option) => {
+                {options.map((option, index) => {
                   const isSelected = value.includes(option.value);
                   const disabled = !isSelected && value.length >= maxSelected;
 
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={index}
                       onSelect={() => !disabled && toggleSelect(option.value)}
                       className={cn(
                         "justify-between cursor-pointer",

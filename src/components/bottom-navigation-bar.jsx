@@ -2,9 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { menuItems } from "@/data/menu-items";
-import { useError } from "@/context/ErrorContext";
+import { useMessage } from "@/context/MessageContext";
 import { useDialogCustom } from "@/context/DialogCustomContext";
+import { menuItems } from "@/data/temp-data";
 
 export function BottomNavigationBar() {
   return (
@@ -20,7 +20,7 @@ export function BottomNavigationBar() {
 
 function BottomNavigationBarItem({ item }) {
   const { setDialog } = useDialogCustom();
-  const { setError } = useError();
+  const { setError } = useMessage();
   const { title, icon: Icon, link, action } = item;
 
   if (action) {
