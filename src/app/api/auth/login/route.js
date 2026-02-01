@@ -61,7 +61,8 @@ export async function POST(req) {
       process.env.SECRET_TOKEN
     );
 
-    //salvataggio dei cookie di sessione
+    //salvataggio dei cookie di sessione (dopo la chiusura del browser non sarà più valido)
+    // per evitare questo aggiungere un maxAge es: maxAge: 60 * 60 // durata 60 minuti
     const cookieStore = await cookies();
     cookieStore.set("sessionToken", sessionToken, {
       httpOnly: true,
