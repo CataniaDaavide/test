@@ -113,6 +113,7 @@ export default function LoginPage() {
         required
         placeholder={"Inserisci email"}
         className="lowercase"
+        value={formValues.email}
         onChange={(e) => handleChange("email", e.target.value)}
         error={formErrors.email}
       />
@@ -123,10 +124,28 @@ export default function LoginPage() {
         iconLeft={<Lock />}
         required
         placeholder={"•••••••"}
+        value={formValues.password}
         onChange={(e) => handleChange("password", e.target.value)}
         error={formErrors.password}
       />
+      <div className="w-full flex justify-end">
+        <Link href={"/reset-password"} className="text-xs underline">
+          Password dimenticata
+        </Link>
+      </div>
       <Button onClick={handleSubmit}>Accedi</Button>
+      <Button
+        onClick={() => {
+          setFormValues({
+            ...formValues,
+            email: "aaa@gmail.com",
+            password: "123",
+          });
+        }}
+        variant="secondary"
+      >
+        Credenziali demo
+      </Button>
       <p className="text-sm text-muted-foreground self-center flex gap-1">
         Non hai un account?
         <Link href={"/register"} className="font-bold underline text-primary">

@@ -39,14 +39,15 @@ export function Navbar() {
 function Logout() {
   const { setError } = useMessage();
   const router = useRouter();
-  
-  const handleLogout = (e) => {
+
+  const handleLogout = async (e) => {
     try {
       e.preventDefault();
       // Cancella cookie sessionToken
-      document.cookie = "sessionToken=; path=/; max-age=0;";
+      await fetch("/api/auth/logout", { method: "POST" });
 
       //reinderizza alla pagina di login
+
       router.push("/login");
     } catch (e) {
       setError({

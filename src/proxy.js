@@ -21,11 +21,7 @@ export function proxy(request) {
 
     const res = NextResponse.redirect(new URL("/login", request.url));
 
-    res.cookies.set("sessionToken", "", {
-      httpOnly: true,
-      path: "/",
-      expires: new Date(0),
-    });
+    res.cookies.delete("sessionToken");
 
     return res;
   }

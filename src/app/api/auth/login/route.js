@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { userCollection } from "@/models/users";
 import { base_checkEmail } from "@/lib/utils";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
   const rtn = { success: false, data: "", error: "" };
@@ -60,20 +61,21 @@ export async function POST(req) {
       process.env.SECRET_TOKEN
     );
 
+    //salvataggio dei cookie di sessione
+    const cookieStore = await cookies();
+    cookieStore.set("sessionToken", sessionToken, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 60 * 60, // durata 1 ora
+    });
+
     // --- RISPOSTA ---
     rtn.success = true;
     rtn.data = { message: "Login effettuato con successo." };
 
-    const res = new NextResponse(JSON.stringify(rtn), { status: 200 });
-
-    // --- SALVATAGGIO COOKIE ---
-    res.headers.set(
-      "Set-Cookie",
-      `sessionToken=${sessionToken}; HttpOnly; Path=/; Secure; SameSite=Strict; Max-Age=${60 * 60}`
-    );
-
-    return res;
-
+    return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
     console.error("Error in /api/auth/login:", error);
     rtn.error = error.message + " on endpoint:/api/auth/login";

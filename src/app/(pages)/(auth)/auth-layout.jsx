@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -23,9 +24,16 @@ export function AuthLayout({ title, desciption, children }) {
         >
           <Logo />
           <CardTitle>{title}</CardTitle>
-          <CardDescription className={"text-center"}>{desciption}</CardDescription>
+          <CardDescription className={"text-center"}>
+            {desciption}
+          </CardDescription>
         </CardHeader>
         <CardContent className={"flex flex-col gap-3"}>{children}</CardContent>
+        <CardFooter
+          className={"text-xs w-full flex items-center justify-center"}
+        >
+          <p>Versione: 2.0.0</p>
+        </CardFooter>
       </Card>
     </div>
   );
