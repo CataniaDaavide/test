@@ -39,10 +39,12 @@ export function Navbar() {
 function Logout() {
   const { setError } = useMessage();
   const router = useRouter();
+  
   const handleLogout = (e) => {
     try {
       e.preventDefault();
-      //TODO: aggiungere pulizia del context dell' utente
+      // Cancella cookie sessionToken
+      document.cookie = "sessionToken=; path=/; max-age=0;";
 
       //reinderizza alla pagina di login
       router.push("/login");
