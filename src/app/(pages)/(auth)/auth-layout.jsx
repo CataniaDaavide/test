@@ -29,12 +29,10 @@ export function AuthLayout({ title, desciption, children }) {
           </CardDescription>
         </CardHeader>
         <CardContent className={"flex flex-col gap-3"}>{children}</CardContent>
-        <CardFooter
-          className={"text-xs w-full flex items-center justify-center"}
-        >
-          <p>Versione: 2.0.0</p>
-        </CardFooter>
       </Card>
+      <div className="absolute bottom-3 inset-x-0 text-center">
+        <p className="text-sm">Versione: 2.0.0</p>
+      </div>
     </div>
   );
 }
