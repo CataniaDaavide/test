@@ -68,7 +68,6 @@ export async function POST(req) {
       secure: true,
       path: "/",
       sameSite: "strict",
-      maxAge: 60 * 60, // durata 1 ora
     });
 
     // --- RISPOSTA ---
