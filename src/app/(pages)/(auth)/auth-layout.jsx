@@ -30,7 +30,7 @@ export function AuthLayout({ title, desciption, children }) {
         </CardHeader>
         <CardContent className={"flex flex-col gap-3"}>{children}</CardContent>
       </Card>
-      <div className="absolute bottom-5 inset-x-0 text-center">
+      <div className="absolute bottom-10 inset-x-0 text-center">
         <p className="text-sm">Versione: 2.0.0</p>
       </div>
     </div>
