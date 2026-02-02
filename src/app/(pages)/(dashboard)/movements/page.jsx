@@ -18,10 +18,84 @@ import {
 } from "@/components/ui/dialog";
 import { useLoader } from "@/context/LoaderContext";
 import { mockupAccounts, mockupCategories } from "@/data/temp-data";
+import { Card } from "@/components/ui/card";
 
 export default function MovementPage() {
   const { setDialog } = useDialogCustom();
   const [showFilter, setShowFilter] = useState(false);
+
+  const defaultFormValues = {
+    dateStart: formatDate(new Date("2025-01-01").toISOString(), "yyyy-MM-dd"),
+    dateEnd: formatDate(undefined, "yyyy-MM-dd"),
+    priceMin: "0,00",
+    priceMax: "",
+    categories: [],
+    accounts: [],
+  };
+  const [formValues, setFormValues] = useState(defaultFormValues);
+
+  const defaultFormErrors = Object.fromEntries(
+    Object.keys(defaultFormValues).map((key) => [key, ""]),
+  );
+
+  // INPUT MASK
+  const formMask = {
+    amountOne: [
+      { mask: (value) => value.replace(".", ",") },
+      { mask: (value) => value.replace(/[^0-9,]/g, "") },
+      {
+        mask: (value) => {
+          if (value.startsWith(",")) value = "0" + value; // aggiunge 0 se inizia con ,
+          const parts = value.split(",");
+          if (parts.length > 2) return parts[0];
+          const integerPart = parts[0].slice(0, 10);
+          const decimalPart = parts[1]?.slice(0, 2);
+          return decimalPart !== undefined
+            ? `${integerPart},${decimalPart}`
+            : integerPart;
+        },
+      },
+    ],
+    amountTwo: [
+      { mask: (value) => value.replace(".", ",") },
+      { mask: (value) => value.replace(/[^0-9,]/g, "") },
+      {
+        mask: (value) => {
+          if (value.startsWith(",")) value = "0" + value;
+          const parts = value.split(",");
+          if (parts.length > 2) return parts[0];
+          const integerPart = parts[0].slice(0, 10);
+          const decimalPart = parts[1]?.slice(0, 2);
+          return decimalPart !== undefined
+            ? `${integerPart},${decimalPart}`
+            : integerPart;
+        },
+      },
+    ],
+  };
+
+  // HANDLER GENERICO
+  const handleChange = (field, value) => {
+    const maskedValue = formMask[field]
+      ? applyMaskField(field, value, formMask)
+      : value;
+
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: maskedValue,
+    }));
+  };
+
+  const handleReset = () => {
+    setFormValues({
+      dateStart: formatDate(new Date("2025-01-01").toISOString(), "yyyy-MM-dd"),
+      dateEnd: formatDate(undefined, "yyyy-MM-dd"),
+      priceMin: "0,00",
+      priceMax: "",
+      categories: [],
+      accounts: [],
+    });
+  };
 
   return (
     <>
@@ -49,7 +123,66 @@ export default function MovementPage() {
           <Plus /> Movimento
         </Button>
       </div>
-
+      {showFilter && (
+        <Card className={"p-6 mx-6"}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <Input
+              label="Data inizio"
+              type="date"
+              value={formValues.dateStart}
+              onChange={(e) => handleChange("dateStart", e.target.value)}
+            />
+            <Input
+              label="Data fine"
+              type="date"
+              value={formValues.dateEnd}
+              onChange={(e) => handleChange("dateEnd", e.target.value)}
+            />
+            <Input
+              label="Prezzo minimo"
+              placeholder="0,00"
+              value={formValues.priceMin}
+              onChange={(e) => handleChange("priceMin", e.target.value)}
+            />
+            <Input
+              label="Prezzo massimo"
+              placeholder="0,00"
+              value={formValues.priceMax}
+              onChange={(e) => handleChange("priceMax", e.target.value)}
+            />
+            <div className="grid col-span-2 md:col-span-1">
+              <SelectCustom
+                label={"Categorie"}
+                // multiSelect
+                // value={category}
+                // options={categories}
+                // setValue={setCategory}
+                classNameTrigger={
+                  "border-1! bg-transparent! hover:bg-transparent!"
+                }
+              />
+            </div>
+            <div className="grid col-span-2 md:col-span-1">
+              <SelectCustom
+                label={"Conti"}
+                // multiSelect
+                // value={category}
+                // options={categories}
+                // setValue={setCategory}
+                classNameTrigger={
+                  "border-1! bg-transparent! hover:bg-transparent!"
+                }
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:flex gap-3">
+            <Button variant="secondary" className={"md:w-32"}>Cerca</Button>
+            <Button variant="secondary" className={"md:w-32"} onClick={handleReset}>
+              Annulla
+            </Button>
+          </div>
+        </Card>
+      )}
       <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
         <FadeUp className="flex flex-col gap-3">
           <Button
@@ -77,6 +210,9 @@ export default function MovementPage() {
           >
             EDIT MOVEMENT
           </Button>
+          {Array.from({ length: 20 }).map((_, index) => (
+            <div key={index} className="h-32 bg-zinc-800 w-full mb-5" />
+          ))}
         </FadeUp>
       </ScrollArea>
     </>
