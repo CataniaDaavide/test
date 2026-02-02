@@ -104,7 +104,7 @@ export function DialogCreateOrEditMovement() {
 
   const [category, setCategory] = useState(null);
   const [accountOne, setAccountOne] = useState(null);
-  const [accountTwo, setccountTwo] = useState(null);
+  const [accountTwo, setAccountTwo] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -345,6 +345,8 @@ export function DialogCreateOrEditMovement() {
                 <Input
                   label={"Importo"}
                   required
+                  type="text"
+                  inputMode="decimal"
                   value={formValues.amountOne}
                   onChange={(e) => handleChange("amountOne", e.target.value)}
                   placeholder="0,00"
@@ -368,6 +370,8 @@ export function DialogCreateOrEditMovement() {
                   <div className="grid col-span-2">
                     <Input
                       label={"Importo2"}
+                      type="text"
+                      inputMode="decimal"
                       value={formValues.amountTwo}
                       onChange={(e) =>
                         handleChange("amountTwo", e.target.value)
