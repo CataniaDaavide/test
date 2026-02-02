@@ -10,6 +10,9 @@ import { useMessage } from "@/context/MessageContext";
 import { ApiClient } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { useLoader } from "@/context/LoaderContext";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Field } from "@/components/ui/field";
 
 export default function LoginPage() {
   const { setMessage } = useMessage();
@@ -19,6 +22,7 @@ export default function LoginPage() {
   const defaultFormValues = {
     email: "",
     password: "",
+    rememberme: false,
   };
   const [formValues, setFormValues] = useState(defaultFormValues);
 
@@ -128,8 +132,20 @@ export default function LoginPage() {
         onChange={(e) => handleChange("password", e.target.value)}
         error={formErrors.password}
       />
-      <div className="w-full flex justify-end">
-        <Link href={"/reset-password"} className="text-xs underline">
+      <div className="w-full flex items-center justify-between">
+        <div className="flex gap-1">
+          <Field orientation="horizontal" className={"gap-2!"}>
+            <Checkbox
+              id="rememberme-checkbox"
+              name="rememberme-checkbox"
+              checked={formValues.rememberme}
+              onCheckedChange={(checked) => handleChange("rememberme", checked)}
+            />
+            <Label htmlFor="rememberme-checkbox">Ricordami</Label>
+          </Field>
+        </div>
+
+        <Link href={"/reset-password"} className="text-sm underline">
           Password dimenticata
         </Link>
       </div>

@@ -10,7 +10,7 @@ export async function POST(req) {
   const rtn = { success: false, data: "", error: "" };
 
   try {
-    const { email, password } = await req.json();
+    const { email, password, rememberme } = await req.json();
 
     // --- VALIDAZIONE INPUT ---
     if (!email || email.trim() === "") {
@@ -69,6 +69,7 @@ export async function POST(req) {
       secure: true,
       path: "/",
       sameSite: "strict",
+      maxAge: rememberme ? 30 * 24 * 60 * 60 : undefined
     });
 
     // --- RISPOSTA ---
