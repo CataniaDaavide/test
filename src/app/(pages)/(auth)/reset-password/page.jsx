@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { AtSign } from "lucide-react";
 import { AuthLayout } from "../auth-layout";
+import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { base_checkEmail, validateField } from "@/lib/utils";
-import { useLoader } from "@/context/LoaderContext";
-import { useMessage } from "@/context/MessageContext";
-import { ApiClient } from "@/lib/api-client";
 import { ButtonBack } from "@/components/button-back";
+import { useMessage } from "@/context/MessageContext";
+import { useLoader } from "@/context/LoaderContext";
+import { ApiClient } from "@/lib/api-client";
 
 export default function ResetPasswordPage() {
   const { setLoader } = useLoader();
   const { setMessage } = useMessage();
 
   const defaultFormValues = {
-    email: "",
+    password: "",
+    confirmPassword: "",
   };
   const [formValues, setFormValues] = useState(defaultFormValues);
 
@@ -26,18 +26,7 @@ export default function ResetPasswordPage() {
   const [formErrors, setFormErrors] = useState(defaultFormErrors);
 
   // FORM VALIDATOR
-  const formValidator = {
-    email: [
-      {
-        validate: (value) => value.trim() !== "",
-        message: "Email obbligatoria",
-      },
-      {
-        validate: (value) => base_checkEmail(value),
-        message: "Email non valida",
-      },
-    ],
-  };
+  const formValidator = {};
 
   // HANDLER GENERICO
   const handleChange = (field, value) => {
@@ -79,13 +68,6 @@ export default function ResetPasswordPage() {
 
       const api = new ApiClient();
       //   const response = await api.post("/api/auth/reset-password", formValues);
-
-      setMessage({
-        title: "Controlla la tua email",
-        status: "success",
-        description:
-          "Ti abbiamo inviato le istruzioni per recuperare la password al tuo indirizzo email.",
-      });
     } catch (e) {
       setMessage({
         title: `Errore ${e.status}`,
@@ -99,25 +81,39 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout
-      title={"Reimposta password"}
+      title={"Crea una nuova password"}
       desciption={
-        "Inserisci l'email associata al tuo account e ti invieremo un'email con le istruzioni per reimpostare la tua password"
+        "Inserisci una nuova password sicura per accedere nuovamente al tuo account."
       }
     >
       <div className="absolute top-3 left-3">
         <ButtonBack className={"text-5xl"} />
       </div>
       <Input
-        id="email"
-        label="Email"
+        id="password"
+        label="Password"
+        type="password"
+        iconLeft={<Lock />}
         required
-        iconLeft={<AtSign />}
-        placeholder={"Inserisci email"}
-        value={formValues.email}
-        onChange={(e) => handleChange("email", e.target.value)}
-        error={formErrors.email}
+        placeholder={"•••••••"}
+        value={formValues.password}
+        onChange={(e) => handleChange("password", e.target.value)}
+        error={formErrors.password}
       />
-      <Button onClick={handleSubmit}>Invia istruzioni</Button>
+      <Input
+        id="confirmPassword"
+        label="Conferma Password"
+        type="password"
+        iconLeft={<Lock />}
+        required
+        placeholder={"•••••••"}
+        //action vuoto evita di mostrare l'azione default del input type="password"
+        action={<></>}
+        value={formValues.confirmPassword}
+        onChange={(e) => handleChange("confirmPassword", e.target.value)}
+        error={formErrors.confirmPassword}
+      />
+      <Button onClick={handleSubmit}>Reset password</Button>
     </AuthLayout>
   );
 }
