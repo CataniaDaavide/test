@@ -154,3 +154,16 @@ input[type="password"] {
     display: none;
   }
 }
+
+
+/* Classe per nascondere la scrollbar mantenendo lo scroll attivo */
+.noscrollbar {
+  /* Nasconde scrollbar su Internet Explorer e vecchio Edge */
+  -ms-overflow-style: none;
+  /* Nasconde scrollbar su Firefox */
+  scrollbar-width: none;
+}
+/* Nasconde scrollbar su browser WebKit: Chrome, Safari, Opera */
+.noscrollbar::-webkit-scrollbar {
+  display: none;
+}

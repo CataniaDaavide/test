@@ -36,6 +36,7 @@ export function AuthLayout({ title, desciption, children }) {
     </div>
   );
 }
+
 //componente del logo usato nelle card di autenticazione
 function Logo() {
   return (

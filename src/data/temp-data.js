@@ -1,53 +1,53 @@
 import { Home, Folder, ArrowUpDown, CreditCard, Plus, UserRound } from "lucide-react";
 
 export const menuItems = [
-    {
-        title: "Dashboard",
-        description: "Panoramica delle tue finanze personali",
-        icon: Home,
-        link: "/",
-        menu: ["mobile", "desktop"],
+  {
+    title: "Dashboard",
+    description: "Panoramica delle tue finanze personali",
+    icon: Home,
+    link: "/",
+    menu: ["mobile", "desktop"],
+  },
+  {
+    title: "Categorie",
+    description: "Gestisci le categorie per entrate e uscite",
+    icon: Folder,
+    link: "/categories",
+    menu: ["mobile", "desktop"],
+  },
+  {
+    title: "add movement",
+    icon: Plus,
+    action: (setDialog) => {
+      setDialog({
+        show: true,
+        type: "movement",
+        data: {},
+      })
     },
-    {
-        title: "Categorie",
-        description: "Gestisci le categorie per entrate e uscite",
-        icon: Folder,
-        link: "/categories",
-        menu: ["mobile", "desktop"],
-    },
-    {
-        title: "add movement",
-        icon: Plus,
-        action: (setDialog) => {
-            setDialog({
-                show: true,
-                type: "movement",
-                data: {},
-            })
-        },
-        menu: ["mobile"],
-    },
-    {
-        title: "Movimenti",
-        description: "Gestisci tutte le tue entrate e uscite",
-        icon: ArrowUpDown,
-        link: "/movements",
-        menu: ["mobile", "desktop"],
-    },
-    {
-        title: "Conti",
-        description: "Gestisci le tue fonti di denaro",
-        icon: CreditCard,
-        link: "/accounts",
-        menu: ["mobile", "desktop"],
-    },
-    {
-        title: "Profilo",
-        description: "Gestisci i tuoi obiettivi di risparmio",
-        icon: UserRound,
-        link: "/profile",
-        menu: ["desktop"],
-    },
+    menu: ["mobile"],
+  },
+  {
+    title: "Movimenti",
+    description: "Gestisci tutte le tue entrate e uscite",
+    icon: ArrowUpDown,
+    link: "/movements",
+    menu: ["mobile", "desktop"],
+  },
+  {
+    title: "Conti",
+    description: "Gestisci le tue fonti di denaro",
+    icon: CreditCard,
+    link: "/accounts",
+    menu: ["mobile", "desktop"],
+  },
+  {
+    title: "Profilo",
+    description: "Gestisci i tuoi obiettivi di risparmio",
+    icon: UserRound,
+    link: "/profile",
+    menu: ["desktop"],
+  },
 ];
 
 export const mockupCategories = [
@@ -129,7 +129,7 @@ export const mockupAccounts = [
     userId: "682e280409285bb856379161",
     name: "Buono Pasto",
     emoji: "🍽️",
-    type: "U",
+    type: "voucher",
     hexColor: "#6FCF97",
     status: "A",
     __v: 0,
@@ -151,6 +151,16 @@ export const mockupAccounts = [
     emoji: "💵",
     type: "U",
     hexColor: "#FFD700",
+    status: "A",
+    __v: 0,
+  },
+  {
+    id: "acc6",
+    userId: "682e28040921232436379161",
+    name: "Buono Amazon",
+    emoji: "🎟️",
+    type: "voucher",
+    hexColor: "#6FCF97",
     status: "A",
     __v: 0,
   },

@@ -156,6 +156,22 @@ export function DialogCreateOrEditMovement() {
     fetchData();
   }, []);
 
+  //filtra gli account dopo aver selezionato un conto e il tipo è voucher
+  useEffect(() => {
+    if (accountOne?.type.toLowerCase() != "voucher") {
+      handleChange("isVoucher", false);
+      return;
+    }
+
+    handleChange("isVoucher", true);
+
+    setAccountsFiltered(
+      accounts.filter(
+        (a) => a.value != accountOne.value && a.type != "voucher",
+      ),
+    );
+  }, [accountOne]);
+
   const defaultFormValues = {
     date: formatDate(movementDate, "yyyy-MM-dd"),
     time: formatDate(movementDate, "HH:mm"),
@@ -358,13 +374,12 @@ export function DialogCreateOrEditMovement() {
                   <div className="grid col-span-2">
                     <SelectCustom
                       label={"Conto2"}
-                      search
                       value={accountTwo}
                       setValue={setAccountTwo}
-                      options={Array.from({ length: 5 }, (_, i) => ({
-                        value: "value" + i,
-                        label: "label" + i,
-                      }))}
+                      options={accountsFiltered}
+                      classNameTrigger={
+                        "border-1! bg-transparent! hover:bg-transparent!"
+                      }
                     />
                   </div>
                   <div className="grid col-span-2">
@@ -377,8 +392,7 @@ export function DialogCreateOrEditMovement() {
                         handleChange("amountTwo", e.target.value)
                       }
                       placeholder="0,00"
-                      variant="secondary"
-                      className="border-0!"
+                      variant="outline"
                     />
                   </div>
                 </>

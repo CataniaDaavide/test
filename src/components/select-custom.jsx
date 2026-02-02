@@ -136,6 +136,7 @@ export function SelectCustom({
 
         <PopoverContent
           style={{ width }}
+          onWheel={(e) => e.stopPropagation()}
           className={cn(
             "p-0 bg-background border border-border rounded-md shadow-md",
           )}
@@ -149,7 +150,7 @@ export function SelectCustom({
                 className="text-sm h-10"
               />
             )}
-            <ScrollArea className="h-32">
+            <ScrollArea className="h-32" noscrollbar>
               <CommandGroup>
                 {filteredOptions.map((option, index) => (
                   <CommandItem
@@ -157,7 +158,7 @@ export function SelectCustom({
                     onSelect={() => handleSelect(option)}
                     className={cn(
                       "justify-between cursor-pointer",
-                      value?.value === option.value && "bg-secondary!"
+                      value?.value === option.value && "bg-secondary!",
                     )}
                   >
                     {option.label}
@@ -272,6 +273,7 @@ function MultiSelect({
 
         <PopoverContent
           style={{ width }}
+          onWheel={(e) => e.stopPropagation()}
           className="p-0 bg-background border border-border rounded-md shadow-md"
         >
           <Command>
@@ -279,7 +281,7 @@ function MultiSelect({
               <CommandInput placeholder="Cerca..." className="text-sm h-10" />
             )}
 
-            <ScrollArea className="h-32">
+            <ScrollArea className="h-32" noscrollbar>
               <CommandGroup>
                 {options.map((option, index) => {
                   const isSelected = value.includes(option.value);
