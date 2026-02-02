@@ -34,10 +34,6 @@ export default function MovementPage() {
   };
   const [formValues, setFormValues] = useState(defaultFormValues);
 
-  const defaultFormErrors = Object.fromEntries(
-    Object.keys(defaultFormValues).map((key) => [key, ""]),
-  );
-
   // INPUT MASK
   const formMask = {
     amountOne: [
@@ -141,14 +137,30 @@ export default function MovementPage() {
             <Input
               label="Prezzo minimo"
               placeholder="0,00"
+              type="text"
+              inputMode="decimal"
               value={formValues.priceMin}
               onChange={(e) => handleChange("priceMin", e.target.value)}
+              onFocus={(e) => {
+                const value = parseInt(e.target.value.replace(",", "."));
+                if (value == 0) {
+                  handleChange("priceMin", "");
+                }
+              }}
             />
             <Input
               label="Prezzo massimo"
               placeholder="0,00"
+              type="text"
+              inputMode="decimal"
               value={formValues.priceMax}
               onChange={(e) => handleChange("priceMax", e.target.value)}
+              onFocus={(e) => {
+                const value = parseInt(e.target.value.replace(",", "."));
+                if (value == 0) {
+                  handleChange("priceMin", "");
+                }
+              }}
             />
             <div className="grid col-span-2 md:col-span-1">
               <SelectCustom
@@ -176,8 +188,14 @@ export default function MovementPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 md:flex gap-3">
-            <Button variant="secondary" className={"md:w-32"}>Cerca</Button>
-            <Button variant="secondary" className={"md:w-32"} onClick={handleReset}>
+            <Button variant="secondary" className={"md:w-32"}>
+              Cerca
+            </Button>
+            <Button
+              variant="secondary"
+              className={"md:w-32"}
+              onClick={handleReset}
+            >
               Annulla
             </Button>
           </div>
@@ -501,6 +519,12 @@ export function DialogCreateOrEditMovement() {
                   inputMode="decimal"
                   value={formValues.amountOne}
                   onChange={(e) => handleChange("amountOne", e.target.value)}
+                  onFocus={(e) => {
+                    const value = parseInt(e.target.value.replace(",", "."));
+                    if (value == 0) {
+                      handleChange("amountOne", "");
+                    }
+                  }}
                   placeholder="0,00"
                   variant="outline"
                 />
@@ -527,6 +551,14 @@ export function DialogCreateOrEditMovement() {
                       onChange={(e) =>
                         handleChange("amountTwo", e.target.value)
                       }
+                      onFocus={(e) => {
+                        const value = parseInt(
+                          e.target.value.replace(",", "."),
+                        );
+                        if (value == 0) {
+                          handleChange("amountTwo", "");
+                        }
+                      }}
                       placeholder="0,00"
                       variant="outline"
                     />
