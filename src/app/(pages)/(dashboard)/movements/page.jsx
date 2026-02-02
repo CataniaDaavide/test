@@ -295,7 +295,7 @@ export function DialogCreateOrEditMovement() {
 
         {/* Contenuto scrollabile */}
         <div className="flex-1 min-h-0 overflow-hidden">
-          <ScrollArea className="h-full overflow-y-auto pr-3">
+          <ScrollArea className="h-full overflow-y-auto" noscrollbar>
             <div className="grid grid-cols-2 gap-3">
               <Input
                 id="date"
