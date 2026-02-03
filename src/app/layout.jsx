@@ -7,6 +7,7 @@ import { MessageProvider } from "@/context/MessageContext";
 import DialogCustom from "@/components/dialog-custom";
 import { DialogCustomProvider } from "@/context/DialogCustomContext";
 import MessageDialog from "@/components/message-dialog";
+import { UserProvider } from "@/context/UserContext";
 
 const poppins = Poppins({
   subsets: ["latin"], // set di caratteri da caricare
@@ -44,16 +45,18 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <LoaderProvider>
-            <MessageProvider>
-              <DialogCustomProvider>
-                {children}
-                <Loader />
-                <MessageDialog />
-                <DialogCustom />
-              </DialogCustomProvider>
-            </MessageProvider>
-          </LoaderProvider>
+          <UserProvider>
+            <LoaderProvider>
+              <MessageProvider>
+                <DialogCustomProvider>
+                  {children}
+                  <Loader />
+                  <MessageDialog />
+                  <DialogCustom />
+                </DialogCustomProvider>
+              </MessageProvider>
+            </LoaderProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

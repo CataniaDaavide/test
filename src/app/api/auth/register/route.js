@@ -1,10 +1,8 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { userCollection } from "@/models/users";
 import { base_checkEmail } from "@/lib/utils";
-import { cookies } from "next/headers";
 
 export async function POST(req) {
   const rtn = { success: false, data: "", error: "" };
@@ -57,6 +55,8 @@ export async function POST(req) {
       surname: surname.trim(),
       email: email.trim(),
       password: hashedPassword,
+      bannerUrl: "",
+      avatarUrl: "",
       isActive: true,
       createdAt: now,
       createdBy: "system",

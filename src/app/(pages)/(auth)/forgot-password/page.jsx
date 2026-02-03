@@ -14,7 +14,7 @@ import { ButtonBack } from "@/components/button-back";
 export default function ForgotPasswordPage() {
   const { setLoader } = useLoader();
   const { setMessage } = useMessage();
-  const [disabled, setDisabled] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const defaultFormValues = {
     email: "",
@@ -79,10 +79,10 @@ export default function ForgotPasswordPage() {
       if (hasError) return;
 
       const api = new ApiClient();
-      //   const response = await api.post("/api/auth/reset-password", formValues);
+      const response = await api.post("/api/auth/forgot-password", formValues);
 
       //disabilita il pulsante per richidere l'email
-      setDisabled(true);
+      setSent(true);
 
       setMessage({
         title: "Controlla la tua email",
@@ -92,9 +92,12 @@ export default function ForgotPasswordPage() {
       });
     } catch (e) {
       setMessage({
-        title: `Errore ${e.status}`,
+        title:
+          e.status === 429
+            ? "Limite raggiunto"
+            : `Errore ${e.status}`,
         status: "error",
-        description: e.message || e.toString(),
+        description: e.error || "Si è verificato un errore.",
       });
     } finally {
       setLoader(false);
@@ -121,7 +124,7 @@ export default function ForgotPasswordPage() {
         onChange={(e) => handleChange("email", e.target.value)}
         error={formErrors.email}
       />
-      <Button onClick={handleSubmit} disabled={disabled}>
+      <Button onClick={handleSubmit} disabled={sent}>
         Invia istruzioni
       </Button>
     </AuthLayout>

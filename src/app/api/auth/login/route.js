@@ -74,8 +74,16 @@ export async function POST(req) {
 
     // --- RISPOSTA ---
     rtn.success = true;
-    rtn.data = { message: "Login effettuato con successo." };
-
+    rtn.data = {
+      message: "Login effettuato con successo.",
+      user: {
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        createdAt: user.createdAt
+      }
+    };
     return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
     console.error("Error in /api/auth/login:", error);

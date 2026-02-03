@@ -19,6 +19,8 @@ import {
 import { useLoader } from "@/context/LoaderContext";
 import { mockupAccounts, mockupCategories } from "@/data/temp-data";
 import { Card } from "@/components/ui/card";
+import { motion } from "motion/react";
+import { Anonymous_Pro } from "next/font/google";
 
 export default function MovementPage() {
   const { setDialog } = useDialogCustom();
@@ -120,91 +122,97 @@ export default function MovementPage() {
         </Button>
       </div>
       {showFilter && (
-        <Card className={"p-6 mb-3 gap-3 "}>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <Input
-              label="Data inizio"
-              type="date"
-              value={formValues.dateStart}
-              onChange={(e) => handleChange("dateStart", e.target.value)}
-            />
-            <Input
-              label="Data fine"
-              type="date"
-              value={formValues.dateEnd}
-              onChange={(e) => handleChange("dateEnd", e.target.value)}
-            />
-            <Input
-              label="Prezzo minimo"
-              placeholder="0,00"
-              type="text"
-              inputMode="decimal"
-              value={formValues.priceMin}
-              onChange={(e) => handleChange("priceMin", e.target.value)}
-              onFocus={(e) => {
-                const value = parseInt(e.target.value.replace(",", "."));
-                if (value == 0) {
-                  handleChange("priceMin", "");
-                }
-              }}
-              onBlur={(e) => {
-                const value = e.target.value;
-                if (value.length != 0) return;
-                handleChange("priceMin", "0,00");
-              }}
-            />
-            <Input
-              label="Prezzo massimo"
-              placeholder="0,00"
-              type="text"
-              inputMode="decimal"
-              value={formValues.priceMax}
-              onChange={(e) => handleChange("priceMax", e.target.value)}
-              onFocus={(e) => {
-                const value = parseInt(e.target.value.replace(",", "."));
-                if (value == 0) {
-                  handleChange("priceMin", "");
-                }
-              }}
-            />
-            <div className="grid col-span-2 md:col-span-1">
-              <SelectCustom
-                label={"Categorie"}
-                // multiSelect
-                // value={category}
-                // options={categories}
-                // setValue={setCategory}
-                classNameTrigger={
-                  "border-1! bg-transparent! hover:bg-transparent!"
-                }
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Card className={"p-6 mb-3 gap-3 "}>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <Input
+                label="Data inizio"
+                type="date"
+                value={formValues.dateStart}
+                onChange={(e) => handleChange("dateStart", e.target.value)}
               />
-            </div>
-            <div className="grid col-span-2 md:col-span-1">
-              <SelectCustom
-                label={"Conti"}
-                // multiSelect
-                // value={category}
-                // options={categories}
-                // setValue={setCategory}
-                classNameTrigger={
-                  "border-1! bg-transparent! hover:bg-transparent!"
-                }
+              <Input
+                label="Data fine"
+                type="date"
+                value={formValues.dateEnd}
+                onChange={(e) => handleChange("dateEnd", e.target.value)}
               />
+              <Input
+                label="Prezzo minimo"
+                placeholder="0,00"
+                type="text"
+                inputMode="decimal"
+                value={formValues.priceMin}
+                onChange={(e) => handleChange("priceMin", e.target.value)}
+                onFocus={(e) => {
+                  const value = parseInt(e.target.value.replace(",", "."));
+                  if (value == 0) {
+                    handleChange("priceMin", "");
+                  }
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value.length != 0) return;
+                  handleChange("priceMin", "0,00");
+                }}
+              />
+              <Input
+                label="Prezzo massimo"
+                placeholder="0,00"
+                type="text"
+                inputMode="decimal"
+                value={formValues.priceMax}
+                onChange={(e) => handleChange("priceMax", e.target.value)}
+                onFocus={(e) => {
+                  const value = parseInt(e.target.value.replace(",", "."));
+                  if (value == 0) {
+                    handleChange("priceMin", "");
+                  }
+                }}
+              />
+              <div className="grid col-span-2 md:col-span-1">
+                <SelectCustom
+                  label={"Categorie"}
+                  // multiSelect
+                  // value={category}
+                  // options={categories}
+                  // setValue={setCategory}
+                  classNameTrigger={
+                    "border-1! bg-transparent! hover:bg-transparent!"
+                  }
+                />
+              </div>
+              <div className="grid col-span-2 md:col-span-1">
+                <SelectCustom
+                  label={"Conti"}
+                  // multiSelect
+                  // value={category}
+                  // options={categories}
+                  // setValue={setCategory}
+                  classNameTrigger={
+                    "border-1! bg-transparent! hover:bg-transparent!"
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-2 md:flex gap-3">
-            <Button variant="secondary" className={"md:w-32"}>
-              Cerca
-            </Button>
-            <Button
-              variant="secondary"
-              className={"md:w-32"}
-              onClick={handleReset}
-            >
-              Annulla
-            </Button>
-          </div>
-        </Card>
+            <div className="grid grid-cols-2 md:flex gap-3">
+              <Button variant="secondary" className={"md:w-32"}>
+                Cerca
+              </Button>
+              <Button
+                variant="secondary"
+                className={"md:w-32"}
+                onClick={handleReset}
+              >
+                Annulla
+              </Button>
+            </div>
+          </Card>
+        </motion.div>
       )}
       <ScrollArea className="flex-1 min-h-0 w-full" noscrollbar>
         <FadeUp className="flex flex-col gap-3">
@@ -335,7 +343,7 @@ export function DialogCreateOrEditMovement() {
     date: formatDate(movementDate, "yyyy-MM-dd"),
     time: formatDate(movementDate, "HH:mm"),
     category: "",
-    amountOne: "",
+    amountOne: "0,00",
     isVoucher: false,
     amountTwo: "",
     description: movementDescription ?? "",
@@ -532,6 +540,11 @@ export function DialogCreateOrEditMovement() {
                   }}
                   placeholder="0,00"
                   variant="outline"
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    if (value.length != 0) return;
+                    handleChange("amountOne", "0,00");
+                  }}
                 />
               </div>
               {formValues.isVoucher && (

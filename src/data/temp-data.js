@@ -1,4 +1,4 @@
-import { Home, Folder, ArrowUpDown, CreditCard, Plus, UserRound } from "lucide-react";
+import { Home, Folder, ArrowUpDown, CreditCard, Plus, UserRound, ArrowUpCircle, ArrowDownCircle, Wallet, TrendingUp } from "lucide-react";
 
 export const menuItems = [
   {
@@ -163,5 +163,37 @@ export const mockupAccounts = [
     hexColor: "#6FCF97",
     status: "A",
     __v: 0,
+  },
+];
+
+
+export const mockupStats = [
+  {
+    title: "Entrate del mese",
+    value: "€ 2.450,00",
+    percentage: "+12.5%",
+    trend: "up", // up = verde
+    icon: <ArrowUpCircle className="w-4 h-4 text-emerald-500" />,
+  },
+  {
+    title: "Uscite del mese",
+    value: "€ 1.120,00",
+    percentage: "+4.2%",
+    trend: "down", // in finanza, se le uscite salgono è "male" (rosso)
+    icon: <ArrowDownCircle className="w-4 h-4 text-rose-500" />,
+  },
+  {
+    title: "Saldo Totale",
+    value: "€ 14.890,42",
+    percentage: "+2.1%",
+    trend: "up",
+    icon: <Wallet className="w-4 h-4 text-blue-500" />,
+  },
+  {
+    title: "Risparmio",
+    value: "€ 1.330,00",
+    percentage: "-0.5%",
+    trend: "down",
+    icon: <TrendingUp className="w-4 h-4 text-amber-500" />,
   },
 ];

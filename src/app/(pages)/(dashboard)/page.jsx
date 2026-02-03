@@ -7,8 +7,19 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-     <ScrollArea className="flex flex-1 min-h-0 w-full" noscrollbar>
+    <ScrollArea className="flex flex-1 min-h-0 w-full px-5" noscrollbar>
       <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
+
+        {/*Benvenuto */}
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold tracking-tight">
+            Bentornato, Mario
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Ecco cosa è successo alle tue finanze oggi, 3 Febbraio.
+          </p>
+        </div>
+
         <Statistics />
         <div className="h-full w-full grid grid-cols-1 xl:grid-cols-4 xl:gap-3">
           <div className="col-span-3">

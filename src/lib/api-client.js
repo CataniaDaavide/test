@@ -1,5 +1,5 @@
 export class ApiClient {
-    constructor(defaultTimeout = 15000) {
+    constructor(defaultTimeout = 30 * 1000) {
         this.defaultTimeout = defaultTimeout;
     }
 
@@ -43,6 +43,7 @@ export class ApiClient {
 
         try {
             const response = await fetch(url, options);
+            console.log(response)
             clearTimeout(timeoutId);
 
             if (!response.ok) {

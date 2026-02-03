@@ -15,7 +15,7 @@ export function Navbar() {
   const title = currentItem?.title || "undefined";
 
   return (
-    <div className="sticky w-full p-3 flex items-center justify-between">
+    <div className="sticky w-full py-3 flex items-center justify-between">
       <div className="flex items-center justify-center">
         <ButtonBack className={"p-2"} />
         <div className="flex flex-col">

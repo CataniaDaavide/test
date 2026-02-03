@@ -9,12 +9,17 @@ import { ButtonBack } from "@/components/button-back";
 import { useMessage } from "@/context/MessageContext";
 import { useLoader } from "@/context/LoaderContext";
 import { ApiClient } from "@/lib/api-client";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ResetPasswordPage() {
   const { setLoader } = useLoader();
   const { setMessage } = useMessage();
+  const params = useSearchParams();
+  const token = params.get("token");
+  const router = useRouter();
 
   const defaultFormValues = {
+    token: token,
     password: "",
     confirmPassword: "",
   };
@@ -67,12 +72,24 @@ export default function ResetPasswordPage() {
       if (hasError) return;
 
       const api = new ApiClient();
-      //   const response = await api.post("/api/auth/reset-password", formValues);
-    } catch (e) {
+      const response = await api.post("/api/auth/reset-password", formValues);
+
       setMessage({
-        title: `Errore ${e.status}`,
+        title: "Password reimpostata",
+        status: "success",
+        description: "La password è stata reimpostata con successo.",
+        actions: [
+          <Button variant="outline" onClick={() => router.push("/login")}>
+            Vai al login
+          </Button>,
+        ],
+      });
+    } catch (e) {
+      console.log(e);
+      setMessage({
+        title: e.status === 429 ? "Limite raggiunto" : `Errore ${e.status}`,
         status: "error",
-        description: e.message || e.toString(),
+        description: e.error || "Si è verificato un errore.",
       });
     } finally {
       setLoader(false);

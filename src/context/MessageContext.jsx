@@ -8,7 +8,9 @@ Lo state ora può contenere:
   status: "info" | "success" | "error" | "warning",
   title: string,
   description: string,
-  actions: [ { label: string, onClick: function, variant?: string } ]
+  actions: [ <Button variant="outline" onClick={() => router.push("/login")}>
+    Vai al login
+  </Button> ]
 }
 */
 
