@@ -6,7 +6,7 @@ export default function DashboardLayout({ children }) {
   return (
     <>
       <Sidebar />
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col p-3 md:p-6">
         <Navbar />
         {children}
         <BottomNavigationBar />

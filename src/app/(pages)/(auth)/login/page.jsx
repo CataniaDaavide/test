@@ -145,7 +145,7 @@ export default function LoginPage() {
           </Field>
         </div>
 
-        <Link href={"/reset-password"} className="text-sm underline">
+        <Link href={"/forgot-password"} className="text-sm underline">
           Password dimenticata
         </Link>
       </div>

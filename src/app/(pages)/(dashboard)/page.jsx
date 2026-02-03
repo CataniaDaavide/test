@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-     <ScrollArea className="flex flex-1 min-h-0 w-full p-6 pt-0" noscrollbar>
+     <ScrollArea className="flex flex-1 min-h-0 w-full" noscrollbar>
       <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
         <Statistics />
         <div className="h-full w-full grid grid-cols-1 xl:grid-cols-4 xl:gap-3">

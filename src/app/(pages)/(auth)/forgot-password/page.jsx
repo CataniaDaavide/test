@@ -11,9 +11,10 @@ import { useMessage } from "@/context/MessageContext";
 import { ApiClient } from "@/lib/api-client";
 import { ButtonBack } from "@/components/button-back";
 
-export default function ResetPasswordPage() {
+export default function ForgotPasswordPage() {
   const { setLoader } = useLoader();
   const { setMessage } = useMessage();
+  const [disabled, setDisabled] = useState(false);
 
   const defaultFormValues = {
     email: "",
@@ -80,6 +81,9 @@ export default function ResetPasswordPage() {
       const api = new ApiClient();
       //   const response = await api.post("/api/auth/reset-password", formValues);
 
+      //disabilita il pulsante per richidere l'email
+      setDisabled(true);
+
       setMessage({
         title: "Controlla la tua email",
         status: "success",
@@ -117,7 +121,9 @@ export default function ResetPasswordPage() {
         onChange={(e) => handleChange("email", e.target.value)}
         error={formErrors.email}
       />
-      <Button onClick={handleSubmit}>Invia istruzioni</Button>
+      <Button onClick={handleSubmit} disabled={disabled}>
+        Invia istruzioni
+      </Button>
     </AuthLayout>
   );
 }

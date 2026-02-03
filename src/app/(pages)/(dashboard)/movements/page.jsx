@@ -95,7 +95,7 @@ export default function MovementPage() {
 
   return (
     <>
-      <div className={"w-full flex justify-end gap-3 px-6"}>
+      <div className={"w-full flex justify-end gap-3 mb-3"}>
         <Button variant="secondary" size="icon">
           <RefreshCcw />
         </Button>
@@ -120,7 +120,7 @@ export default function MovementPage() {
         </Button>
       </div>
       {showFilter && (
-        <Card className={"p-6 mx-6"}>
+        <Card className={"p-6 mb-3 gap-3 "}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <Input
               label="Data inizio"
@@ -146,6 +146,11 @@ export default function MovementPage() {
                 if (value == 0) {
                   handleChange("priceMin", "");
                 }
+              }}
+              onBlur={(e) => {
+                const value = e.target.value;
+                if (value.length != 0) return;
+                handleChange("priceMin", "0,00");
               }}
             />
             <Input
@@ -201,7 +206,7 @@ export default function MovementPage() {
           </div>
         </Card>
       )}
-      <ScrollArea className="flex-1 min-h-0 w-full p-6" noscrollbar>
+      <ScrollArea className="flex-1 min-h-0 w-full" noscrollbar>
         <FadeUp className="flex flex-col gap-3">
           <Button
             onClick={() =>
