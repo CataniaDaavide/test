@@ -9,17 +9,17 @@ import { ButtonBack } from "@/components/button-back";
 import { useMessage } from "@/context/MessageContext";
 import { useLoader } from "@/context/LoaderContext";
 import { ApiClient } from "@/lib/api-client";
-import { useRouter, useSearchParams } from "next/navigation";
+// import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ResetPasswordPage() {
   const { setLoader } = useLoader();
   const { setMessage } = useMessage();
-  const params = useSearchParams();
-  const token = params.get("token");
-  const router = useRouter();
+  // const params = useSearchParams();
+  // const token = params.get("token");
+  // const router = useRouter();
 
   const defaultFormValues = {
-    token: token,
+    // token: token,
     password: "",
     confirmPassword: "",
   };
@@ -78,11 +78,11 @@ export default function ResetPasswordPage() {
         title: "Password reimpostata",
         status: "success",
         description: "La password è stata reimpostata con successo.",
-        actions: [
-          <Button variant="outline" onClick={() => router.push("/login")}>
-            Vai al login
-          </Button>,
-        ],
+        // actions: [
+        //   <Button variant="outline" onClick={() => router.push("/login")}>
+        //     Vai al login
+        //   </Button>,
+        // ],
       });
     } catch (e) {
       console.log(e);

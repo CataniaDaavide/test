@@ -3,6 +3,7 @@ import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
 import { Pencil, MapPin, Link as LinkIcon, Calendar } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { formatDate } from "@/lib/utils";
 
 export default function ProfilePage() {
   const bannerUrl =
@@ -55,7 +56,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Info Utente */}
-        <div className="mt-14 flex flex-col gap-3">
+        <div className="mt-5 flex flex-col gap-3">
           <h1 className="text-2xl font-bold">Mario Rossi</h1>
           <p className="text-muted-foreground -mt-2">@mario_finanze</p>
 
@@ -67,16 +68,7 @@ export default function ProfilePage() {
           {/* Metadata */}
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-1">
-              <MapPin className="w-4 h-4" /> Milano, Italia
-            </div>
-            <div className="flex items-center gap-1">
-              <LinkIcon className="w-4 h-4" />
-              <a href="#" className="text-emerald-500 hover:underline">
-                portafoglio.com
-              </a>
-            </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" /> Iscritto Gennaio 2024
+              <Calendar className="w-4 h-4" /> Iscritto {formatDate(new Date("2026-01-01").toISOString(), "MMMM yyyy")}
             </div>
           </div>
 

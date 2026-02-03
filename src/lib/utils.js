@@ -12,16 +12,34 @@ export function cn(...inputs) {
  * @param isoString Data ISO (default: data attuale)
  * @param format Formato di output (es. "yyyy/MM/dd", "dd-MM-yyyy HH:mm:ss")
  * @returns Data formattata come stringa
+ * ESEMPI
+ * formatDate("2025-01-15T10:30:00Z", "MMMM yyyy"); // "Gennaio 2025"
+ * formatDate("2025-01-15T10:30:00Z", "dd MMMM yyyy"); // "15 Gennaio 2025"
+ * formatDate("2025-01-15T10:30:00Z", "dd/MM/yyyy"); // "15/01/2025" 
+ * formatDate(undefined, "MMMM yyyy"); // mese/anno attuale
+ */
+/**
+ * Formatta una data in formato ISO in una stringa personalizzata.
+ * Token supportati: yyyy, MM, dd, HH, mm, ss, MMMM
+ *
+ * @param isoString Data ISO (default: data attuale)
+ * @param format Formato di output (es. "yyyy/MM/dd", "dd-MM-yyyy HH:mm:ss", "MMMM yyyy")
+ * @returns Data formattata come stringa
  */
 export function formatDate(
   isoString = new Date().toISOString(),
-  format
+  format = "yyyy-MM-dd"
 ) {
   const date = new Date(isoString);
 
   if (isNaN(date.getTime())) return "";
 
   const pad = (n) => String(n).padStart(2, "0");
+
+  const months = [
+    "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+    "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+  ];
 
   const map = {
     yyyy: String(date.getFullYear()),
@@ -30,11 +48,12 @@ export function formatDate(
     HH: pad(date.getHours()),
     mm: pad(date.getMinutes()),
     ss: pad(date.getSeconds()),
+    MMMM: months[date.getMonth()],
   };
 
   return format.replace(
-    /yyyy|MM|dd|HH|mm|ss/g,
-    (token) => map[token],
+    /yyyy|MMMM|MM|dd|HH|mm|ss/g,
+    (token) => map[token]
   );
 }
 
