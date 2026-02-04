@@ -42,7 +42,7 @@ export default function MovementPage() {
 // riga di pulsanti azioni per la pagina dei movimenti
 function Actions({ setShowFilter, setDialog }) {
   return (
-    <div className={"w-full flex justify-end gap-3 px-5 mb-3"}>
+    <div className={"w-full flex md:justify-end gap-3 px-5 mb-3"}>
       <Button variant="secondary" size="icon">
         <RefreshCcw />
       </Button>
@@ -55,6 +55,7 @@ function Actions({ setShowFilter, setDialog }) {
       </Button>
       <Button
         variant="secondary"
+        className="flex-1 md:max-w-52"
         onClick={() =>
           setDialog({
             show: true,
@@ -63,7 +64,7 @@ function Actions({ setShowFilter, setDialog }) {
           })
         }
       >
-        <Plus /> Movimento
+        <Plus /> Crea movimento
       </Button>
     </div>
   );
@@ -145,7 +146,7 @@ function FilterCard() {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="px-5"
+      className="px-5 mb-5 "
     >
       <Card className={"p-6 mb-3 gap-3 "}>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -621,9 +622,7 @@ export function DialogCreateOrEditMovement() {
                 variant="destructive"
                 size="lg"
                 className={"bg-red-500!"}
-                onClick={() => {
-                  console.log(formValues);
-                }}
+                onClick={() => {}}
               >
                 Elimina
               </Button>

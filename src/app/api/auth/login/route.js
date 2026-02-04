@@ -82,13 +82,12 @@ export async function POST(req) {
         name: user.name,
         surname: user.surname,
         email: user.email,
-        bio: "",
+        bio: user.bio,
         bannerUrl: user.avatarUrl ?? "",
         avatarUrl: user.avatarUrl ?? "",
         createdAt: user.createdAt
       }
     };
-    console.log(rtn.data.user)
     return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
     console.error("Error in /api/auth/login:", error);

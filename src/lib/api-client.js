@@ -43,7 +43,6 @@ export class ApiClient {
 
         try {
             const response = await fetch(url, options);
-            console.log(response)
             clearTimeout(timeoutId);
 
             if (!response.ok) {

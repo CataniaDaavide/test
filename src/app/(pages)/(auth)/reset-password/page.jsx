@@ -85,7 +85,6 @@ export default function ResetPasswordPage() {
         // ],
       });
     } catch (e) {
-      console.log(e);
       setMessage({
         title: e.status === 429 ? "Limite raggiunto" : `Errore ${e.status}`,
         status: "error",

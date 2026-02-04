@@ -47,7 +47,7 @@ export async function GET(req) {
         name: user.name,
         surname: user.surname,
         email: user.email,
-        bio: "",
+        bio: user.bio,
         bannerUrl: user.avatarUrl ?? "",
         avatarUrl: user.avatarUrl ?? "",
         createdAt: user.createdAt

@@ -9,7 +9,6 @@ export async function POST(req) {
 
   try {
     const { token, password } = await req.json();
-    console.log(token, password)
 
     // --- VALIDAZIONE INPUT ---
     if (!token || token.trim() === "") {

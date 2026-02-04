@@ -1,7 +1,7 @@
 "use client";
 import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
-import { Pencil, Link as LinkIcon, Calendar } from "lucide-react";
+import { Pencil, Calendar } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDate } from "@/lib/utils";
 import { useUser } from "@/context/UserContext";
@@ -33,10 +33,7 @@ function Header({ user }) {
 
       {/* Pulsante Modifica */}
       <div className="absolute right-0 -bottom-12">
-        <Button
-          variant="outline"
-          className="rounded-full gap-2 border-zinc-700"
-        >
+        <Button className="rounded-full gap-2 bg-card hover:bg-card text-primary border">
           <Pencil className="w-4 h-4" />
           Modifica Profilo
         </Button>
@@ -76,9 +73,7 @@ function HeaderAvatar({ user }) {
           className="w-full h-full object-cover rounded-full"
         />
       ) : (
-        <span className="text-2xl md:text-4xl font-bold text-emerald-500">
-          {initials}
-        </span>
+        <span className="text-2xl md:text-4xl font-bold">{initials}</span>
       )}
     </div>
   );
