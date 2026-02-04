@@ -1,38 +1,41 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDialogCustom } from "@/context/DialogCustomContext";
+import { ListFilter, Plus, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 export default function CategoriesPage() {
+  const { setDialog } = useDialogCustom();
+  const [showFilter, setShowFilter] = useState(false);
+
   return (
     // <div className="w-full h-full flex items-center justify-center">
     // </div>
     <div className="flex-1 p-5 pt-0">
-      <Tabs defaultValue="overview">
+      <Tabs defaultValue="income">
         <TabsList className={"border bg-card p-1 h-auto!"}>
           <TabsTrigger
-            value="account"
+            value="income"
             className={
-              "data-[state=active]:bg-secondary border-0 rounded-lg shadow-none!"
+              "data-[state=active]:bg-secondary border-0 rounded shadow-none!"
             }
           >
-            Account
+            Entrate
           </TabsTrigger>
           <TabsTrigger
-            value="password"
+            value="expenses"
             className={
               "data-[state=active]:bg-secondary border-0 rounded-lg shadow-none!"
             }
           >
-            Password
+            Uscite
           </TabsTrigger>
         </TabsList>
 
-        <Card className="w-full h-32" />
-        
-        <p className="text-2xl font-bold">CategoriesPage</p>
-
-        <TabsContent value="account">
+        <Actions setShowFilter={setShowFilter} setDialog={setDialog} />
+        <TabsContent value="income">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero qui,
           tempora soluta quidem vitae sit voluptate nemo est tenetur blanditiis
           eius perferendis amet veniam quam! Impedit repellat, aspernatur
@@ -45,7 +48,7 @@ export default function CategoriesPage() {
           architecto? Nam nostrum impedit soluta neque praesentium earum,
           voluptates dolores dicta unde duci
         </TabsContent>
-        <TabsContent value="password">
+        <TabsContent value="expenses">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis
           quisquam, corrupti nemo eos tempora, adipisci error recusandae
           deleniti iusto quia autem natu
@@ -58,7 +61,7 @@ export default function CategoriesPage() {
 // riga di pulsanti azioni per la pagina deelle categorie
 function Actions({ setShowFilter, setDialog }) {
   return (
-    <div className={"w-full flex md:justify-end gap-3 px-5 mb-3"}>
+    <div className={"w-full flex md:justify-end gap-3 mb-3"}>
       <Button variant="secondary" size="icon">
         <RefreshCcw />
       </Button>
