@@ -37,7 +37,7 @@ export function Navbar() {
 
 //pulsante per fare il logout dell'account
 function Logout() {
-  const { setError } = useMessage();
+  const { setMessage } = useMessage();
   const router = useRouter();
 
   const handleLogout = async (e) => {
@@ -50,7 +50,7 @@ function Logout() {
 
       router.push("/login");
     } catch (e) {
-      setError({
+      setMessage({
         title: "Errore",
         description: e.toString(),
         status: "error",

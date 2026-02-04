@@ -78,12 +78,16 @@ export async function POST(req) {
       message: "Login effettuato con successo.",
       user: {
         _id: user._id,
+        username: user.username,
         name: user.name,
         surname: user.surname,
         email: user.email,
+        bannerUrl: user.avatarUrl ?? "",
+        avatarUrl: user.avatarUrl ?? "",
         createdAt: user.createdAt
       }
     };
+    console.log(rtn.data.user)
     return new NextResponse(JSON.stringify(rtn), { status: 200 });
   } catch (error) {
     console.error("Error in /api/auth/login:", error);

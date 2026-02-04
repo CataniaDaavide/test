@@ -13,10 +13,12 @@ import { useLoader } from "@/context/LoaderContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Field } from "@/components/ui/field";
+import { useUser } from "@/context/UserContext";
 
 export default function LoginPage() {
   const { setMessage } = useMessage();
   const { setLoader } = useLoader();
+  const { setUser } = useUser();
   const router = useRouter();
 
   const defaultFormValues = {
@@ -91,6 +93,8 @@ export default function LoginPage() {
 
       const api = new ApiClient();
       const response = await api.post("/api/auth/login", formValues);
+
+      setUser(response?.data?.user);
 
       router.push("/");
     } catch (e) {

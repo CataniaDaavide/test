@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Pencil, MapPin, Link as LinkIcon, Calendar } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDate } from "@/lib/utils";
+import { useUser } from "@/context/UserContext";
 
 export default function ProfilePage() {
-  const bannerUrl =
-    "https://images.unsplash.com/photo-1666615435088-4865bf5ed3fd?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-  const avatarUrl =
-    "https://images.unsplash.com/photo-1666615435088-4865bf5ed3fd?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  const { user } = useUser();
+
+  const bannerUrl = user?.bannerUrl ?? "";
+  const avatarUrl = user?.avatarUrl ?? "";
 
   return (
     <ScrollArea className="flex flex-1 min-h-0 w-full px-5" noscrollbar>
@@ -57,8 +58,10 @@ export default function ProfilePage() {
 
         {/* Info Utente */}
         <div className="mt-5 flex flex-col gap-3">
-          <h1 className="text-2xl font-bold">Mario Rossi</h1>
-          <p className="text-muted-foreground -mt-2">@mario_finanze</p>
+          <h1 className="text-2xl font-bold">
+            {user?.name} {user?.surname}
+          </h1>
+          <p className="text-muted-foreground -mt-2">@{user?.username}</p>
 
           <p className="max-w-xl text-sm md:text-base text-foreground/90">
             Risparmiatore seriale e investitore consapevole. Il mio obiettivo è
@@ -68,7 +71,8 @@ export default function ProfilePage() {
           {/* Metadata */}
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" /> Iscritto {formatDate(new Date("2026-01-01").toISOString(), "MMMM yyyy")}
+              <Calendar className="w-4 h-4" /> Iscritto{" "}
+              {formatDate(new Date("2026-01-01").toISOString(), "MMMM yyyy")}
             </div>
           </div>
 

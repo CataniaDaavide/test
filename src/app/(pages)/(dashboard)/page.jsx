@@ -1,19 +1,21 @@
+"use client";
 import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useUser } from "@/context/UserContext";
 import { ArrowRight, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
+  const { user } = useUser();
   return (
     <ScrollArea className="flex flex-1 min-h-0 w-full px-5" noscrollbar>
       <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
-
         {/*Benvenuto */}
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight">
-            Bentornato, Mario
+            Bentornato, {user?.name}
           </h1>
           <p className="text-sm text-muted-foreground">
             Ecco cosa è successo alle tue finanze oggi, 3 Febbraio.

@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import { useMessage } from "@/context/MessageContext";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { menuItems } from "@/data/temp-data";
 
@@ -20,7 +19,6 @@ export function BottomNavigationBar() {
 
 function BottomNavigationBarItem({ item }) {
   const { setDialog } = useDialogCustom();
-  const { setError } = useMessage();
   const { title, icon: Icon, link, action } = item;
 
   if (action) {
