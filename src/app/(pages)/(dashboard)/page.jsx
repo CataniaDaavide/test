@@ -8,21 +8,14 @@ import { ArrowRight, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
-  const { user } = useUser();
   return (
-    <ScrollArea className="flex flex-1 min-h-0 w-full px-5" noscrollbar>
+    <ScrollArea className="flex flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
       <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
         {/*Benvenuto */}
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold tracking-tight">
-            Bentornato, {user?.name}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Ecco cosa è successo alle tue finanze oggi, 3 Febbraio.
-          </p>
-        </div>
+        <WelcomeUser />
 
-        <Statistics />
+        <StatisticsCards />
+
         <div className="h-full w-full grid grid-cols-1 xl:grid-cols-4 xl:gap-3">
           <div className="col-span-3">
             <RecentMovements />
@@ -37,7 +30,36 @@ export default function Home() {
   );
 }
 
-function Statistics() {
+function WelcomeUser() {
+  const { user } = useUser();
+
+  // frasi motivazionali da mostrare in modo randomico
+  const motivationalPhrases = [
+    "Le tue finanze iniziano da qui. Tieni traccia di ogni movimento.",
+    "Un piccolo controllo oggi, grandi risultati domani.",
+    "Dai un’occhiata ai tuoi movimenti e mantieni il controllo del tuo denaro.",
+    "Aggiungi i tuoi movimenti e resta sempre al passo con le tue finanze.",
+    "Ogni movimento conta: costruisci il tuo futuro finanziario.",
+    "Più consapevolezza oggi, più libertà domani.",
+    "Tieni sotto controllo le spese e guida tu il tuo denaro.",
+    "Inizia ora: il tuo equilibrio finanziario parte da qui.",
+  ];
+
+  // recupero della frase motivazionale
+  const randomPhrase =
+    motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+
+  return (
+    <div className="flex flex-col gap-1">
+      <h1 className="text-2xl font-bold tracking-tight">
+        Bentornato, {user?.name}
+      </h1>
+      <p className="text-sm text-muted-foreground">{randomPhrase}</p>
+    </div>
+  );
+}
+
+function StatisticsCards() {
   return (
     <div className="flex flex-1 w-full flex-col gap-1">
       <div className="flex items-center justify-between">

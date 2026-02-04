@@ -55,6 +55,7 @@ export async function POST(req) {
       surname: surname.trim(),
       email: email.trim(),
       password: hashedPassword,
+      bio:"",
       bannerUrl: "",
       avatarUrl: "",
       isActive: true,

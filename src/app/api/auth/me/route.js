@@ -47,9 +47,10 @@ export async function GET(req) {
         name: user.name,
         surname: user.surname,
         email: user.email,
+        bio: "",
         bannerUrl: user.avatarUrl ?? "",
         avatarUrl: user.avatarUrl ?? "",
-        createdAt: user.createdAt,
+        createdAt: user.createdAt
       },
     };
 
