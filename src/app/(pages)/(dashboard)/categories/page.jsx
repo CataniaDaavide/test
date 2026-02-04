@@ -1,59 +1,53 @@
 "use client";
+import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDialogCustom } from "@/context/DialogCustomContext";
-import { ListFilter, Plus, RefreshCcw } from "lucide-react";
+import { mockupCategories } from "@/data/temp-data";
+import { cn, hexToRgba } from "@/lib/utils";
+import { ListFilter, Pen, Plus, RefreshCcw, Trash } from "lucide-react";
 import { useState } from "react";
 
 export default function CategoriesPage() {
   const { setDialog } = useDialogCustom();
   const [showFilter, setShowFilter] = useState(false);
 
-  return (
-    // <div className="w-full h-full flex items-center justify-center">
-    // </div>
-    <div className="flex-1 p-5 pt-0">
-      <Tabs defaultValue="income">
-        <TabsList className={"border bg-card p-1 h-auto!"}>
-          <TabsTrigger
-            value="income"
-            className={
-              "data-[state=active]:bg-secondary border-0 rounded shadow-none!"
-            }
-          >
-            Entrate
-          </TabsTrigger>
-          <TabsTrigger
-            value="expenses"
-            className={
-              "data-[state=active]:bg-secondary border-0 rounded-lg shadow-none!"
-            }
-          >
-            Uscite
-          </TabsTrigger>
-        </TabsList>
+  const tabs = [
+    { label: "Entrate", value: "income" },
+    { label: "Uscite", value: "expense" },
+  ];
+  const [activeTab, setActiveTab] = useState(tabs[0].value);
 
-        <Actions setShowFilter={setShowFilter} setDialog={setDialog} />
-        <TabsContent value="income">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero qui,
-          tempora soluta quidem vitae sit voluptate nemo est tenetur blanditiis
-          eius perferendis amet veniam quam! Impedit repellat, aspernatur
-          pariatur vitae, ea officiis nostrum vel sit illo odit nobis quos.
-          Excepturi error voluptate, asperiores voluptas eos consequatur
-          eligendi quaerat ab ducimus, dolore harum rem tempora. Adipisci,
-          deserunt laudantium, eveniet sunt nihil quidem modi quos debitis
-          cumque ut commodi maiores, voluptates animi iure ab neque. Quis ad
-          dolor facere recusandae facilis maxime itaque vel, ab aspernatur
-          architecto? Nam nostrum impedit soluta neque praesentium earum,
-          voluptates dolores dicta unde duci
-        </TabsContent>
-        <TabsContent value="expenses">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis
-          quisquam, corrupti nemo eos tempora, adipisci error recusandae
-          deleniti iusto quia autem natu
-        </TabsContent>
-      </Tabs>
+  return (
+    <>
+      <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      {/* actions */}
+      <Actions setShowFilter={setShowFilter} setDialog={setDialog} />
+      <Categories activeTab={activeTab} />
+    </>
+  );
+}
+
+function Tabs({ tabs, activeTab, setActiveTab }) {
+  return (
+    <div className="bg-card border rounded-lg p-1 w-fit mx-5 mb-3">
+      {tabs.map((t, index) => {
+        return (
+          <button
+            key={index}
+            className={cn(
+              "text-sm px-3 py-1 rounded cursor-pointer",
+              activeTab == t.value
+                ? "bg-secondary text-primary!"
+                : "text-muted-foreground",
+            )}
+            onClick={() => setActiveTab(t.value)}
+          >
+            {t.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -61,7 +55,7 @@ export default function CategoriesPage() {
 // riga di pulsanti azioni per la pagina deelle categorie
 function Actions({ setShowFilter, setDialog }) {
   return (
-    <div className={"w-full flex md:justify-end gap-3 mb-3"}>
+    <div className={"w-full flex md:justify-end gap-3 px-5 mb-3"}>
       <Button variant="secondary" size="icon">
         <RefreshCcw />
       </Button>
@@ -86,5 +80,64 @@ function Actions({ setShowFilter, setDialog }) {
         <Plus /> Crea categoria
       </Button>
     </div>
+  );
+}
+
+// lista di categorie in base al tipo richiesto dal tab
+function Categories({ activeTab }) {
+  return (
+    <>
+      <ScrollArea className="flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
+        <FadeUp className="flex flex-col gap-5">
+          {mockupCategories
+            .filter((c) => c.type == activeTab)
+            .map((c, index) => {
+              return <CategoryCard key={index} data={c} />;
+            })}
+        </FadeUp>
+      </ScrollArea>
+    </>
+  );
+}
+
+function CategoryCard({ data }) {
+  return (
+    <Card className="w-full flex-row! h-fit! items-center justify-between p-6 gap-3!">
+      <div className="flex w-full items-center gap-3">
+        <div
+          className="min-w-14 h-14 flex items-center justify-center border-2 rounded-full"
+          style={{
+            backgroundColor: hexToRgba(data.hexColor, 0.4),
+            borderColor: data.hexColor,
+          }}
+        >
+          {data.emoji}
+        </div>
+        <div className="flex flex-col gap-1">
+          <p className="break-all text-sm">{data.name}</p>
+          <p className="break-all text-sm text-muted-foreground">
+            {data.type == "income" ? "Entrata" : "Uscita"}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={"hover:bg-transparent!"}
+          onClick={() => {}}
+        >
+          <Pen />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={"hover:bg-transparent!"}
+          onClick={() => {}}
+        >
+          <Trash />
+        </Button>
+      </div>
+    </Card>
   );
 }

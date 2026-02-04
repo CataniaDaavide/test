@@ -132,3 +132,22 @@ export function base_checkEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }
+
+// ==============================
+//       COLOR / STYLE HELPERS
+// ==============================
+
+/**
+ * Converte un colore HEX in RGBA
+ * @param hex - es: "#FF7A5A"
+ * @param alpha - numero tra 0 e 1
+ * @returns es: "rgba(255, 122, 90, 0.1)"
+ */
+export function hexToRgba(hex, alpha = 1) {
+  if (!hex) return `rgba(0,0,0,${alpha})`;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
