@@ -15,9 +15,9 @@ export function Navbar() {
   const title = currentItem?.title || "undefined";
 
   return (
-    <div className="sticky w-full py-3 flex items-center justify-between">
+    <div className="sticky w-full py-3 px-3 md:px-5 flex items-center justify-between">
       <div className="flex items-center justify-center">
-        <ButtonBack className={"p-2"} />
+        <ButtonBack className={"p-2 flex md:hidden"} />
         <div className="flex flex-col">
           <p>{title}</p>
         </div>

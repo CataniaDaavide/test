@@ -88,7 +88,7 @@ function Categories({ activeTab }) {
   return (
     <>
       <ScrollArea className="flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
-        <FadeUp className="flex flex-col gap-5">
+        <FadeUp className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
           {mockupCategories
             .filter((c) => c.type == activeTab)
             .map((c, index) => {

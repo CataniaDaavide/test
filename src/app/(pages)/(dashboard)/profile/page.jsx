@@ -3,8 +3,9 @@ import { FadeUp } from "@/components/fade-up";
 import { Button } from "@/components/ui/button";
 import { Pencil, Calendar } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { useUser } from "@/context/UserContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -29,7 +30,7 @@ function Header({ user }) {
       <HeaderBanner bannerUrl={user?.bannerUrl} />
 
       {/* Avatar */}
-      <HeaderAvatar user={user} />
+      <HeaderAvatar user={user} className={"absolute -bottom-12 left-5"} />
 
       {/* Pulsante Modifica */}
       <div className="absolute right-0 -bottom-12">
@@ -44,7 +45,7 @@ function Header({ user }) {
 
 function HeaderBanner({ bannerUrl = "" }) {
   return (
-    <div className="w-full h-32 md:h-52 rounded-lg overflow-hidden bg-zinc-800">
+    <div className="w-full h-32 md:h-52 rounded-lg overflow-hidden bg-secondary">
       {bannerUrl ? (
         <img
           src={bannerUrl}
@@ -58,26 +59,32 @@ function HeaderBanner({ bannerUrl = "" }) {
   );
 }
 
-function HeaderAvatar({ user }) {
-  // recupero inizili dell'utente
+function HeaderAvatar({ user, className }) {
   const initials = user
-    ? `${user.name?.charAt(0) || ""}${user.surname?.charAt(0) || ""}`.toUpperCase()
+    ? `${user.name?.[0] || ""}${user.surname?.[0] || ""}`.toUpperCase()
     : "";
 
   return (
-    <div className="absolute -bottom-12 left-5 rounded-full w-24 h-24 md:w-32 md:h-32 border-4 border-background overflow-hidden flex items-center justify-center bg-zinc-900">
-      {user?.avatarUrl ? (
-        <img
-          src={user.avatarUrl}
-          alt="Avatar"
-          className="w-full h-full object-cover rounded-full"
-        />
-      ) : (
-        <span className="text-2xl md:text-4xl font-bold">{initials}</span>
+    <Avatar
+      className={cn(
+        "w-24 h-24 md:w-32 md:h-32 border-4 border-background overflow-hidden",
+        className
       )}
-    </div>
+    >
+      <AvatarImage
+        src={user?.avatarUrl}
+        alt="Avatar"
+        className="w-full h-full object-cover"
+      />
+
+      <AvatarFallback className="font-bold text-2xl md:text-4xl">
+        {initials}
+      </AvatarFallback>
+    </Avatar>
   );
 }
+
+
 
 function UserInfo({ user }) {
   return (

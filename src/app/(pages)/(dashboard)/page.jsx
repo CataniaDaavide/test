@@ -9,15 +9,15 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <ScrollArea className="flex flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
+    <ScrollArea className="flex flex-1 w-full p-5 pt-0" noscrollbar>
       <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
         {/*Benvenuto */}
         <WelcomeUser />
 
         <StatisticsCards />
 
-        <div className="h-full w-full grid grid-cols-1 xl:grid-cols-4 xl:gap-3">
-          <div className="col-span-3">
+        <div className="h-full w-full grid grid-cols-1 xl:grid-cols-3 xl:gap-3">
+          <div className="col-span-2">
             <RecentMovements />
           </div>
           <div className="w-full flex flex-col gap-10 xl:gap-3 mt-10 xl:mt-0">
@@ -68,7 +68,7 @@ function StatisticsCards() {
           <Eye />
         </Button>
       </div>
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3">
+      <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-3">
         <Card className={"w-full h-32"} />
         <Card className={"w-full h-32"} />
         <Card className={"w-full h-32"} />
