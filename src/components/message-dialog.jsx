@@ -27,21 +27,21 @@ export default function MessageDialog() {
       }}
     >
       <DialogContent
-        className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5 p-0! overflow-hidden"
+        className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5 p-6! pt-0! overflow-hidden"
         showCloseButton={false}
         onInteractOutside={(e) => e.preventDefault()}
       >
         <Header message={message} />
 
         {/* Descrizione scrollabile */}
-        <ScrollArea className="flex flex-col gap-4 overflow-y-auto px-6!">
+        <ScrollArea className="flex flex-col gap-4 overflow-y-auto pr-3!">
           <DialogDescription className={"text-wrap break-all pr-1"}>
             {message.description}
           </DialogDescription>
         </ScrollArea>
 
         {/* Footer fisso con azioni */}
-        <DialogFooter className="flex flex-wrap gap-2 p-6 pt-0">
+        <DialogFooter className="flex flex-wrap gap-2">
           {message.actions?.map((action, index) => (
             <DialogClose asChild key={index}>
               {action}
@@ -62,7 +62,7 @@ export default function MessageDialog() {
 
 function Header({ message }) {
   return (
-    <div className="w-full h-20 relative">
+    <div className="w-full min-h-16 relative">
       <div className="absolute -top-8 -left-8 w-16 h-16 border-5 border-border/30 rounded-full"></div>
       <div className="absolute -top-16 -left-16 w-32 h-32 border-5 border-border/30 rounded-full"></div>
       <div className="absolute -top-26 -left-26 w-52 h-52 border-5 border-border/30 rounded-full"></div>

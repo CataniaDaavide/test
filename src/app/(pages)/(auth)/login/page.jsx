@@ -170,7 +170,7 @@ export default function LoginPage() {
         onClick={() => router.push("/test")}
         variant="secondary"
       >
-        Credenziali demo
+        Pagina test
       </Button>
       <p className="text-sm text-muted-foreground self-center flex gap-1">
         Non hai un account?
