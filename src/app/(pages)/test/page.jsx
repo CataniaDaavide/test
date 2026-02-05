@@ -9,9 +9,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Button } from "@/components/ui/button";
+import { useMessage } from "@/context/MessageContext";
 
 export default function TestPage() {
   const [open, setOpen] = useState(false);
+
   return (
     <div className="w-screen min-h-screen flex flex-col gap-3 items-center p-6">
       <h1 className="text-5xl font-bold">TEST PAGE</h1>
@@ -32,7 +35,9 @@ export default function TestPage() {
 
       <p>{open ? "true" : "false"}</p>
 
-      <ChartPieDonutText />
+      {/* <ChartPieDonutText /> */}
+
+      <ButtonsTest />
     </div>
   );
 }
@@ -129,5 +134,67 @@ export function ChartPieDonutText() {
         </ChartContainer>
       </CardContent>
     </Card>
+  );
+}
+
+function ButtonsTest() {
+  const { setMessage } = useMessage();
+
+  return (
+    <div className="grid grid-cols-2 gap-5">
+      <Button
+        className={"w-full"}
+        variant="secondary"
+        onClick={() => {
+          setMessage({
+            title: "Messaggio",
+            status: "info",
+            description:
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident aut voluptate, quia possimus ducimus eos eum itaque dignissimos voluptatibus culpa sed ea tempora vel, dicta, labore non aliquid cupiditate. Explicabo.",
+          });
+        }}
+      >
+        dialog info
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          setMessage({
+            title: "Messaggio",
+            status: "warning",
+            description:
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident aut voluptate, quia possimus ducimus eos eum itaque dignissimos voluptatibus culpa sed ea tempora vel, dicta, labore non aliquid cupiditate. Explicabo.",
+          });
+        }}
+      >
+        dialog warning
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          setMessage({
+            title: "Messaggio",
+            status: "error",
+            description:
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident aut voluptate, quia possimus ducimus eos eum itaque dignissimos voluptatibus culpa sed ea tempora vel, dicta, labore non aliquid cupiditate. Explicabo.",
+          });
+        }}
+      >
+        dialog error
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          setMessage({
+            title: "Messaggio",
+            status: "success",
+            description:
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident aut voluptate, quia possimus ducimus eos eum itaque dignissimos voluptatibus culpa sed ea tempora vel, dicta, labore non aliquid cupiditate. Explicabo.",
+          });
+        }}
+      >
+        dialog success
+      </Button>
+    </div>
   );
 }

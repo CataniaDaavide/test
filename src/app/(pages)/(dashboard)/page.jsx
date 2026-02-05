@@ -4,31 +4,29 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUser } from "@/context/UserContext";
+import { cn } from "@/lib/utils";
 import { ArrowRight, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <ScrollArea className="flex flex-1 w-full p-5 pt-0" noscrollbar>
-      <FadeUp className={"flex flex-1 w-full flex-col gap-10"}>
-        {/*Benvenuto */}
-        <WelcomeUser />
+    <FadeUp className="flex flex-1 flex-col gap-5 overflow-y-auto p-5 pt-0">
+      {/*Benvenuto */}
+      <WelcomeUser />
 
-        <StatisticsCards />
+      <StatisticsCards />
 
-        <div className="h-full w-full grid grid-cols-1 xl:grid-cols-3 xl:gap-3">
-          <div className="col-span-2">
-            <RecentMovements />
-          </div>
-          <div className="w-full flex flex-col gap-10 xl:gap-3 mt-10 xl:mt-0">
-            <MonthlyExpenseByCategory />
-            <CashFlowComparison />
-          </div>
-        </div>
-      </FadeUp>
-    </ScrollArea>
+      <div className="h-full grid grid-cols-5 gap-5 bg-red-500">
+        <RecentMovements />
+      </div>
+    </FadeUp>
   );
 }
+//  <ScrollArea className="flex flex-1 flex-col w-full bg-red-500 p-5 pt-0" noscrollbar>
+//   <div className="w-full h-32 bg-green-500"></div>
+//   <FadeUp className="flex-1 w-full bg-blue-500">
+//   </FadeUp>
+// </ScrollArea>
 
 function WelcomeUser() {
   const { user } = useUser();
@@ -68,7 +66,7 @@ function StatisticsCards() {
           <Eye />
         </Button>
       </div>
-      <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-3">
         <Card className={"w-full h-32"} />
         <Card className={"w-full h-32"} />
         <Card className={"w-full h-32"} />
@@ -80,7 +78,13 @@ function StatisticsCards() {
 
 function RecentMovements() {
   return (
-    <Card className="w-full flex flex-col gap-2 p-0! xl:p-4! bg-transparent! border-0! xl:border! xl:bg-card!">
+    <Card
+      className={cn(
+        "grid col-span-3 h-auto overflow-auto",
+        // "w-full flex flex-col gap-2",
+        "p-0! xl:p-4! bg-transparent! border-0! xl:border! xl:bg-card!",
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <p className="font-semibold">Movimenti recenti</p>
@@ -92,10 +96,10 @@ function RecentMovements() {
           </Button>
         </Link>
       </div>
-      <ScrollArea className={"h-72"} noscrollbar>
+      <ScrollArea noscrollbar>
         <div className="flex flex-col gap-3">
           {Array.from({ length: 10 }).map((_, index) => {
-            return <Card key={index} className={"w-full h-16"} />;
+            return <Card key={index} className={"w-full h-32"} />;
           })}
         </div>
       </ScrollArea>

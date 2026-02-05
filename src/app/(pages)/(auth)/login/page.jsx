@@ -166,6 +166,12 @@ export default function LoginPage() {
       >
         Credenziali demo
       </Button>
+      <Button
+        onClick={() => router.push("/test")}
+        variant="secondary"
+      >
+        Credenziali demo
+      </Button>
       <p className="text-sm text-muted-foreground self-center flex gap-1">
         Non hai un account?
         <Link href={"/register"} className="font-bold underline text-primary">
