@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCircle, TriangleAlert, Info } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function MessageDialog() {
   const { message, setMessage } = useMessage();
@@ -27,14 +28,14 @@ export default function MessageDialog() {
       }}
     >
       <DialogContent
-        className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5 p-6! pt-0! overflow-hidden"
+        className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5 p-6! pr-3! pt-0! overflow-hidden"
         showCloseButton={false}
         onInteractOutside={(e) => e.preventDefault()}
       >
         <Header message={message} />
 
         {/* Descrizione scrollabile */}
-        <ScrollArea className="flex flex-col gap-4 overflow-y-auto pr-3!">
+        <ScrollArea className="flex flex-col gap-4 overflow-y-auto pr-2!">
           <DialogDescription className={"text-wrap break-all pr-1"}>
             {message.description}
           </DialogDescription>
@@ -49,11 +50,13 @@ export default function MessageDialog() {
           ))}
 
           {/* Pulsante chiudi di default se non ci sono azioni */}
-          {!message.actions?.length && (
-            <DialogClose asChild>
-              <Button variant="outline">Chiudi</Button>
-            </DialogClose>
-          )}
+          <div className="w-full flex justify-end pr-3">
+            {!message.actions?.length && (
+              <DialogClose asChild>
+                <Button variant="outline" className={"w-full md:w-fit"} >Chiudi</Button>
+              </DialogClose>
+            )}
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -62,11 +65,11 @@ export default function MessageDialog() {
 
 function Header({ message }) {
   return (
-    <div className="w-full min-h-16 relative">
+    <div className="w-full min-h-22! relative">
       <div className="absolute -top-8 -left-8 w-16 h-16 border-5 border-border/30 rounded-full"></div>
       <div className="absolute -top-16 -left-16 w-32 h-32 border-5 border-border/30 rounded-full"></div>
       <div className="absolute -top-26 -left-26 w-52 h-52 border-5 border-border/30 rounded-full"></div>
-      <div className="absolute w-full flex items-center gap-3 p-6">
+      <div className="absolute w-full flex items-center gap-3 pt-6">
         <MessageDialogIcon status={message.status} />
         <DialogTitle>{message.title}</DialogTitle>
       </div>
@@ -76,16 +79,17 @@ function Header({ message }) {
 
 // Funzione per scegliere icona e colori in base allo status
 function MessageDialogIcon({ status }) {
+  const sizeClass = "h-12 min-w-12";
   switch (status) {
     case "info":
-      return <Info className="h-12 w-12 text-blue-500" />;
+      return <Info className={cn(sizeClass, "text-blue-500")} />;
     case "success":
-      return <CheckCircle className="h-12 w-12 text-green-500" />;
+      return <CheckCircle className={cn(sizeClass, "text-green-500")} />;
     case "warning":
-      return <TriangleAlert className="h-12 w-12 text-yellow-500" />;
+      return <TriangleAlert className={cn(sizeClass, "text-yellow-500")} />;
     case "error":
     default:
-      return <TriangleAlert className="h-12 w-12 text-red-500" />;
+      return <TriangleAlert className={cn(sizeClass, "text-red-500")} />;
   }
 }
 
