@@ -110,25 +110,6 @@ function Actions({ setShowFilter, fetchCategories }) {
       </Button>
       <Button
         variant="secondary"
-        onClick={() =>
-          setDialog({
-            show: true,
-            type: "category",
-            data: {
-              id: "698669ca485a5712451998d4",
-              name: "Spesa",
-              type: "income",
-              emoji: "🛒",
-              hexColor: "#FF6B6B",
-              fetchCategories: fetchCategories,
-            },
-          })
-        }
-      >
-        Modifica
-      </Button>
-      <Button
-        variant="secondary"
         className="flex-1 md:max-w-52"
         onClick={() =>
           setDialog({
@@ -238,7 +219,7 @@ export function DialogCreateOrEditCategory() {
     emoji: categoryEmoji,
     type: categoryType,
     hexColor: categoryHexColor,
-    fetchCategories
+    fetchCategories,
   } = dialog.data;
 
   const defaultFormValues = {
