@@ -39,22 +39,10 @@ const secondaryColors = [
 
 const colors = [...primaryColors, ...secondaryColors];
 
-export default function ColorPicker({
-  id,
-  label,
-  required,
-  onChange = () => {},
-}) {
-  const [selected, setSelected] = useState(null);
+export default function ColorPicker({ id, label, required, value, onChange }) {
   const [search, setSearch] = useState("");
   const [customColor, setCustomColor] = useState("#000000");
   const [showSearch, setShowSearch] = useState(false);
-
-  const handleSelect = (hex) => {
-    setSelected(hex);
-    setCustomColor(hex); // sincronizza custom picker
-    onChange(hex);
-  };
 
   const filteredColors = useMemo(() => {
     if (!search) return colors;
@@ -77,7 +65,7 @@ export default function ColorPicker({
       </div>
 
       <motion.div
-        className={cn("w-full overflow-hidden", showSearch ? "py-2" : "pb-1")}
+        className={cn("w-full overflow-hidden", showSearch ? "py-1" : "pb-1")}
         initial={{ y: 10, opacity: 0, height: 0 }}
         animate={
           showSearch
@@ -107,7 +95,7 @@ export default function ColorPicker({
         </div>
       </motion.div>
 
-      {/* 🎨 Griglia */}
+      {/* Griglia */}
       <Card className="bg-transparent rounded-lg p-2! overflow-hidden">
         <CardContent
           className={cn(
@@ -127,8 +115,8 @@ export default function ColorPicker({
               {/* Primo elemento = custom picker */}
               <CustomColorPicker
                 color={customColor}
-                onChange={handleSelect}
-                selected={selected}
+                value={value}
+                onChange={onChange}
               />
 
               {filteredColors.map((item) => (
@@ -136,14 +124,12 @@ export default function ColorPicker({
                   key={item.value}
                   className={cn(
                     "w-full h-14 border-2 rounded-lg p-1 cursor-pointer",
-                    selected === item.value
-                      ? "border-primary!"
-                      : "border-border",
+                    value === item.value ? "border-primary!" : "border-border",
                   )}
                 >
                   <button
                     type="button"
-                    onClick={() => handleSelect(item.value)}
+                    onClick={() => onChange(item.value)}
                     title={`${item.label} (${item.value})`}
                     className={cn("rounded w-full h-full")}
                     style={{ backgroundColor: item.value }}
@@ -156,20 +142,20 @@ export default function ColorPicker({
       </Card>
 
       {/* Preview HEX selezionato */}
-      {selected && (
+      {value && (
         <p className="text-sm text-muted-foreground mt-1">
-          Colore selezionato: <span className="font-mono">{selected}</span>
+          Colore selezionato: <span className="font-mono">{value}</span>
         </p>
       )}
     </div>
   );
 }
 
-function CustomColorPicker({ color, onChange, selected }) {
+function CustomColorPicker({ color, value, onChange }) {
   return (
     <div
       className={`relative rounded-lg border-2 h-14 w-full p-1 cursor-pointer overflow-hidden flex items-center justify-center ${
-        selected === color ? "border-primary!" : "border-border"
+        value === color ? "border-primary!" : "border-border"
       }`}
     >
       {/* Overlay centrale */}

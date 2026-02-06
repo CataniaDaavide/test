@@ -26,6 +26,7 @@ export default function MessageDialog() {
       onOpenChange={(open) => {
         if (!open) setMessage(null);
       }}
+      className="z-999"
     >
       <DialogContent
         className="sm:max-w-125 max-h-[70vh] flex flex-col gap-5 p-6! pr-3! pt-0! overflow-hidden"

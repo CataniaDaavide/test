@@ -80,7 +80,7 @@ export default function LoginPage() {
 
       for (const field in formValues) {
         const errorFound = formValidator[field]
-          ? validateField(field, formValues[field], formValidator, formValues)
+          ? validateField(field, formValues[field], formValidator)
           : "";
         newErrors[field] = errorFound;
 

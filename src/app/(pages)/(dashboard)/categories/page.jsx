@@ -17,13 +17,35 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { useLoader } from "@/context/LoaderContext";
-import { mockupCategories } from "@/data/temp-data";
-import { cn, hexToRgba } from "@/lib/utils";
+import { useMessage } from "@/context/MessageContext";
+import { ApiClient } from "@/lib/api-client";
+import { cn, hexToRgba, validateField } from "@/lib/utils";
 import { ListFilter, Pen, Plus, RefreshCcw, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CategoriesPage() {
   const [showFilter, setShowFilter] = useState(false);
+  const { setLoader } = useLoader();
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    try {
+      setLoader(true);
+
+      const api = new ApiClient();
+      const response = await api.get("/api/categories/getCategories");
+
+      setCategories(response.data.categories);
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const tabs = [
     { label: "Entrate", value: "income" },
@@ -34,9 +56,15 @@ export default function CategoriesPage() {
   return (
     <>
       <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {/* actions */}
-      <Actions setShowFilter={setShowFilter} />
-      <Categories activeTab={activeTab} />
+      <Actions
+        setShowFilter={setShowFilter}
+        fetchCategories={fetchCategories}
+      />
+      <Categories
+        activeTab={activeTab}
+        categories={categories}
+        fetchCategories={fetchCategories}
+      />
     </>
   );
 }
@@ -65,12 +93,12 @@ function Tabs({ tabs, activeTab, setActiveTab }) {
 }
 
 // riga di pulsanti azioni per la pagina deelle categorie
-function Actions({ setShowFilter }) {
+function Actions({ setShowFilter, fetchCategories }) {
   const { setDialog } = useDialogCustom();
 
   return (
     <div className={"w-full flex md:justify-end gap-3 px-5 mb-3"}>
-      <Button variant="secondary" size="icon">
+      <Button variant="secondary" size="icon" onClick={fetchCategories}>
         <RefreshCcw />
       </Button>
       <Button
@@ -82,12 +110,33 @@ function Actions({ setShowFilter }) {
       </Button>
       <Button
         variant="secondary"
+        onClick={() =>
+          setDialog({
+            show: true,
+            type: "category",
+            data: {
+              id: "698669ca485a5712451998d4",
+              name: "Spesa",
+              type: "income",
+              emoji: "🛒",
+              hexColor: "#FF6B6B",
+              fetchCategories: fetchCategories,
+            },
+          })
+        }
+      >
+        Modifica
+      </Button>
+      <Button
+        variant="secondary"
         className="flex-1 md:max-w-52"
         onClick={() =>
           setDialog({
             show: true,
             type: "category",
-            data: {},
+            data: {
+              fetchCategories: fetchCategories,
+            },
           })
         }
       >
@@ -98,15 +147,21 @@ function Actions({ setShowFilter }) {
 }
 
 // lista di categorie in base al tipo richiesto dal tab
-function Categories({ activeTab }) {
+function Categories({ activeTab, categories, fetchCategories }) {
   return (
     <>
       <ScrollArea className="flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
         <FadeUp className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
-          {mockupCategories
+          {categories
             .filter((c) => c.type == activeTab)
             .map((c, index) => {
-              return <CategoryCard key={index} data={c} />;
+              return (
+                <CategoryCard
+                  key={index}
+                  data={c}
+                  fetchCategories={fetchCategories}
+                />
+              );
             })}
         </FadeUp>
       </ScrollArea>
@@ -114,7 +169,9 @@ function Categories({ activeTab }) {
   );
 }
 
-function CategoryCard({ data }) {
+function CategoryCard({ data, fetchCategories }) {
+  const { setDialog } = useDialogCustom();
+  console.log(data);
   return (
     <Card className="w-full flex-row! h-fit! items-center justify-between p-6 gap-3!">
       <div className="flex w-full items-center gap-3">
@@ -139,7 +196,20 @@ function CategoryCard({ data }) {
           variant="ghost"
           size="icon"
           className={"hover:bg-transparent!"}
-          onClick={() => {}}
+          onClick={() =>
+            setDialog({
+              show: true,
+              type: "category",
+              data: {
+                id: data.id,
+                name: data.name,
+                type: data.type,
+                emoji: data.emoji,
+                hexColor: data.hexColor,
+                fetchCategories: fetchCategories,
+              },
+            })
+          }
         >
           <Pen />
         </Button>
@@ -159,6 +229,8 @@ function CategoryCard({ data }) {
 // modale per creare e modificare categorie di movimenti
 export function DialogCreateOrEditCategory() {
   const { dialog, setDialog } = useDialogCustom();
+  const { setLoader } = useLoader();
+  const { setMessage } = useMessage();
 
   const {
     id,
@@ -166,10 +238,13 @@ export function DialogCreateOrEditCategory() {
     emoji: categoryEmoji,
     type: categoryType,
     hexColor: categoryHexColor,
+    fetchCategories
   } = dialog.data;
 
   const defaultFormValues = {
+    id: id ?? "",
     name: categoryName ?? "",
+    type: "",
     emoji: categoryEmoji ?? "",
     hexColor: categoryHexColor ?? "",
   };
@@ -188,20 +263,34 @@ export function DialogCreateOrEditCategory() {
         message: "Nome obbligatorio",
       },
     ],
-    type: [
+    emoji: [
       {
         validate: (value) => value.trim() !== "",
+        message: "Emoji obbligatoria",
+      },
+    ],
+    hexColor: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Colore obbligatoria",
+      },
+    ],
+    type: [
+      {
+        validate: (t) => t?.value.trim() !== "",
         message: "Tipo obbligatorio",
       },
     ],
   };
 
   // tipi di categoria disponibile
-  const [type, setType] = useState();
   const categoryTypes = [
     { label: "Entrata", value: "income" },
     { label: "Uscite", value: "expense" },
   ];
+  const [type, setType] = useState(
+    categoryTypes.find((c) => c.value === categoryType),
+  );
 
   // HANDLER GENERICO
   const handleChange = (field, value) => {
@@ -218,6 +307,55 @@ export function DialogCreateOrEditCategory() {
       ...prev,
       [field]: error,
     }));
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoader(true);
+
+      let hasError = false;
+      const newErrors = {};
+
+      const newFormValues = { ...formValues, type: type };
+      for (const field in newFormValues) {
+        const errorFound = formValidator[field]
+          ? validateField(field, newFormValues[field], formValidator)
+          : "";
+        newErrors[field] = errorFound;
+
+        if (!hasError && errorFound) hasError = true;
+      }
+
+      setFormErrors(newErrors);
+
+      if (hasError) return;
+
+      const api = new ApiClient();
+      const response = await api.post("/api/categories/edit", newFormValues);
+
+      setMessage({
+        title: id ? "Categoria modificata" : "Categoria creata",
+        description: id
+          ? "Categoria modificata con successo"
+          : "Categoria creata con successo",
+        status: "success",
+      });
+    } catch (e) {
+      setMessage({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
+    } finally {
+      fetchCategories();
+      setLoader(false);
+      setDialog({
+        show: false,
+        type: "",
+        data: {},
+      });
+    }
   };
 
   return (
@@ -281,8 +419,18 @@ export function DialogCreateOrEditCategory() {
                   "border-1! bg-transparent! hover:bg-transparent!"
                 }
               />
-              <EmojiPicker label={"Emoji"} required />
-              <ColorPicker label={"Colore"} required />
+              <EmojiPicker
+                label={"Emoji"}
+                required
+                value={formValues.emoji}
+                onChange={(value) => handleChange("emoji", value)}
+              />
+              <ColorPicker
+                label={"Colore"}
+                required
+                value={formValues.hexColor}
+                onChange={(value) => handleChange("hexColor", value)}
+              />
             </div>
           </ScrollArea>
         </div>
@@ -295,13 +443,7 @@ export function DialogCreateOrEditCategory() {
                 variant="outline"
                 size="lg"
                 className={"bg-secondary! border-0!"}
-                onClick={() =>
-                  setDialog({
-                    show: false,
-                    type: "",
-                    data: "",
-                  })
-                }
+                onClick={handleSubmit}
               >
                 Modifica
               </Button>
@@ -319,13 +461,7 @@ export function DialogCreateOrEditCategory() {
               className="w-full"
               variant="secondary"
               size="lg"
-              onClick={() =>
-                setDialog({
-                  show: false,
-                  type: "",
-                  data: "",
-                })
-              }
+              onClick={handleSubmit}
             >
               Crea
             </Button>

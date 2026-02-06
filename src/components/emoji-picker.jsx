@@ -53,16 +53,11 @@ export default function EmojiPicker({
   id,
   label,
   required,
-  onChange = () => {},
+  value,
+  onChange,
 }) {
-  const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-
-  const handleSelect = (emoji) => {
-    setSelected(emoji);
-    onChange(emoji);
-  };
 
   const filteredEmojis = useMemo(() => {
     if (!search) return emojis;
@@ -84,7 +79,7 @@ export default function EmojiPicker({
       </div>
 
       <motion.div
-        className={cn("w-full overflow-hidden", showSearch ? "py-2" : "pb-1")}
+        className={cn("w-full overflow-hidden", showSearch ? "py-1" : "pb-1")}
         initial={{ y: 10, opacity: 0, height: 0 }}
         animate={
           showSearch
@@ -135,11 +130,11 @@ export default function EmojiPicker({
             <button
               key={item.value}
               type="button"
-              onClick={() => handleSelect(item.value)}
+              onClick={() => onChange(item.value)}
               title={item.label}
               className={cn(
                 "text-2xl p-2 rounded-lg transition hover:bg-muted border-2 h-fit!",
-                selected === item.value && "border-primary!",
+                value === item.value && "border-primary!",
               )}
             >
               {item.value}

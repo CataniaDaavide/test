@@ -52,7 +52,7 @@ export async function POST(req) {
     // --- CREAZIONE JWT ---
     const sessionToken = jwt.sign(
       {
-        _id: user._id,
+        id: user._id,
         name: user.name,
         surname: user.surname,
         email: user.email,
@@ -77,7 +77,7 @@ export async function POST(req) {
     rtn.data = {
       message: "Login effettuato con successo.",
       user: {
-        _id: user._id,
+        id: user._id,
         username: user.username,
         name: user.name,
         surname: user.surname,

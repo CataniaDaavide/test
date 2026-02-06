@@ -1,9 +1,6 @@
-import { ObjectId } from "mongodb";
-
 export function passwordTokenCollection(db) {
     return db.collection("password_reset_tokens");
 }
-
 
 /*
 MODELLO
