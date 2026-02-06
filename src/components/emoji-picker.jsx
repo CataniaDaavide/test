@@ -55,6 +55,7 @@ export default function EmojiPicker({
   required,
   value,
   onChange,
+  error,
 }) {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -142,6 +143,9 @@ export default function EmojiPicker({
           ))}
         </CardContent>
       </Card>
+
+      {/* Errore */}
+      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
   );
 }

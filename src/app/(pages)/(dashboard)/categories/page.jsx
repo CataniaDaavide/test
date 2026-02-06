@@ -27,6 +27,7 @@ export default function CategoriesPage() {
   const [showFilter, setShowFilter] = useState(false);
   const { setLoader } = useLoader();
   const [categories, setCategories] = useState([]);
+  const { setMessage } = useMessage();
 
   const fetchCategories = async () => {
     try {
@@ -37,7 +38,11 @@ export default function CategoriesPage() {
 
       setCategories(response.data.categories);
     } catch (e) {
-      alert(e.message);
+      setMessage({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
     } finally {
       setLoader(false);
     }
@@ -258,7 +263,7 @@ export function DialogCreateOrEditCategory() {
     ],
     type: [
       {
-        validate: (t) => t?.value.trim() !== "",
+        validate: (t) => t && t.value.trim() !== "",
         message: "Tipo obbligatorio",
       },
     ],
@@ -307,7 +312,7 @@ export function DialogCreateOrEditCategory() {
 
         if (!hasError && errorFound) hasError = true;
       }
-
+      console.log(newErrors, hasError);
       setFormErrors(newErrors);
 
       if (hasError) return;
@@ -322,6 +327,12 @@ export function DialogCreateOrEditCategory() {
           : "Categoria creata con successo",
         status: "success",
       });
+      fetchCategories();
+      setDialog({
+        show: false,
+        type: "",
+        data: {},
+      });
     } catch (e) {
       setMessage({
         title: `Errore ${e.status}`,
@@ -329,13 +340,7 @@ export function DialogCreateOrEditCategory() {
         description: e.message || e.toString(),
       });
     } finally {
-      fetchCategories();
       setLoader(false);
-      setDialog({
-        show: false,
-        type: "",
-        data: {},
-      });
     }
   };
 
@@ -399,18 +404,21 @@ export function DialogCreateOrEditCategory() {
                 classNameTrigger={
                   "border-1! bg-transparent! hover:bg-transparent!"
                 }
+                error={formErrors.type}
               />
               <EmojiPicker
                 label={"Emoji"}
                 required
                 value={formValues.emoji}
                 onChange={(value) => handleChange("emoji", value)}
+                error={formErrors.emoji}
               />
               <ColorPicker
                 label={"Colore"}
                 required
                 value={formValues.hexColor}
                 onChange={(value) => handleChange("hexColor", value)}
+                error={formErrors.hexColor}
               />
             </div>
           </ScrollArea>

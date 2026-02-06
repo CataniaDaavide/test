@@ -50,6 +50,7 @@ export function SelectCustom({
   allowDeselect = false,
   classNameTrigger,
   classNameContent,
+  error,
 }) {
   if (multiSelect) {
     return (
@@ -111,6 +112,7 @@ export function SelectCustom({
             role="combobox"
             className={cn(
               "w-full justify-between font-normal px-3 h-10",
+              error && "border-destructive!",
               //modifiche
               classNameTrigger,
             )}
@@ -177,6 +179,9 @@ export function SelectCustom({
           </Command>
         </PopoverContent>
       </Popover>
+
+      {/* Errore */}
+      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
   );
 }
@@ -203,6 +208,7 @@ function MultiSelect({
   setValue,
   placeholder,
   className,
+  error,
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
@@ -238,6 +244,7 @@ function MultiSelect({
               // modifiche
               "border-0!",
               className,
+              error && "border-destructive!",
             )}
           >
             <div className="flex flex-wrap gap-1 overflow-hidden">
@@ -311,6 +318,9 @@ function MultiSelect({
           </Command>
         </PopoverContent>
       </Popover>
+
+      {/* Errore */}
+      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
   );
 }

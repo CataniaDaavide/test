@@ -39,7 +39,14 @@ const secondaryColors = [
 
 const colors = [...primaryColors, ...secondaryColors];
 
-export default function ColorPicker({ id, label, required, value, onChange }) {
+export default function ColorPicker({
+  id,
+  label,
+  required,
+  value,
+  onChange,
+  error,
+}) {
   const [search, setSearch] = useState("");
   const [customColor, setCustomColor] = useState("#000000");
   const [showSearch, setShowSearch] = useState(false);
@@ -140,6 +147,8 @@ export default function ColorPicker({ id, label, required, value, onChange }) {
           )}
         </CardContent>
       </Card>
+      {/* Errore */}
+      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
 
       {/* Preview HEX selezionato */}
       {value && (
