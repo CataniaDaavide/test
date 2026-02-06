@@ -3,6 +3,7 @@ import { Card, CardContent } from "./ui/card";
 import { Input, InputLabel } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
+import { motion } from "motion/react";
 
 const emojis = [
   { label: "Casa", value: "🏠" },
@@ -56,6 +57,7 @@ export default function EmojiPicker({
 }) {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
 
   const handleSelect = (emoji) => {
     setSelected(emoji);
@@ -72,28 +74,45 @@ export default function EmojiPicker({
 
   return (
     <div className="w-full flex flex-col gap-2">
-      {label && <InputLabel id={id} label={label} required={required} />}
+      <div className="flex justify-between items-center">
+        {label && <InputLabel id={id} label={label} required={required} />}
+        <Search
+          className="text-muted-foreground cursor-pointer"
+          size={18}
+          onClick={() => setShowSearch((prev) => !prev)}
+        />
+      </div>
 
-      {/* 🔍 Search */}
-      <Input
-        type="text"
-        placeholder="Cerca categoria..."
-        iconLeft={<Search />}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        action={
-          search?.length != 0 ? (
-            <button
-              className="cursor-pointer absolute right-3 text-muted-foreground hover:text-primary"
-              onClick={() => setSearch("")}
-            >
-              <X />
-            </button>
-          ) : (
-            <></>
-          )
+      <motion.div
+        className="w-full overflow-hidden"
+        initial={{ y: 10, opacity: 0, height: 0 }}
+        animate={
+          showSearch
+            ? { y: 0, opacity: 1, height: "auto" }
+            : { y: 10, opacity: 0, height: 0 }
         }
-      />
+        transition={{ duration: 0.3 }}
+      >
+        <Input
+          type="text"
+          placeholder="Cerca categoria..."
+          iconLeft={<Search />}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          action={
+            search?.length != 0 ? (
+              <button
+                className="cursor-pointer absolute right-3 text-muted-foreground hover:text-primary"
+                onClick={() => setSearch("")}
+              >
+                <X />
+              </button>
+            ) : (
+              <></>
+            )
+          }
+        />
+      </motion.div>
 
       <Card className="bg-transparent rounded-lg p-2! overflow-hidden">
         <CardContent
