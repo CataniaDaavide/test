@@ -101,7 +101,7 @@ export default function EmojiPicker({
             filteredEmojis.length != 0
               ? "grid grid-cols-5 gap-2"
               : "flex items-center justify-center",
-            "overflow-y-auto h-52 noscrollbar p-1!",
+            "overflow-y-auto h-38 noscrollbar p-1!",
           )}
         >
           {filteredEmojis.length === 0 && (

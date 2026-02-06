@@ -1,4 +1,5 @@
 "use client";
+import ColorPicker from "@/components/color-picker";
 import EmojiPicker from "@/components/emoji-picker";
 import { FadeUp } from "@/components/fade-up";
 import { SelectCustom } from "@/components/select-custom";
@@ -281,6 +282,7 @@ export function DialogCreateOrEditCategory() {
                 }
               />
               <EmojiPicker label={"Emoji"} required />
+              <ColorPicker label={"Colore"} required />
             </div>
           </ScrollArea>
         </div>
