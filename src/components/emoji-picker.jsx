@@ -73,7 +73,7 @@ export default function EmojiPicker({
   }, [search]);
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col">
       <div className="flex justify-between items-center">
         {label && <InputLabel id={id} label={label} required={required} />}
         <Search
@@ -84,7 +84,7 @@ export default function EmojiPicker({
       </div>
 
       <motion.div
-        className="w-full overflow-hidden"
+        className={cn("w-full overflow-hidden", showSearch ? "py-2" : "pb-1")}
         initial={{ y: 10, opacity: 0, height: 0 }}
         animate={
           showSearch
@@ -93,25 +93,27 @@ export default function EmojiPicker({
         }
         transition={{ duration: 0.3 }}
       >
-        <Input
-          type="text"
-          placeholder="Cerca categoria..."
-          iconLeft={<Search />}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          action={
-            search?.length != 0 ? (
-              <button
-                className="cursor-pointer absolute right-3 text-muted-foreground hover:text-primary"
-                onClick={() => setSearch("")}
-              >
-                <X />
-              </button>
-            ) : (
-              <></>
-            )
-          }
-        />
+        <div className="relative w-full">
+          <Input
+            type="text"
+            placeholder="Cerca categoria..."
+            iconLeft={<Search />}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            action={
+              search?.length != 0 ? (
+                <button
+                  className="cursor-pointer absolute right-3 text-muted-foreground hover:text-primary"
+                  onClick={() => setSearch("")}
+                >
+                  <X />
+                </button>
+              ) : (
+                <></>
+              )
+            }
+          />
+        </div>
       </motion.div>
 
       <Card className="bg-transparent rounded-lg p-2! overflow-hidden">

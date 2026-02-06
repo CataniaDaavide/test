@@ -66,7 +66,7 @@ export default function ColorPicker({
   }, [search]);
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col">
       <div className="flex justify-between items-center">
         {label && <InputLabel id={id} label={label} required={required} />}
         <Search
@@ -77,7 +77,7 @@ export default function ColorPicker({
       </div>
 
       <motion.div
-        className="w-full overflow-hidden"
+        className={cn("w-full overflow-hidden", showSearch ? "py-2" : "pb-1")}
         initial={{ y: 10, opacity: 0, height: 0 }}
         animate={
           showSearch
