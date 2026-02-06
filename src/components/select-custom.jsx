@@ -150,7 +150,7 @@ export function SelectCustom({
                 className="text-sm h-10"
               />
             )}
-            <ScrollArea className="h-32" noscrollbar>
+            <ScrollArea className="min-h-5 max-h-32" noscrollbar>
               <CommandGroup>
                 {filteredOptions.map((option, index) => (
                   <CommandItem

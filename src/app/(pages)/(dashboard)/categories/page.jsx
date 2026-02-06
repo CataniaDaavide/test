@@ -1,16 +1,27 @@
 "use client";
+import EmojiPicker from "@/components/emoji-picker";
 import { FadeUp } from "@/components/fade-up";
+import { SelectCustom } from "@/components/select-custom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDialogCustom } from "@/context/DialogCustomContext";
+import { useLoader } from "@/context/LoaderContext";
 import { mockupCategories } from "@/data/temp-data";
 import { cn, hexToRgba } from "@/lib/utils";
 import { ListFilter, Pen, Plus, RefreshCcw, Trash } from "lucide-react";
 import { useState } from "react";
 
 export default function CategoriesPage() {
-  const { setDialog } = useDialogCustom();
   const [showFilter, setShowFilter] = useState(false);
 
   const tabs = [
@@ -23,7 +34,7 @@ export default function CategoriesPage() {
     <>
       <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* actions */}
-      <Actions setShowFilter={setShowFilter} setDialog={setDialog} />
+      <Actions setShowFilter={setShowFilter} />
       <Categories activeTab={activeTab} />
     </>
   );
@@ -53,7 +64,9 @@ function Tabs({ tabs, activeTab, setActiveTab }) {
 }
 
 // riga di pulsanti azioni per la pagina deelle categorie
-function Actions({ setShowFilter, setDialog }) {
+function Actions({ setShowFilter }) {
+  const { setDialog } = useDialogCustom();
+
   return (
     <div className={"w-full flex md:justify-end gap-3 px-5 mb-3"}>
       <Button variant="secondary" size="icon">
@@ -139,5 +152,184 @@ function CategoryCard({ data }) {
         </Button>
       </div>
     </Card>
+  );
+}
+
+// modale per creare e modificare categorie di movimenti
+export function DialogCreateOrEditCategory() {
+  const { dialog, setDialog } = useDialogCustom();
+
+  const {
+    id,
+    name: categoryName,
+    emoji: categoryEmoji,
+    type: categoryType,
+    hexColor: categoryHexColor,
+  } = dialog.data;
+
+  const defaultFormValues = {
+    name: categoryName ?? "",
+    emoji: categoryEmoji ?? "",
+    hexColor: categoryHexColor ?? "",
+  };
+  const [formValues, setFormValues] = useState(defaultFormValues);
+
+  const defaultFormErrors = Object.fromEntries(
+    Object.keys(defaultFormValues).map((key) => [key, ""]),
+  );
+  const [formErrors, setFormErrors] = useState(defaultFormErrors);
+
+  // FORM VALIDATOR
+  const formValidator = {
+    name: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Nome obbligatorio",
+      },
+    ],
+    type: [
+      {
+        validate: (value) => value.trim() !== "",
+        message: "Tipo obbligatorio",
+      },
+    ],
+  };
+
+  // tipi di categoria disponibile
+  const [type, setType] = useState();
+  const categoryTypes = [
+    { label: "Entrata", value: "income" },
+    { label: "Uscite", value: "expense" },
+  ];
+
+  // HANDLER GENERICO
+  const handleChange = (field, value) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    const error = formValidator[field]
+      ? validateField(field, value, formValidator)
+      : "";
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [field]: error,
+    }));
+  };
+
+  return (
+    <Dialog
+      open={dialog.show}
+      onOpenChange={(open) => {
+        if (!open)
+          setDialog({
+            show: false,
+            type: "",
+            data: {},
+          });
+      }}
+    >
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className={cn(
+          "flex flex-col overflow-hidden",
+          "min-w-full sm:min-w-lg sm:max-w-lg",
+          "h-full sm:max-h-[80vh]",
+          "border-0 sm:border! rounded-none! sm:rounded-md!",
+          "bg-card",
+        )}
+      >
+        {/* Header fisso */}
+        <DialogHeader className="text-start">
+          <DialogTitle>
+            {id ? "Modifica categoria" : "Creazione categoria"}
+          </DialogTitle>
+          <DialogDescription>
+            {id
+              ? "Modifica i dettagli della categoria selezionata"
+              : "Inserisci i dettagli per creare una nuova categoria"}
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Contenuto scrollabile */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <ScrollArea className="h-full overflow-y-auto" noscrollbar>
+            <div className="grid grid-cols-1 gap-3">
+              <div className="grid col-span-1">
+                <Input
+                  id="name"
+                  label={"Nome"}
+                  placeholder="Inserisci nome"
+                  required
+                  type="text"
+                  value={formValues.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  error={formErrors.name}
+                  variant="outline"
+                />
+              </div>
+              <SelectCustom
+                label={"Tipo"}
+                required
+                value={type}
+                options={categoryTypes}
+                setValue={setType}
+                classNameTrigger={
+                  "border-1! bg-transparent! hover:bg-transparent!"
+                }
+              />
+              <EmojiPicker label={"Emoji"} required />
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Footer fisso */}
+        <DialogFooter className={cn(id ? "grid grid-cols-2 gap-3" : "w-full")}>
+          {id ? (
+            <>
+              <Button
+                variant="outline"
+                size="lg"
+                className={"bg-secondary! border-0!"}
+                onClick={() =>
+                  setDialog({
+                    show: false,
+                    type: "",
+                    data: "",
+                  })
+                }
+              >
+                Modifica
+              </Button>
+              <Button
+                variant="destructive"
+                size="lg"
+                className={"bg-red-500!"}
+                onClick={() => {}}
+              >
+                Elimina
+              </Button>
+            </>
+          ) : (
+            <Button
+              className="w-full"
+              variant="secondary"
+              size="lg"
+              onClick={() =>
+                setDialog({
+                  show: false,
+                  type: "",
+                  data: "",
+                })
+              }
+            >
+              Crea
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
