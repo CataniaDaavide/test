@@ -40,24 +40,21 @@ export async function GET(req) {
         }
 
         // --- RECUPERO CATEGORIE ---
-        const result = await categories.aggregate([
-            { $match: filter },
-            { $sort: { createdAt: -1 } },
-            {
-                $project: {
-                    id: { $toString: "$_id" },
-                    _id: 0,
-                    userId: 1,
-                    name: 1,
-                    type: 1,
-                    emoji: 1,
-                    hexColor: 1,
-                    status: 1,
-                    createdAt: 1,
-                    updatedAt: 1,
-                }
-            }
-        ]).toArray();
+        const result = await categories
+            .find(filter)
+            .sort({ createdAt: -1 })
+            .project({
+                id: { $toString: "$_id" },
+                _id: 0,
+                userId: 1,
+                name: 1,
+                type: 1,
+                emoji: 1,
+                hexColor: 1,
+                status: 1,
+                createdAt: 1,
+                updatedAt: 1,
+            }).toArray();
 
         // --- RISPOSTA ---
         rtn.success = true;

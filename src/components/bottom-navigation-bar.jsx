@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { useDialogCustom } from "@/context/DialogCustomContext";
 import { menuItems } from "@/data/temp-data";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function BottomNavigationBar() {
   return (
@@ -20,6 +22,7 @@ export function BottomNavigationBar() {
 function BottomNavigationBarItem({ item }) {
   const { setDialog } = useDialogCustom();
   const { title, icon: Icon, link, action } = item;
+  const pathname = usePathname();
 
   if (action) {
     return (
@@ -35,7 +38,13 @@ function BottomNavigationBarItem({ item }) {
   }
 
   return (
-    <Link href={link} className="p-3">
+    <Link
+      href={link}
+      className={cn(
+        "p-3",
+        pathname == link ? "text-primary" : "text-muted-foreground",
+      )}
+    >
       <Icon />
     </Link>
   );

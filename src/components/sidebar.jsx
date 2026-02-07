@@ -81,7 +81,6 @@ function SidebarSearch({ open, search, setSearch }) {
           iconLeft={<SearchIcon />}
           type="text"
           value={search}
-          setSearch={setSearch}
           onChange={(e) => setSearch(e.target.value)}
           action={
             search?.length != 0 ? (
