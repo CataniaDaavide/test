@@ -137,7 +137,7 @@ function Categories({ activeTab, categories, fetchCategories }) {
   return (
     <>
       <ScrollArea className="flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
-        <FadeUp className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
+        <FadeUp className="grid lg:grid-cols-2 xl:grid-cols-3 gap-3">
           {categories
             .filter((c) => c.type == activeTab)
             .map((c, index) => {
@@ -157,7 +157,41 @@ function Categories({ activeTab, categories, fetchCategories }) {
 
 function CategoryCard({ data, fetchCategories }) {
   const { setDialog } = useDialogCustom();
-  console.log(data);
+  const { setLoader } = useLoader();
+  const { setMessage } = useMessage();
+
+  // funzione per eliminare in modo logico la categoria
+  const handleDelete = async () => {
+    try {
+      setLoader(true);
+
+      const api = new ApiClient();
+      const response = await api.post("/api/categories/delete", {
+        id: data.id,
+      });
+
+      setMessage({
+        title: "Categoria eliminata",
+        description: "Categoria eliminata con successo.",
+        status: "success",
+      });
+      fetchCategories();
+      setDialog({
+        show: false,
+        type: "",
+        data: {},
+      });
+    } catch (e) {
+      setMessage({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
+    } finally {
+      setLoader(false);
+    }
+  };
+
   return (
     <Card className="w-full flex-row! h-fit! items-center justify-between p-6 gap-3!">
       <div className="flex w-full items-center gap-3">
@@ -181,7 +215,6 @@ function CategoryCard({ data, fetchCategories }) {
         <Button
           variant="ghost"
           size="icon"
-          className={"hover:bg-transparent!"}
           onClick={() =>
             setDialog({
               show: true,
@@ -202,8 +235,8 @@ function CategoryCard({ data, fetchCategories }) {
         <Button
           variant="ghost"
           size="icon"
-          className={"hover:bg-transparent!"}
-          onClick={() => {}}
+          className={"hover:bg-red-500/10! hover:text-red-500"}
+          onClick={handleDelete}
         >
           <Trash />
         </Button>
@@ -227,10 +260,16 @@ export function DialogCreateOrEditCategory() {
     fetchCategories,
   } = dialog.data;
 
+  // tipi di categoria disponibile
+  const categoryTypes = [
+    { label: "Entrata", value: "income" },
+    { label: "Uscite", value: "expense" },
+  ];
+
   const defaultFormValues = {
     id: id ?? "",
     name: categoryName ?? "",
-    type: "",
+    type: categoryTypes.find((c) => c.value === categoryType),
     emoji: categoryEmoji ?? "",
     hexColor: categoryHexColor ?? "",
   };
@@ -269,15 +308,6 @@ export function DialogCreateOrEditCategory() {
     ],
   };
 
-  // tipi di categoria disponibile
-  const categoryTypes = [
-    { label: "Entrata", value: "income" },
-    { label: "Uscite", value: "expense" },
-  ];
-  const [type, setType] = useState(
-    categoryTypes.find((c) => c.value === categoryType),
-  );
-
   // HANDLER GENERICO
   const handleChange = (field, value) => {
     setFormValues((prev) => ({
@@ -289,7 +319,7 @@ export function DialogCreateOrEditCategory() {
       ? validateField(field, value, formValidator)
       : "";
 
-    setFormErrors((prev) => ({
+      setFormErrors((prev) => ({
       ...prev,
       [field]: error,
     }));
@@ -303,10 +333,9 @@ export function DialogCreateOrEditCategory() {
       let hasError = false;
       const newErrors = {};
 
-      const newFormValues = { ...formValues, type: type };
-      for (const field in newFormValues) {
+      for (const field in formValues) {
         const errorFound = formValidator[field]
-          ? validateField(field, newFormValues[field], formValidator)
+          ? validateField(field, formValues[field], formValidator)
           : "";
         newErrors[field] = errorFound;
 
@@ -318,13 +347,13 @@ export function DialogCreateOrEditCategory() {
       if (hasError) return;
 
       const api = new ApiClient();
-      const response = await api.post("/api/categories/edit", newFormValues);
+      const response = await api.post("/api/categories/edit", formValues);
 
       setMessage({
         title: id ? "Categoria modificata" : "Categoria creata",
         description: id
-          ? "Categoria modificata con successo"
-          : "Categoria creata con successo",
+          ? "Categoria modificata con successo."
+          : "Categoria creata con successo.",
         status: "success",
       });
       fetchCategories();
@@ -398,9 +427,9 @@ export function DialogCreateOrEditCategory() {
               <SelectCustom
                 label={"Tipo"}
                 required
-                value={type}
+                value={formValues.type}
                 options={categoryTypes}
-                setValue={setType}
+                setValue={(value) => handleChange("type", value)}
                 classNameTrigger={
                   "border-1! bg-transparent! hover:bg-transparent!"
                 }

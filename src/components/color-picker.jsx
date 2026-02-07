@@ -112,7 +112,6 @@ export default function ColorPicker({
             "overflow-y-auto h-38 noscrollbar p-1!",
           )}
         >
-          {/* Altri colori */}
           {filteredColors.length === 0 ? (
             <p className="col-span-5 text-center text-sm text-muted-foreground py-4">
               Nessun colore trovato
@@ -122,6 +121,7 @@ export default function ColorPicker({
               {/* Primo elemento = custom picker */}
               <CustomColorPicker
                 color={customColor}
+                setColor={setCustomColor}
                 value={value}
                 onChange={onChange}
               />
@@ -138,7 +138,7 @@ export default function ColorPicker({
                     type="button"
                     onClick={() => onChange(item.value)}
                     title={`${item.label} (${item.value})`}
-                    className={cn("rounded w-full h-full")}
+                    className="rounded w-full h-full"
                     style={{ backgroundColor: item.value }}
                   />
                 </div>
@@ -147,6 +147,7 @@ export default function ColorPicker({
           )}
         </CardContent>
       </Card>
+
       {/* Errore */}
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
 
@@ -160,15 +161,16 @@ export default function ColorPicker({
   );
 }
 
-function CustomColorPicker({ color, value, onChange }) {
+function CustomColorPicker({ color, setColor, value, onChange }) {
   return (
     <div
-      className={`relative rounded-lg border-2 h-14 w-full p-1 cursor-pointer overflow-hidden flex items-center justify-center ${
-        value === color ? "border-primary!" : "border-border"
-      }`}
+      className={cn(
+        "relative rounded-lg border-2 h-14 w-full p-1 cursor-pointer overflow-hidden flex items-center justify-center",
+        value === color ? "border-primary!" : "border-border",
+      )}
     >
       {/* Overlay centrale */}
-      <span className="absolute z-999 inset-0 flex items-center justify-center text-sm font-bold text-white pointer-events-none bg-black/25">
+      <span className="absolute z-10 inset-0 flex items-center justify-center text-sm font-bold text-white pointer-events-none bg-black/25">
         RGB
       </span>
 
@@ -179,7 +181,10 @@ function CustomColorPicker({ color, value, onChange }) {
       <input
         type="color"
         value={color}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          setColor(e.target.value);
+          onChange(e.target.value);
+        }}
         className="absolute inset-0 w-full h-full p-0 m-0 border-none cursor-pointer opacity-0"
       />
     </div>
