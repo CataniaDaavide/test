@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 export default function CategoriesPage() {
   const [showFilter, setShowFilter] = useState(false);
   const { setLoader } = useLoader();
+  const { setDialog } = useDialogCustom();
   const [categories, setCategories] = useState([]);
   const { setMessage } = useMessage();
 
@@ -52,6 +53,78 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
+  const handleDelete = (data) => {
+    setMessage({
+      title: "Eliminazione categoria",
+      status: "warning",
+      content: (
+        <div className="flex flex-col text-muted-foreground text-sm">
+          <p className="mb-3">
+            Sei sicuro di voler eliminare la categoria
+            <span className="font-semibold text-primary ml-1 mr-1">
+              {data.emoji} - {data.name}
+            </span>
+            ?
+          </p>
+          <p className="mb-3">
+            Cliccando su
+            <span className="font-semibold text-primary ml-1">Elimina</span>, la
+            categoria verrà rimossa dall’elenco e non sarà più modificabile.
+          </p>
+          <p>
+            Le transazioni già assegnate a questa categoria resteranno invariate
+            e continueranno a mostrarla normalmente.
+          </p>
+        </div>
+      ),
+      actions: [
+        <Button variant="secondary" size="lg">
+          Annulla
+        </Button>,
+        <Button
+          variant="secondary"
+          size="lg"
+          className={"bg-red-500! hover:bg-red-500!"}
+          onClick={() => confirmHandleDelete(data.id)}
+        >
+          Elimina
+        </Button>,
+      ],
+    });
+  };
+
+  // funzione per eliminare in modo logico la categoria
+  const confirmHandleDelete = async (categoryId) => {
+    try {
+      setLoader(true);
+
+      const api = new ApiClient();
+      const response = await api.post("/api/categories/delete", {
+        id: categoryId,
+      });
+
+      setMessage({
+        title: "Categoria eliminata",
+        description: "Categoria eliminata con successo.",
+        status: "success",
+      });
+      fetchCategories();
+      setDialog({
+        show: false,
+        type: "",
+        data: {},
+      });
+    } catch (e) {
+      setMessage({
+        title: `Errore ${e.status}`,
+        status: "error",
+        description: e.message || e.toString(),
+      });
+    } finally {
+      setLoader(false);
+    }
+  };
+
   const tabs = [
     { label: "Entrate", value: "income" },
     { label: "Uscite", value: "expense" },
@@ -68,6 +141,7 @@ export default function CategoriesPage() {
       <Categories
         activeTab={activeTab}
         categories={categories}
+        handleDelete={handleDelete}
         fetchCategories={fetchCategories}
       />
     </>
@@ -133,7 +207,7 @@ function Actions({ setShowFilter, fetchCategories }) {
 }
 
 // lista di categorie in base al tipo richiesto dal tab
-function Categories({ activeTab, categories, fetchCategories }) {
+function Categories({ activeTab, categories, handleDelete, fetchCategories }) {
   return (
     <>
       <ScrollArea className="flex-1 min-h-0 w-full p-5 pt-0" noscrollbar>
@@ -145,6 +219,7 @@ function Categories({ activeTab, categories, fetchCategories }) {
                 <CategoryCard
                   key={index}
                   data={c}
+                  handleDelete={handleDelete}
                   fetchCategories={fetchCategories}
                 />
               );
@@ -155,42 +230,8 @@ function Categories({ activeTab, categories, fetchCategories }) {
   );
 }
 
-function CategoryCard({ data, fetchCategories }) {
+function CategoryCard({ data, handleDelete, fetchCategories }) {
   const { setDialog } = useDialogCustom();
-  const { setLoader } = useLoader();
-  const { setMessage } = useMessage();
-
-  // funzione per eliminare in modo logico la categoria
-  const handleDelete = async () => {
-    try {
-      setLoader(true);
-
-      const api = new ApiClient();
-      const response = await api.post("/api/categories/delete", {
-        id: data.id,
-      });
-
-      setMessage({
-        title: "Categoria eliminata",
-        description: "Categoria eliminata con successo.",
-        status: "success",
-      });
-      fetchCategories();
-      setDialog({
-        show: false,
-        type: "",
-        data: {},
-      });
-    } catch (e) {
-      setMessage({
-        title: `Errore ${e.status}`,
-        status: "error",
-        description: e.message || e.toString(),
-      });
-    } finally {
-      setLoader(false);
-    }
-  };
 
   return (
     <Card className="w-full flex-row! h-fit! items-center justify-between p-6 gap-3!">
@@ -225,6 +266,7 @@ function CategoryCard({ data, fetchCategories }) {
                 type: data.type,
                 emoji: data.emoji,
                 hexColor: data.hexColor,
+                handleDelete: handleDelete,
                 fetchCategories: fetchCategories,
               },
             })
@@ -236,48 +278,7 @@ function CategoryCard({ data, fetchCategories }) {
           variant="ghost"
           size="icon"
           className={"hover:bg-red-500/10! hover:text-red-500"}
-          onClick={() =>
-            setMessage({
-              title: "Eliminazione categoria",
-              status: "warning",
-              content: (
-                <div className="flex flex-col text-muted-foreground text-sm">
-                  <p className="mb-3">
-                    Sei sicuro di voler eliminare la categoria
-                    <span className="font-semibold text-primary ml-1 mr-1">
-                      {data.emoji} - {data.name}
-                    </span>
-                    ?
-                  </p>
-                  <p className="mb-3">
-                    Cliccando su
-                    <span className="font-semibold text-primary ml-1">
-                      Elimina
-                    </span>
-                    , la categoria verrà rimossa dall’elenco e non sarà più
-                    modificabile.
-                  </p>
-                  <p>
-                    Le transazioni già assegnate a questa categoria resteranno
-                    invariate e continueranno a mostrarla normalmente.
-                  </p>
-                </div>
-              ),
-              actions: [
-                <Button variant="secondary" size="lg">
-                  Annulla
-                </Button>,
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className={"bg-red-500! hover:bg-red-500!"}
-                  onClick={handleDelete}
-                >
-                  Elimina
-                </Button>,
-              ],
-            })
-          }
+          onClick={() => handleDelete(data)}
         >
           <Trash />
         </Button>
@@ -298,6 +299,7 @@ export function DialogCreateOrEditCategory() {
     emoji: categoryEmoji,
     type: categoryType,
     hexColor: categoryHexColor,
+    handleDelete,
     fetchCategories,
   } = dialog.data;
 
@@ -382,13 +384,16 @@ export function DialogCreateOrEditCategory() {
 
         if (!hasError && errorFound) hasError = true;
       }
-      console.log(newErrors, hasError);
+
       setFormErrors(newErrors);
 
       if (hasError) return;
 
       const api = new ApiClient();
-      const response = await api.post("/api/categories/edit", formValues);
+      const response = await api.post("/api/categories/edit", {
+        ...formValues,
+        type: formValues.type.value,
+      });
 
       setMessage({
         title: id ? "Categoria modificata" : "Categoria creata",
@@ -510,7 +515,7 @@ export function DialogCreateOrEditCategory() {
                 variant="destructive"
                 size="lg"
                 className={"bg-red-500!"}
-                onClick={() => {}}
+                onClick={() => handleDelete(dialog.data)}
               >
                 Elimina
               </Button>

@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { categoriesCollection } from "@/models/categories";
 import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb";
 import { cookies } from "next/headers";
+import { accountsCollection } from "@/models/accounts";
 
 export async function POST(req) {
     const rtn = { success: false, data: "", error: "" };
 
     try {
-        const { id, name, type, emoji, hexColor } = await req.json();
+        const { id, name, amount, type, emoji, hexColor } = await req.json();
 
         // Verifica cookie di sessione
         const cookieStore = await cookies();
@@ -24,8 +24,18 @@ export async function POST(req) {
             rtn.error = "mame is required";
             return new NextResponse(JSON.stringify(rtn), { status: 400 });
         }
-        if (!type || !["income", "expense"].includes(type)) {
-            rtn.error = "type is required and must be 'income' or 'expense'";
+        if (!amount) {
+            rtn.error = "amount is required";
+            return new NextResponse(JSON.stringify(rtn), { status: 400 });
+        }
+        const parsedAmount = Number(parseFloat(amount).toFixed(2));
+        if (isNaN(parsedAmount)) {
+            rtn.error = "amount must be a valid number";
+            return new NextResponse(JSON.stringify(rtn), { status: 400 });
+        }
+
+        if (!type || !["bank", "wallet", "voucher", "libretto", "crypto", "cash", "other"].includes(type)) {
+            rtn.error = "type is required and must be 'bank', 'wallet', 'voucher', 'libretto', 'crypto', 'cash', 'other'";
             return new NextResponse(JSON.stringify(rtn), { status: 400 });
         }
         if (!emoji || emoji.trim() === "") {
@@ -40,14 +50,15 @@ export async function POST(req) {
         // --- CONNESSIONE DB ---
         const client = await clientPromise;
         const db = client.db();
-        const categories = categoriesCollection(db);
+        const accounts = accountsCollection(db);
 
         const now = new Date().toISOString();
         if (id == "") {
-            // --- CREAZIONE CATEGORIA ---
-            const result = await categories.insertOne({
+            // --- CREAZIONE CONTO ---
+            const result = await accounts.insertOne({
                 userId: user.id,
                 name: name,
+                amount: parsedAmount,
                 type: type,
                 emoji: emoji,
                 hexColor: hexColor,
@@ -57,14 +68,15 @@ export async function POST(req) {
                 updatedAt: now,
                 updatedBy: user.id,
             });
-            rtn.data = { message: "Categoria creata con successo", category: result };
+            rtn.data = { message: "Conto creato con successo", account: result };
         } else {
-            // --- MODIFICA CATEGORIA ---
-            const result = await categories.updateOne(
+            // --- MODIFICA CONTO ---
+            const result = await accounts.updateOne(
                 { _id: new ObjectId(id), userId: user.id }, // filtro
                 {
                     $set: {
                         name,
+                        amount: parseFloat(amount).toFixed(2),
                         type: type.value,
                         emoji,
                         hexColor,
@@ -77,10 +89,10 @@ export async function POST(req) {
             if (result.matchedCount === 0) {
                 return new NextResponse(JSON.stringify({
                     success: false,
-                    error: "Categoria non trovata"
+                    error: "Conto non trovato"
                 }), { status: 404 });
             }
-            rtn.data = { message: "Categoria modificata con successo", category: result };
+            rtn.data = { message: "Conto modificato con successo", account: result };
         }
 
         // --- RISPOSTA ---
@@ -88,8 +100,8 @@ export async function POST(req) {
 
         return new NextResponse(JSON.stringify(rtn), { status: 200 });
     } catch (error) {
-        console.error("Error in /api/categories/edit:", error);
-        rtn.error = error.message + " on endpoint:/api/categories/edit";
+        console.error("Error in /api/accounts/edit:", error);
+        rtn.error = error.message + " on endpoint:/api/accounts/edit";
         rtn.response = "";
         return new NextResponse(JSON.stringify(rtn), { status: 500 });
     }

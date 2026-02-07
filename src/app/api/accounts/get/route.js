@@ -33,26 +33,24 @@ export async function GET(req) {
 
         // --- RECUPERO CONTI ---
         const result = await accounts
-        .find(filter)
-        .sort({ createdAt: -1 })
-        // .project({
-        //     id: { $toString: "$_id" },
-        //     _id: 0,
-        //     userId: 1,
-        //     name: 1,
-        //     type: 1,
-        //     emoji: 1,
-        //     hexColor: 1,
-        //     status: 1,
-        //     createdAt: 1,
-        //     updatedAt: 1,
-        // })
-        .toArray();
-        
+            .find(filter)
+            .sort({ createdAt: -1 })
+            .project({
+                id: { $toString: "$_id" },
+                _id: 0,
+               name:1,
+               amount:1,
+               emoji:1,
+               type:1,
+               hexColor:1,
+               hexColor:1,
+            })
+            .toArray();
+
         // --- RISPOSTA ---
         rtn.success = true;
         rtn.data = { message: "", accounts: result };
-        
+
         return new NextResponse(JSON.stringify(rtn), { status: 200 });
     } catch (error) {
         console.error("Error in /api/accounts/get:", error);

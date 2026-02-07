@@ -52,8 +52,6 @@ export async function GET(req) {
             emoji: 1,
             hexColor: 1,
             status: 1,
-            createdAt: 1,
-            updatedAt: 1,
         }).toArray();
         
         // --- RISPOSTA ---

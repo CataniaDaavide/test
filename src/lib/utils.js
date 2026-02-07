@@ -151,3 +151,32 @@ export function hexToRgba(hex, alpha = 1) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+
+/**
+ * Formatta un importo numerico in valuta Euro (€) usando il formato italiano.
+ *
+ * Regole applicate:
+ * - Aggiunge il simbolo € davanti all'importo
+ * - Usa la virgola come separatore decimale
+ * - Usa il punto come separatore delle migliaia
+ * - Mostra sempre due decimali
+ *
+ * @param {number} amount - Importo numerico da formattare
+ * @returns {string} Importo formattato (es: "€1.234,56")
+ *
+ * ESEMPI:
+ * formatAmount(50.32);        // "€50,32"
+ * formatAmount(1000);         // "€1.000,00"
+ * formatAmount(1234567.89);   // "€1.234.567,89"
+ * formatAmount(0);            // "€0,00"
+ */
+export function formatAmount(amount) {
+  return (
+    amount
+      .toFixed(2)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " €"
+  );
+}
+
+
