@@ -156,27 +156,63 @@ export function hexToRgba(hex, alpha = 1) {
  * Formatta un importo numerico in valuta Euro (€) usando il formato italiano.
  *
  * Regole applicate:
- * - Aggiunge il simbolo € davanti all'importo
  * - Usa la virgola come separatore decimale
  * - Usa il punto come separatore delle migliaia
  * - Mostra sempre due decimali
+ * - Aggiunge il simbolo € se `symbol` è true (default)
  *
  * @param {number} amount - Importo numerico da formattare
- * @returns {string} Importo formattato (es: "€1.234,56")
+ * @param {boolean} [symbol=true] - Se aggiungere il simbolo € alla fine
+ * @returns {string} Importo formattato (es: "€1.234,56" oppure "1.234,56")
  *
  * ESEMPI:
- * formatAmount(50.32);        // "€50,32"
- * formatAmount(1000);         // "€1.000,00"
- * formatAmount(1234567.89);   // "€1.234.567,89"
- * formatAmount(0);            // "€0,00"
+ * formatAmount(50.32);             // "50,32 €"
+ * formatAmount(50.32, false);      // "50,32"
+ * formatAmount(1000);               // "1.000,00 €"
+ * formatAmount(1234567.89, false); // "1.234.567,89"
+ * formatAmount(0);                  // "0,00 €"
  */
-export function formatAmount(amount) {
-  return (
-    amount
-      .toFixed(2)
-      .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " €"
-  );
+export function formatAmount(amount, symbol = true) {
+  const formatted = amount
+    .toFixed(2)                      // fissa a 2 decimali
+    .replace(".", ",")               // decimale con virgola
+    .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // separatore migliaia
+
+  return symbol ? `${formatted} €` : formatted;
 }
 
 
+/**
+ * Converte una stringa contenente un importo in numero con massimo 2 decimali.
+ * Supporta sia virgola che punto come separatore decimale.
+ * Rimuove caratteri non numerici non rilevanti.
+ *
+ * @param {string|number} value - stringa o numero da convertire (es: "1.000,32", "5a0,123")
+ * @returns {number} numero con massimo 2 decimali (es: 1000.32)
+ *
+ * ESEMPI:
+ * parseAmount("1.000,32")     // 1000.32
+ * parseAmount("5a0,123")      // 50.12
+ * parseAmount("1234")         // 1234.00
+ * parseAmount("12,3456")      // 12.34
+ */
+export function parseAmount(value) {
+  if (typeof value === "number") return Math.round(value * 100) / 100;
+
+  if (!value || value.trim() === "") return 0;
+
+  // sostituisce la virgola con il punto per parseFloat
+  let cleaned = value.replace(",", ".");
+
+  // rimuove tutto ciò che non è numero o punto
+  cleaned = cleaned.replace(/[^0-9.]/g, "");
+
+  // prende solo il primo punto come separatore decimale
+  const parts = cleaned.split(".");
+  const integerPart = parts[0] || "0";
+  const decimalPart = (parts[1] || "").slice(0, 2); // massimo 2 decimali
+
+  const number = parseFloat(integerPart + "." + decimalPart);
+
+  return isNaN(number) ? 0 : number;
+}

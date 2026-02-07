@@ -15,6 +15,7 @@ import {
   cn,
   formatAmount,
   hexToRgba,
+  parseAmount,
   validateField,
 } from "@/lib/utils";
 import {
@@ -311,7 +312,7 @@ export function DialogCreateOrEditAccount() {
   const defaultFormValues = {
     id: id ?? "",
     name: accountName ?? "",
-    amount: accountAmount ?? 0.0,
+    amount: accountAmount ? formatAmount(accountAmount, false) : "0",
     type: accountTypes.find((a) => a.value === accountType),
     emoji: accountEmoji ?? "",
     hexColor: accountHexColor ?? "",
@@ -423,7 +424,7 @@ export function DialogCreateOrEditAccount() {
       const response = await api.post("/api/accounts/edit", {
         ...formValues,
         type: formValues.type.value,
-        amount: Number(parseFloat(formValues.amount).toFixed(2)),
+        amount: parseAmount(formValues.amount),
       });
 
       setMessage({
@@ -509,6 +510,17 @@ export function DialogCreateOrEditAccount() {
                   inputMode="decimal"
                   value={formValues.amount}
                   onChange={(e) => handleChange("amount", e.target.value)}
+                  onFocus={(e) => {
+                    const value = parseInt(e.target.value.replace(",", "."));
+                    if (value == 0) {
+                      handleChange("amount", "");
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    if (value.length != 0) return;
+                    handleChange("amount", "0");
+                  }}
                   error={formErrors.amount}
                   variant="outline"
                 />

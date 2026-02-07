@@ -65,7 +65,7 @@ export async function POST(req) {
                 {
                     $set: {
                         name,
-                        type: type.value,
+                        type: type,
                         emoji,
                         hexColor,
                         updatedAt: now,

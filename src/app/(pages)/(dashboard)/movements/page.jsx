@@ -75,7 +75,7 @@ function FilterCard() {
   const defaultFormValues = {
     dateStart: formatDate(new Date("2025-01-01").toISOString(), "yyyy-MM-dd"),
     dateEnd: formatDate(undefined, "yyyy-MM-dd"),
-    priceMin: "0,00",
+    priceMin: "0",
     priceMax: "",
     categories: [],
     accounts: [],
@@ -134,7 +134,7 @@ function FilterCard() {
     setFormValues({
       dateStart: formatDate(new Date("2025-01-01").toISOString(), "yyyy-MM-dd"),
       dateEnd: formatDate(undefined, "yyyy-MM-dd"),
-      priceMin: "0,00",
+      priceMin: "0",
       priceMax: "",
       categories: [],
       accounts: [],
@@ -178,7 +178,7 @@ function FilterCard() {
             onBlur={(e) => {
               const value = e.target.value;
               if (value.length != 0) return;
-              handleChange("priceMin", "0,00");
+              handleChange("priceMin", "0");
             }}
           />
           <Input
@@ -346,7 +346,7 @@ export function DialogCreateOrEditMovement() {
     date: formatDate(movementDate, "yyyy-MM-dd"),
     time: formatDate(movementDate, "HH:mm"),
     category: "",
-    amountOne: "0,00",
+    amountOne: "0",
     isVoucher: false,
     amountTwo: "",
     description: movementDescription ?? "",
@@ -546,7 +546,7 @@ export function DialogCreateOrEditMovement() {
                   onBlur={(e) => {
                     const value = e.target.value;
                     if (value.length != 0) return;
-                    handleChange("amountOne", "0,00");
+                    handleChange("amountOne", "0");
                   }}
                 />
               </div>

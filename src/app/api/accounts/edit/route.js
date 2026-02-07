@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb";
 import { cookies } from "next/headers";
 import { accountsCollection } from "@/models/accounts";
+import { parseAmount } from "@/lib/utils";
 
 export async function POST(req) {
     const rtn = { success: false, data: "", error: "" };
@@ -24,11 +25,11 @@ export async function POST(req) {
             rtn.error = "mame is required";
             return new NextResponse(JSON.stringify(rtn), { status: 400 });
         }
-        if (!amount) {
+        if (amount === null || amount === undefined) {
             rtn.error = "amount is required";
             return new NextResponse(JSON.stringify(rtn), { status: 400 });
         }
-        const parsedAmount = Number(parseFloat(amount).toFixed(2));
+        const parsedAmount = parseAmount(amount);
         if (isNaN(parsedAmount)) {
             rtn.error = "amount must be a valid number";
             return new NextResponse(JSON.stringify(rtn), { status: 400 });
@@ -76,8 +77,8 @@ export async function POST(req) {
                 {
                     $set: {
                         name,
-                        amount: parseFloat(amount).toFixed(2),
-                        type: type.value,
+                        amount: parsedAmount,
+                        type: type,
                         emoji,
                         hexColor,
                         updatedAt: now,
