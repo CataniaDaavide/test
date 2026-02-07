@@ -34,11 +34,10 @@ export default function CategoriesPage() {
       setLoader(true);
 
       const api = new ApiClient();
-      const response = await api.get("/api/categories/getCategories");
+      const response = await api.get("/api/categories/get");
 
       setCategories(response.data.categories);
     } catch (e) {
-      console.log(e);
       setMessage({
         title: `Errore ${e.status}`,
         status: "error",
@@ -252,8 +251,10 @@ function CategoryCard({ data, fetchCategories }) {
                   </p>
                   <p className="mb-3">
                     Cliccando su
-                    <span className="font-semibold text-primary ml-1">Elimina</span>,
-                    la categoria verrà rimossa dall’elenco e non sarà più
+                    <span className="font-semibold text-primary ml-1">
+                      Elimina
+                    </span>
+                    , la categoria verrà rimossa dall’elenco e non sarà più
                     modificabile.
                   </p>
                   <p>
@@ -263,11 +264,12 @@ function CategoryCard({ data, fetchCategories }) {
                 </div>
               ),
               actions: [
-                <Button variant="secondary">
+                <Button variant="secondary" size="lg">
                   Annulla
                 </Button>,
                 <Button
                   variant="secondary"
+                  size="lg"
                   className={"bg-red-500! hover:bg-red-500!"}
                   onClick={handleDelete}
                 >
