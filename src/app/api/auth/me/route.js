@@ -42,13 +42,13 @@ export async function GET(req) {
     rtn.success = true;
     rtn.data = {
       user: {
-        _id: user._id,
+        _id: user._id.toString(),
         username: user.username,
         name: user.name,
         surname: user.surname,
         email: user.email,
         bio: user.bio,
-        bannerUrl: user.avatarUrl ?? "",
+        bannerUrl: user.bannerUrl  ?? "",
         avatarUrl: user.avatarUrl ?? "",
         createdAt: user.createdAt
       },

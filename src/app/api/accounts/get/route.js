@@ -43,7 +43,6 @@ export async function GET(req) {
                emoji:1,
                type:1,
                hexColor:1,
-               hexColor:1,
             })
             .toArray();
 

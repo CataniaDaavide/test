@@ -45,18 +45,35 @@ export class ApiClient {
             const response = await fetch(url, options);
             clearTimeout(timeoutId);
 
-            if (!response.ok) {
-                const message = this._getErrorMessage(response.status);
+            // if (!response.ok) {
+            //     const message = this._getErrorMessage(response.status);
 
-                // puoi anche includere info extra
+            //     // puoi anche includere info extra
+            //     throw {
+            //         status: response.status,
+            //         message,
+            //         url
+            //     };
+            // }
+
+            // return await response.json();
+            let data;
+            try {
+                data = await response.json(); // prova a leggere JSON
+            } catch {
+                data = await response.text(); // se non è JSON, prendi testo
+            }
+
+            if (!response.ok) {
                 throw {
                     status: response.status,
-                    message,
-                    url
+                    message: (data?.error || data?.message) ?? data ?? 'Errore sconosciuto',
+                    url,
+                    body: data
                 };
             }
 
-            return await response.json();
+            return data;
         } catch (error) {
             if (error.name === 'AbortError') {
                 throw {
