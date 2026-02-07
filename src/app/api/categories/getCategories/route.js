@@ -41,25 +41,25 @@ export async function GET(req) {
 
         // --- RECUPERO CATEGORIE ---
         const result = await categories
-            .find(filter)
-            .sort({ createdAt: -1 })
-            .project({
-                id: { $toString: "$_id" },
-                _id: 0,
-                userId: 1,
-                name: 1,
-                type: 1,
-                emoji: 1,
-                hexColor: 1,
-                status: 1,
-                createdAt: 1,
-                updatedAt: 1,
-            }).toArray();
-
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .project({
+            id: { $toString: "$_id" },
+            _id: 0,
+            userId: 1,
+            name: 1,
+            type: 1,
+            emoji: 1,
+            hexColor: 1,
+            status: 1,
+            createdAt: 1,
+            updatedAt: 1,
+        }).toArray();
+        
         // --- RISPOSTA ---
         rtn.success = true;
         rtn.data = { message: "", categories: result };
-
+        
         return new NextResponse(JSON.stringify(rtn), { status: 200 });
     } catch (error) {
         console.error("Error in /api/categories/get:", error);

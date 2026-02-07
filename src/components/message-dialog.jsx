@@ -37,27 +37,37 @@ export default function MessageDialog() {
 
         {/* Descrizione scrollabile */}
         <ScrollArea className="flex flex-col gap-4 overflow-y-auto pr-2!">
-          <DialogDescription className={"text-wrap break-all pr-1"}>
+          <DialogDescription className={cn(
+            message.content && "mb-3"
+          )}>
             {message.description}
           </DialogDescription>
+
+          {message.content && <>{message.content}</>}
         </ScrollArea>
 
-        {/* Footer fisso con azioni */}
-        <DialogFooter className="flex flex-wrap gap-2">
-          {message.actions?.map((action, index) => (
-            <DialogClose asChild key={index}>
-              {action}
-            </DialogClose>
-          ))}
 
-          {/* Pulsante chiudi di default se non ci sono azioni */}
-          <div className="w-full flex justify-end pr-3">
-            {!message.actions?.length && (
-              <DialogClose asChild>
-                <Button variant="outline" className={"w-full md:w-fit"} >Chiudi</Button>
+        {/* Footer fisso con azioni */}
+        <DialogFooter
+          className={cn(
+            message.actions?.length
+              ? "grid grid-cols-2 gap-2"
+              : "flex justify-end gap-2",
+          )}
+        >
+          {message.actions && message.actions.length > 0 ? (
+            message.actions.map((action, index) => (
+              <DialogClose asChild key={index}>
+                {action}
               </DialogClose>
-            )}
-          </div>
+            ))
+          ) : (
+            <DialogClose asChild>
+              <Button variant="outline" className="w-full md:w-fit">
+                Chiudi
+              </Button>
+            </DialogClose>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -32,13 +32,13 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     try {
       setLoader(true);
-      alert(1)
+
       const api = new ApiClient();
       const response = await api.get("/api/categories/getCategories");
-      alert(2)
 
       setCategories(response.data.categories);
     } catch (e) {
+      console.log(e);
       setMessage({
         title: `Errore ${e.status}`,
         status: "error",
@@ -237,23 +237,45 @@ function CategoryCard({ data, fetchCategories }) {
           variant="ghost"
           size="icon"
           className={"hover:bg-red-500/10! hover:text-red-500"}
-          onClick={setMessage({
-            title: "Eliminazione categoria",
-            status: "warning",
-            message: `
-              Sei sicuro di voler eliminare la categoria ${data.emoji} - ${data.name}?
-              Cliccando su Elimina, la categoria verrà rimossa dall’elenco e non sarà più modificabile.
-              Le transazioni già assegnate a questa categoria resteranno invariate e continueranno a mostrarla normalmente.
-              `,
-            actions: [
-              <Button variant="secondary" onClick={() => setMessage()}>
-                Annulla
-              </Button>,
-              <Button variant="secondary" className={"bg-red-500! hover:bg-red-500!"} onClick={handleDelete}>
-                Elimina
-              </Button>,
-            ],
-          })}
+          onClick={() =>
+            setMessage({
+              title: "Eliminazione categoria",
+              status: "warning",
+              content: (
+                <div className="flex flex-col text-muted-foreground text-sm">
+                  <p className="mb-3">
+                    Sei sicuro di voler eliminare la categoria
+                    <span className="font-semibold text-primary ml-1 mr-1">
+                      {data.emoji} - {data.name}
+                    </span>
+                    ?
+                  </p>
+                  <p className="mb-3">
+                    Cliccando su
+                    <span className="font-semibold text-primary ml-1">Elimina</span>,
+                    la categoria verrà rimossa dall’elenco e non sarà più
+                    modificabile.
+                  </p>
+                  <p>
+                    Le transazioni già assegnate a questa categoria resteranno
+                    invariate e continueranno a mostrarla normalmente.
+                  </p>
+                </div>
+              ),
+              actions: [
+                <Button variant="secondary">
+                  Annulla
+                </Button>,
+                <Button
+                  variant="secondary"
+                  className={"bg-red-500! hover:bg-red-500!"}
+                  onClick={handleDelete}
+                >
+                  Elimina
+                </Button>,
+              ],
+            })
+          }
         >
           <Trash />
         </Button>
